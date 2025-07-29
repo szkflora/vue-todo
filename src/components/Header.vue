@@ -1,19 +1,29 @@
 <script setup lang="ts">
-import { defineEmits } from 'vue';
+import { ref, defineEmits } from 'vue';
+import type { Task, Importance } from '@/types/Task';
 
 const emit = defineEmits<{
-    (e: 'addSmthToDo'):void;
+    (e: 'addSmthToDo', task: Task):void;
 }>();
 
-const addSomething = ():void => {
-    emit('addSmthToDo');
+const testTask = ref<Task>({
+id: 1,
+title: 'task',
+description: 'i should make this',
+importance: 'Medium',
+completed: false,
+})
+
+const addTask = (task: Task):void => {
+    emit('addSmthToDo', task);
 }
+
 </script>
 
 <template>
     <div class="header">
       <h1 class="title">To do list</h1>
-      <button type="button" class="plus-button" @click="addSomething">
+      <button type="button" class="plus-button" @click="addTask(testTask)">
         <img src="@/components/icons/plus-button-icon.svg"></img>
       </button>
     </div>
