@@ -3,7 +3,9 @@
 <template>
     <div class="header">
       <h1 class="title">To do list</h1>
-      <button type="button" class="plus-button">+</button>
+      <button type="button" class="plus-button">
+        <img src="@/components/icons/plus-button-icon.svg"></img>
+      </button>
     </div>
 </template>
 
@@ -27,12 +29,8 @@
 .plus-button {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
   border: none;
-  background-color: #38cb89;
-  color: white;
-  font-size: 29px;
-  font-weight: thin;
+  background-color: white;
   cursor: pointer;
 }
 </style>
