@@ -1,9 +1,19 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { defineEmits } from 'vue';
+
+const emit = defineEmits<{
+    (e: 'addSmthToDo'):void;
+}>();
+
+const addSomething = ():void => {
+    emit('addSmthToDo');
+}
+</script>
 
 <template>
     <div class="header">
       <h1 class="title">To do list</h1>
-      <button type="button" class="plus-button">
+      <button type="button" class="plus-button" @click="addSomething">
         <img src="@/components/icons/plus-button-icon.svg"></img>
       </button>
     </div>
