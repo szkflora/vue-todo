@@ -1,44 +1,45 @@
 <script setup lang="ts">
 import { ref, defineEmits } from 'vue';
-import type { Task, Importance } from '@/types/Task';
+import { Task, Importance } from '../types/Task';
 
 const emit = defineEmits<{
-    (e: 'addSmthToDo', task: Task):void;
+  (e: 'addSmthToDo', task: Task): void;
 }>();
 
 const testTask = ref<Task>({
-id: 1,
-title: 'task',
-description: 'i should make this',
-importance: 'Medium',
-completed: false,
-})
+  id: 1,
+  title: 'task',
+  description: 'i should make this',
+  importance: Importance.MEDIUM,
+  completed: false,
+});
 
-const addTask = (task: Task):void => {
-    emit('addSmthToDo', task);
+function addTask(task: Task): void {
+  emit('addSmthToDo', task);
 }
-
 </script>
 
 <template>
-    <div class="header">
-      <h1 class="title">To do list</h1>
-      <button type="button" class="plus-button" @click="addTask(testTask)">
-        <img src="@/components/icons/plus-button-icon.svg"></img>
-      </button>
-    </div>
+  <div class="w-[500px] flex justify-between">
+    <h1 class="title">To do list</h1>
+    <button type="button" class="plus-button" @click="addTask(testTask)">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="size-6"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+      </svg>
+    </button>
+  </div>
 </template>
 
 <style scoped>
-
-.header {
-  width: 500px;
-  display: flex;
-  justify-content: space-between;
-}
-
 .title {
-  font-family: "Neue Haas Grotesk Display Pro";
+  font-family: 'Neue Haas Grotesk Display Pro';
   font-weight: 600;
   size: 72px;
   line-height: 100%;
@@ -50,7 +51,9 @@ const addTask = (task: Task):void => {
   width: 40px;
   height: 40px;
   border: none;
-  background-color: white;
+  background-color: #38cb89;
   cursor: pointer;
+  color: white;
+  border-radius: 50%;
 }
 </style>
