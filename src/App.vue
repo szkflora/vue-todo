@@ -27,12 +27,19 @@ function handleTask(newTask: Task): void {
     <div v-show="isFormVisible">
       <TaskForm @taskCreated="handleTask"></TaskForm>
     </div>
-    <div>
+    <div v-if="tasks.length !== 0">
       <div v-for="task in tasks" :key="task.id">
         <TaskCard :task="task"></TaskCard>
       </div>
     </div>
+    <div v-else class="placeholder">
+      <img src="../public/no_todos.svg" />
+    </div>
   </main>
 </template>
 
-<style scoped></style>
+<style scoped>
+.placeholder {
+  margin: 40px;
+}
+</style>
