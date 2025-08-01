@@ -2,11 +2,11 @@
 import { ref } from 'vue';
 import { Task, Importance } from '../types/Task';
 
-const title = ref<string>('')
-const description = ref<string>('')
-const importance = ref<Importance>(Importance.MEDIUM)
+const title = ref<string>('');
+const description = ref<string>('');
+const importance = ref<Importance>(Importance.MEDIUM);
 
-let idCounter = 1
+let idCounter = 1;
 
 function createTask(): Task {
   const newTask: Task = {
@@ -14,24 +14,30 @@ function createTask(): Task {
     title: title.value,
     description: description.value,
     importance: importance.value,
-    completed: false
-  }
+    completed: false,
+  };
 
-  title.value = ''
-  description.value = ''
-  importance.value = Importance.MEDIUM
+  title.value = '';
+  description.value = '';
+  importance.value = Importance.MEDIUM;
 
-  console.log(newTask)
+  console.log(newTask);
 
-  return newTask
+  return newTask;
 }
-
 </script>
 
 <template>
-  <input v-model="title" placeholder="Title" />
-  <input v-model="description" placeholder="Description" />
-  <select v-model="importance" placeholder="Importance">
-    <option value="Low"></option>
-  </select>
+  <input v-model="title" placeholder="Title" /><br />
+  <input v-model="description" placeholder="Description" /><br />
+  <p>
+    Importance:
+    <select v-model="importance" placeholder="Importance">
+      <br />
+      <option value="Low">Low</option>
+      <option value="Medium">Medium</option>
+      <option value="High">High</option>
+    </select>
+  </p>
+  <button type="button" @click="createTask">Create Task</button>
 </template>

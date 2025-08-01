@@ -1,29 +1,37 @@
 <script setup lang="ts">
 import { ref, defineEmits } from 'vue';
 import { Task, Importance } from '../types/Task';
-import { PlusIcon } from '@heroicons/vue/24/outline'
+import { PlusIcon } from '@heroicons/vue/24/outline';
 
+// const emit = defineEmits<{
+//   (e: 'addSmthToDo', task: Task): void;
+// }>();
+
+// const testTask = ref<Task>({
+//   id: 1,
+//   title: 'task',
+//   description: 'i should make this',
+//   importance: Importance.MEDIUM,
+//   completed: false,
+// });
+
+// function addTask(task: Task): void {
+//   emit('addSmthToDo', task);
+// }
 const emit = defineEmits<{
-  (e: 'addSmthToDo', task: Task): void;
+  (e: 'showForm'): void;
 }>();
 
-const testTask = ref<Task>({
-  id: 1,
-  title: 'task',
-  description: 'i should make this',
-  importance: Importance.MEDIUM,
-  completed: false,
-});
-
-function addTask(task: Task): void {
-  emit('addSmthToDo', task);
+function showTaskForm(): void {
+  emit('showForm');
 }
 </script>
 
 <template>
   <div class="w-[500px] flex justify-between">
     <h1 class="title">To do list</h1>
-    <button type="button" class="plus-button" @click="addTask(testTask)">
+    <!-- <button type="button" class="plus-button" @click="addTask(testTask)"> -->
+    <button type="button" class="plus-button" @click="showTaskForm">
       <PlusIcon></PlusIcon>
     </button>
   </div>
