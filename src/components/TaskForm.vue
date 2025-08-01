@@ -8,7 +8,11 @@ const importance = ref<Importance>(Importance.MEDIUM);
 
 let idCounter = 1;
 
-function createTask(): Task {
+const emit = defineEmits<{
+  (e: 'taskCreated', task: Task): void;
+}>();
+
+function createTask(): void {
   const newTask: Task = {
     id: idCounter++,
     title: title.value,
@@ -17,13 +21,13 @@ function createTask(): Task {
     completed: false,
   };
 
+  emit('taskCreated', newTask);
+
   title.value = '';
   description.value = '';
   importance.value = Importance.MEDIUM;
 
   console.log(newTask);
-
-  return newTask;
 }
 </script>
 

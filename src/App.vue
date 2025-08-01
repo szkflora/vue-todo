@@ -2,17 +2,19 @@
 import { ref } from 'vue';
 import Header from './components/Header.vue';
 import TaskForm from './components/TaskForm.vue';
+import TaskCard from './components/TaskCard.vue';
 import type { Task, Importance } from './types/Task';
 
 const tasks = ref<Task[]>([]);
 const isFormVisible = ref<boolean>(false);
 
-// function addTask(task: Task): void {
-//   tasks.value.push(task);
-// }
-
 function showTaskForm(): void {
   isFormVisible.value = true;
+}
+
+function handleTask(newTask: Task): void {
+  tasks.value.push(newTask);
+  isFormVisible.value = false;
 }
 </script>
 
@@ -23,7 +25,14 @@ function showTaskForm(): void {
 
   <main>
     <div v-show="isFormVisible">
-      <TaskForm></TaskForm>
+      <TaskForm @taskCreated="handleTask"></TaskForm>
+    </div>
+    <div>
+      <ul>
+        <li v-for="task in tasks" :key="task.id">
+          <TaskCard :task="task"></TaskCard>
+        </li>
+      </ul>
     </div>
   </main>
 </template>
