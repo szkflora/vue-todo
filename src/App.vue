@@ -28,11 +28,9 @@ function handleTask(newTask: Task): void {
       <TaskForm @taskCreated="handleTask"></TaskForm>
     </div>
     <div>
-      <ul>
-        <li v-for="task in tasks" :key="task.id">
-          <TaskCard :task="task"></TaskCard>
-        </li>
-      </ul>
+      <div v-for="task in tasks" :key="task.id">
+        <TaskCard :task="task"></TaskCard>
+      </div>
     </div>
   </main>
 </template>

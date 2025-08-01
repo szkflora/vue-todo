@@ -32,16 +32,17 @@ function createTask(): void {
 </script>
 
 <template>
-  <input v-model="title" placeholder="Title" /><br />
-  <input v-model="description" placeholder="Description" /><br />
-  <p>
-    Importance:
+  <form @submit.prevent="createTask">
+    <input v-model="title" placeholder="Title" required /><br />
+    <input v-model="description" placeholder="Description" /><br />
+    <label>Importance: </label>
     <select v-model="importance" placeholder="Importance">
       <br />
       <option value="Low">Low</option>
       <option value="Medium">Medium</option>
       <option value="High">High</option>
     </select>
-  </p>
-  <button type="button" @click="createTask">Create Task</button>
+    <br />
+    <button type="submit">Create Task</button>
+  </form>
 </template>
