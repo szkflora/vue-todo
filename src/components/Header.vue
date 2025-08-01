@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, defineEmits } from 'vue';
 import { Task, Importance } from '../types/Task';
+import { PlusIcon } from '@heroicons/vue/24/outline'
 
 const emit = defineEmits<{
   (e: 'addSmthToDo', task: Task): void;
@@ -23,16 +24,7 @@ function addTask(task: Task): void {
   <div class="w-[500px] flex justify-between">
     <h1 class="title">To do list</h1>
     <button type="button" class="plus-button" @click="addTask(testTask)">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
-        class="size-6"
-      >
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-      </svg>
+      <PlusIcon></PlusIcon>
     </button>
   </div>
 </template>
