@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { ref, defineEmits } from 'vue';
 import { Task, Importance } from '../types/Task';
-<<<<<<< HEAD
 import { PlusIcon } from '@heroicons/vue/24/outline';
-=======
-import { PlusIcon } from '@heroicons/vue/24/outline'
->>>>>>> 3fa1b57e9317774302b50f5c1f33ffc0a9cf2c90
 
 // const emit = defineEmits<{
 //   (e: 'addSmthToDo', task: Task): void;
@@ -34,12 +30,8 @@ function showTaskForm(): void {
 <template>
   <div class="w-[500px] flex justify-between">
     <h1 class="title">To do list</h1>
-<<<<<<< HEAD
     <!-- <button type="button" class="plus-button" @click="addTask(testTask)"> -->
     <button type="button" class="plus-button" @click="showTaskForm">
-=======
-    <button type="button" class="plus-button" @click="addTask(testTask)">
->>>>>>> 3fa1b57e9317774302b50f5c1f33ffc0a9cf2c90
       <PlusIcon></PlusIcon>
     </button>
   </div>
