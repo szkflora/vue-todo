@@ -41,5 +41,6 @@ function handleTask(newTask: Task): void {
 <style scoped>
 .placeholder {
   margin: 40px;
+  text-align: center;
 }
 </style>

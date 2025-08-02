@@ -13,7 +13,7 @@ function showTaskForm(): void {
 </script>
 
 <template>
-  <div class="w-[500px] flex justify-between">
+  <div class="w-[600px] flex justify-between">
     <h1 class="title">To do list</h1>
     <button type="button" class="plus-button" @click="showTaskForm">
       <PlusIcon></PlusIcon>

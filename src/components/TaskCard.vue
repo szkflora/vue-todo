@@ -34,23 +34,6 @@ function getImportance(imp: Importance): string {
 </template>
 
 <style scoped>
-.task {
-  width: 500px;
-  display: flex;
-  justify-content: space-between;
-  border: 2px solid;
-  border-radius: 16px;
-  padding: 8px 16px;
-  margin: 25px;
-}
-
-.task_text {
-  font-family: 'Neue Haas Grotesk Display Pro';
-  font-weight: 600;
-  line-height: 100%;
-  letter-spacing: 0%;
-}
-
 .lil_button {
   width: 27px;
   height: 27px;
@@ -59,26 +42,5 @@ function getImportance(imp: Importance): string {
   cursor: pointer;
   border-radius: 50%;
   align-self: self-end;
-}
-
-.low {
-  background-color: #38cbcb;
-  padding: 2px 7px;
-  border-radius: 16px;
-  color: white;
-}
-
-.medium {
-  background-color: #ffab00;
-  padding: 2px 7px;
-  border-radius: 16px;
-  color: white;
-}
-
-.high {
-  background-color: #ff481f;
-  padding: 2px 7px;
-  border-radius: 16px;
-  color: white;
 }
 </style>
