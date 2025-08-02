@@ -32,7 +32,7 @@ function handleTask(newTask: Task): void {
         <TaskCard :task="task"></TaskCard>
       </div>
     </div>
-    <div v-else class="placeholder">
+    <div v-else-if="!isFormVisible" class="placeholder">
       <img src="../public/no_todos.svg" />
     </div>
   </main>

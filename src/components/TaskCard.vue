@@ -21,10 +21,10 @@ function getImportance(imp: Importance): string {
 </script>
 
 <template>
-  <div class="task">
+  <div class="task h-[150px]">
     <div class="flex flex-col justify-between">
-      <h1 class="text-[#000000] text-[42px] task_text">{{ props.task.title }}</h1>
-      <p class="text-[#757575] text-[28px] task_text">{{ props.task.description }}</p>
+      <h1 class="text-[#000000] text-[42px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">{{ props.task.title }}</h1>
+      <p class="text-[#757575] text-[28px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">{{ props.task.description }}</p>
     </div>
     <div class="flex flex-col justify-between">
       <p :class="getImportance(props.task.importance)">{{ props.task.importance }}</p>
