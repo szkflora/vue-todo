@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, defineProps } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 import { Importance, Task } from '../types/Task';
 
 interface Props {
@@ -7,6 +7,12 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const emit = defineEmits(['click']);
+
+function handleClick(): void {
+  emit('click', props.task);
+}
 
 function getImportance(imp: Importance): string {
   switch (imp) {
@@ -21,7 +27,7 @@ function getImportance(imp: Importance): string {
 </script>
 
 <template>
-  <div class="task h-[150px]">
+  <div class="task h-[150px]" @click="handleClick">
     <div class="flex flex-col justify-between">
       <h1 class="text-[#000000] text-[42px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">{{ props.task.title }}</h1>
       <p class="text-[#757575] text-[28px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">{{ props.task.description }}</p>

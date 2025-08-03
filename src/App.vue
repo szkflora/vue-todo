@@ -7,29 +7,48 @@ import type { Task, Importance } from './types/Task';
 
 const tasks = ref<Task[]>([]);
 const isFormVisible = ref<boolean>(false);
+const taskToEdit = ref<Task | null>(null);
 
-function showTaskForm(): void {
+function showEmptyTaskForm(): void {
   isFormVisible.value = true;
+  taskToEdit.value = null;
 }
 
-function handleTask(newTask: Task): void {
-  tasks.value.push(newTask);
+function handleTaskSubmission(data: { newTask: Task; mode: 'create' | 'edit'}): void {
+  
+  if (data.mode === 'create') {
+    tasks.value.push(data.newTask);
+  } else {
+    const index = tasks.value.findIndex(t => t.id === data.newTask.id);
+    tasks.value[index] = data.newTask;
+  }
+  taskToEdit.value = null;
   isFormVisible.value = false;
+  console.log(data.newTask.id);
+}
+
+function intoEditMode(task: Task): void {
+  taskToEdit.value = task;
+  isFormVisible.value = true;
 }
 </script>
 
 <template>
   <header>
-    <Header @showForm="showTaskForm"></Header>
+    <Header @showForm="showEmptyTaskForm"></Header>
   </header>
 
   <main>
     <div v-show="isFormVisible">
-      <TaskForm @taskCreated="handleTask"></TaskForm>
+      <TaskForm :initialTask="taskToEdit" @taskSubmitted="handleTaskSubmission"></TaskForm>
     </div>
     <div v-if="tasks.length !== 0">
       <div v-for="task in tasks" :key="task.id">
-        <TaskCard :task="task"></TaskCard>
+        <TaskCard
+        v-if="task.id !== taskToEdit?.id"
+        :task="task" 
+        @click="intoEditMode(task)">
+      </TaskCard>
       </div>
     </div>
     <div v-else-if="!isFormVisible" class="placeholder">
