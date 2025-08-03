@@ -8,7 +8,9 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const emit = defineEmits(['click']);
+const emit = defineEmits<{
+  (e: 'click', task: Task): void;
+}>();
 
 function handleClick(): void {
   emit('click', props.task);

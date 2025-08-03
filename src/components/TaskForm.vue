@@ -8,6 +8,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'taskSubmitted', data: { newTask: Task; mode: 'create' | 'edit' }): void;
+  (e: 'confirmDeletion', task: Task): void;
 }>();
 
 const title = ref<string>('');
@@ -79,6 +80,10 @@ function handleSubmit(): void {
   taskId = null;
   resizeTextArea();
 }
+
+function deleteTask(): void {
+  emit('confirmDeletion', props.initialTask);
+}
 </script>
 
 <template>
@@ -95,7 +100,7 @@ function handleSubmit(): void {
         ></textarea>
         <div>
           <button type="submit" class="save mr-[20px]">Save</button>
-          <button type="button" class="delete">Delete</button>
+          <button type="button" class="delete" @click="deleteTask">Delete</button>
         </div>
       </div>
       <div class="flex flex-col justify-between">

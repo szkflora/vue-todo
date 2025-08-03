@@ -3,11 +3,13 @@ import { ref } from 'vue';
 import Header from './components/Header.vue';
 import TaskForm from './components/TaskForm.vue';
 import TaskCard from './components/TaskCard.vue';
-import type { Task, Importance } from './types/Task';
+import type { Task } from './types/Task';
 
 const tasks = ref<Task[]>([]);
 const isFormVisible = ref<boolean>(false);
 const taskToEdit = ref<Task | null>(null);
+const showConfirmation = ref<boolean>(false);
+const taskToDelete = ref<Task>();
 
 function showEmptyTaskForm(): void {
   isFormVisible.value = true;
@@ -24,7 +26,21 @@ function handleTaskSubmission(data: { newTask: Task; mode: 'create' | 'edit'}): 
   }
   taskToEdit.value = null;
   isFormVisible.value = false;
-  console.log(data.newTask.id);
+}
+
+function handelConfirmation(task: Task): void {
+  showConfirmation.value = true;
+  taskToDelete.value = task;
+}
+
+function cancelDeletion(): void {
+  showConfirmation.value = false;
+}
+
+function handleTaskDeletion(): void {
+  tasks.value = tasks.value.filter(task => task.id !== taskToDelete.value.id)
+  isFormVisible.value = false;
+  showConfirmation.value = false;
 }
 
 function intoEditMode(task: Task): void {
@@ -40,8 +56,15 @@ function intoEditMode(task: Task): void {
 
   <main>
     <div v-show="isFormVisible">
-      <TaskForm :initialTask="taskToEdit" @taskSubmitted="handleTaskSubmission"></TaskForm>
+      <TaskForm :initialTask="taskToEdit" @taskSubmitted="handleTaskSubmission" @confirmDeletion="handelConfirmation"></TaskForm>
     </div>
+
+    <div v-if="showConfirmation" class="popup">
+      <p>This operation is permanent. Are you sure you want to delete this item?</p>
+      <button type="button" @click="handleTaskDeletion">Delete</button>
+      <button type="button" @click="cancelDeletion">Cancel</button>
+    </div>
+
     <div v-if="tasks.length !== 0">
       <div v-for="task in tasks" :key="task.id">
         <TaskCard
@@ -58,8 +81,32 @@ function intoEditMode(task: Task): void {
 </template>
 
 <style scoped>
+button{
+  background-color: #ffffff;
+  color: #000000;
+  width: 90px;
+  height: 40px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 17px;
+  margin: 10px;
+}
+
 .placeholder {
   margin: 40px;
   text-align: center;
+}
+
+.popup {
+  background-color: #e6e6e6;
+  display: flex;
+  align-items: center;
+  border: 2px solid #8e8e8e;
+  border-radius: 16px;
+  padding: 8px 16px;
+  margin: 25px;
+  font-family: 'Neue Haas Grotesk Display Pro';
+  color: black;
 }
 </style>
