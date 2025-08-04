@@ -65,12 +65,12 @@ function intoEditMode(task: Task): void {
       <button type="button" @click="cancelDeletion">Cancel</button>
     </div>
 
-    <div v-if="tasks.length !== 0">
+    <div v-if="tasks.length !== 0" class="flex flex-col-reverse">
       <div v-for="task in tasks" :key="task.id">
         <TaskCard
         v-if="task.id !== taskToEdit?.id"
         :task="task" 
-        @click="intoEditMode(task)">
+        @clickEvent="intoEditMode">
       </TaskCard>
       </div>
     </div>
