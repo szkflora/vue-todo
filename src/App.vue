@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import Header from './components/Header.vue';
 import TaskForm from './components/TaskForm.vue';
 import TaskCard from './components/TaskCard.vue';
+import ConfirmationPopup from './components/ConfirmationPopup.vue'
 import type { Task } from './types/Task';
 
 const tasks = ref<Task[]>([]);
@@ -63,9 +64,10 @@ function intoEditMode(task: Task): void {
     </div>
 
     <div v-if="showConfirmation" class="popup">
-      <p>This operation is permanent. Are you sure you want to delete this item?</p>
+      <!-- <p>This operation is permanent. Are you sure you want to delete this item?</p>
       <button type="button" @click="handleTaskDeletion" class="popup_button">Delete</button>
-      <button type="button" @click="cancelDeletion" class="popup_button">Cancel</button>
+      <button type="button" @click="cancelDeletion" class="popup_button">Cancel</button> -->
+      <ConfirmationPopup @cancel="cancelDeletion" @delete="handleTaskDeletion"></ConfirmationPopup>
     </div>
 
     <div v-if="tasks.length !== 0" class="flex flex-col-reverse">
