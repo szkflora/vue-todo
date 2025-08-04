@@ -16,12 +16,11 @@ function showEmptyTaskForm(): void {
   taskToEdit.value = null;
 }
 
-function handleTaskSubmission(data: { newTask: Task; mode: 'create' | 'edit'}): void {
-  
+function handleTaskSubmission(data: { newTask: Task; mode: 'create' | 'edit' }): void {
   if (data.mode === 'create') {
     tasks.value.push(data.newTask);
   } else {
-    const index = tasks.value.findIndex(t => t.id === data.newTask.id);
+    const index = tasks.value.findIndex((t) => t.id === data.newTask.id);
     tasks.value[index] = data.newTask;
   }
   taskToEdit.value = null;
@@ -38,7 +37,7 @@ function cancelDeletion(): void {
 }
 
 function handleTaskDeletion(): void {
-  tasks.value = tasks.value.filter(task => task.id !== taskToDelete.value.id)
+  tasks.value = tasks.value.filter((task) => task.id !== taskToDelete.value.id);
   isFormVisible.value = false;
   showConfirmation.value = false;
 }
@@ -56,22 +55,22 @@ function intoEditMode(task: Task): void {
 
   <main>
     <div v-show="isFormVisible">
-      <TaskForm :initialTask="taskToEdit" @taskSubmitted="handleTaskSubmission" @confirmDeletion="handelConfirmation"></TaskForm>
+      <TaskForm
+        :initialTask="taskToEdit"
+        @taskSubmitted="handleTaskSubmission"
+        @confirmDeletion="handelConfirmation"
+      ></TaskForm>
     </div>
 
     <div v-if="showConfirmation" class="popup">
       <p>This operation is permanent. Are you sure you want to delete this item?</p>
-      <button type="button" @click="handleTaskDeletion">Delete</button>
-      <button type="button" @click="cancelDeletion">Cancel</button>
+      <button type="button" @click="handleTaskDeletion" class="popup_button">Delete</button>
+      <button type="button" @click="cancelDeletion" class="popup_button">Cancel</button>
     </div>
 
     <div v-if="tasks.length !== 0" class="flex flex-col-reverse">
       <div v-for="task in tasks" :key="task.id">
-        <TaskCard
-        v-if="task.id !== taskToEdit?.id"
-        :task="task" 
-        @clickEvent="intoEditMode">
-      </TaskCard>
+        <TaskCard v-if="task.id !== taskToEdit?.id" :task="task" @clickEvent="intoEditMode"> </TaskCard>
       </div>
     </div>
     <div v-else-if="!isFormVisible" class="placeholder">
@@ -81,7 +80,7 @@ function intoEditMode(task: Task): void {
 </template>
 
 <style scoped>
-button{
+.popup_button {
   background-color: #ffffff;
   color: #000000;
   width: 90px;

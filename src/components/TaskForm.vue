@@ -88,9 +88,16 @@ function deleteTask(): void {
 
 <template>
   <form @submit.prevent="handleSubmit">
-    <div class="task h-auto">
-      <div class="flex flex-col justify-between">
-        <input v-model="title" placeholder="Title" required class="text-[#000000] text-[42px] task_text" />
+    <div class="task">
+      <div class="flex justify-between gap-16">
+        <input v-model="title" placeholder="Title" required class="text-[#000000] text-[42px] max-w-xs task_text" />
+        <select v-model="importance" placeholder="Importance">
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
+      <div class="flex flex-col justify-between gap-4">
         <textarea
           ref="descriptionRef"
           rows="3"
@@ -98,17 +105,10 @@ function deleteTask(): void {
           placeholder="Description"
           class="text-[#757575] text-[28px] overflow-hidden resize-none task_text"
         ></textarea>
-        <div>
+        <div class="flex gap-3">
           <button type="submit" class="save mr-[20px]">Save</button>
           <button type="button" class="delete" @click="deleteTask">Delete</button>
         </div>
-      </div>
-      <div class="flex flex-col justify-between">
-        <select v-model="importance" placeholder="Importance">
-          <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
-        </select>
       </div>
     </div>
   </form>
