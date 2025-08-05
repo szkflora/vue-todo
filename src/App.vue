@@ -49,6 +49,11 @@ function intoEditMode(task: Task): void {
   taskToEdit.value = task;
   isFormVisible.value = true;
 }
+
+function taskChecked(taskToCheck: Task): void{
+  tasks.value = tasks.value.filter((task) => task.id !== taskToCheck.id);
+  tasks.value.unshift(taskToCheck);
+}
 </script>
 
 <template>
@@ -72,7 +77,7 @@ function intoEditMode(task: Task): void {
 
     <div v-if="tasks.length !== 0" class="flex flex-col-reverse">
       <div v-for="task in tasks" :key="task.id">
-        <TaskCard v-if="task.id !== taskToEdit?.id" :task="task" @clickEvent="intoEditMode"> </TaskCard>
+        <TaskCard v-if="task.id !== taskToEdit?.id" :task="task" @clickEvent="intoEditMode" @checked="taskChecked"> </TaskCard>
       </div>
     </div>
     <div v-else-if="!isFormVisible" class="placeholder">

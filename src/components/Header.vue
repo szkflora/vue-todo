@@ -25,8 +25,6 @@ function showTaskForm(): void {
   font-family: 'Neue Haas Grotesk Display Pro';
   font-weight: 600;
   font-size: 72px;
-  /* line-height: 100%;
-  letter-spacing: 0%; */
   color: #000000;
 }
 

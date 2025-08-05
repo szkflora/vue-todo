@@ -1,19 +1,27 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
+import { ref, defineProps, defineEmits } from 'vue';
 import { Importance, Task } from '../types/Task';
+import { CheckIcon } from '@heroicons/vue/24/solid';
 
 interface Props {
   task: Task;
 }
 
 const props = defineProps<Props>();
+const isChecked = ref<boolean>(false);
 
 const emit = defineEmits<{
   (e: 'clickEvent', task: Task): void;
+  (e: 'checked', task: Task): void;
 }>();
 
 function handleClick(): void {
   emit('clickEvent', props.task);
+}
+
+function checkedTask(): void {
+  isChecked.value = !isChecked.value;
+  emit('checked', props.task)
 }
 
 function getImportance(imp: Importance): string {
@@ -42,7 +50,9 @@ function getImportance(imp: Importance): string {
       <p class="text-[#757575] text-[28px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">
         {{ props.task.description }}
       </p>
-      <button type="button" class="lil_button"></button>
+      <button type="button" :class="['lil_button', isChecked? 'checked' : 'unchecked']" @click.stop="checkedTask">
+        <CheckIcon v-show="isChecked" class="w-[170%] relative -left-[5px] -top-2.5 text-[#38CB89]"></CheckIcon>
+      </button>
     </div>
   </div>
 </template>
@@ -51,10 +61,18 @@ function getImportance(imp: Importance): string {
 .lil_button {
   width: 27px;
   height: 27px;
-  border: 4px solid #000000;
+  border: 4px solid;
   background-color: white;
   cursor: pointer;
   border-radius: 50%;
   align-self: self-end;
+}
+
+.unchecked {
+  border-color: #000000;
+}
+
+.checked {
+  border-color: #38CB89;
 }
 </style>
