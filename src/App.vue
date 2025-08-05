@@ -11,6 +11,7 @@ const isFormVisible = ref<boolean>(false);
 const taskToEdit = ref<Task | null>(null);
 const showConfirmation = ref<boolean>(false);
 const taskToDelete = ref<Task>();
+const idCounter = ref<number>(1);
 
 function showEmptyTaskForm(): void {
   isFormVisible.value = true;
@@ -20,6 +21,7 @@ function showEmptyTaskForm(): void {
 function handleTaskSubmission(data: { newTask: Task; mode: 'create' | 'edit' }): void {
   if (data.mode === 'create') {
     tasks.value.push(data.newTask);
+    idCounter.value++;
   } else {
     const index = tasks.value.findIndex((t) => t.id === data.newTask.id);
     tasks.value[index] = data.newTask;
@@ -55,18 +57,16 @@ function intoEditMode(task: Task): void {
   </header>
 
   <main>
-    <div v-show="isFormVisible">
+    <div v-if="isFormVisible">
       <TaskForm
-        :initialTask="taskToEdit"
+        v-model:modelValue="taskToEdit"
+        :idCounter="idCounter"
         @taskSubmitted="handleTaskSubmission"
         @confirmDeletion="handelConfirmation"
       ></TaskForm>
     </div>
 
     <div v-if="showConfirmation" class="popup">
-      <!-- <p>This operation is permanent. Are you sure you want to delete this item?</p>
-      <button type="button" @click="handleTaskDeletion" class="popup_button">Delete</button>
-      <button type="button" @click="cancelDeletion" class="popup_button">Cancel</button> -->
       <ConfirmationPopup @cancel="cancelDeletion" @delete="handleTaskDeletion"></ConfirmationPopup>
     </div>
 
@@ -97,17 +97,5 @@ function intoEditMode(task: Task): void {
 .placeholder {
   margin: 40px;
   text-align: center;
-}
-
-.popup {
-  background-color: #e6e6e6;
-  display: flex;
-  align-items: center;
-  border: 2px solid #8e8e8e;
-  border-radius: 16px;
-  padding: 8px 16px;
-  margin: 25px;
-  font-family: 'Neue Haas Grotesk Display Pro';
-  color: black;
 }
 </style>

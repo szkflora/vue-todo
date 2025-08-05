@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue';
-import { Task, Importance } from '../types/Task';
+import { defineEmits } from 'vue';
 import { PlusIcon } from '@heroicons/vue/24/outline';
 
 const emit = defineEmits<{
