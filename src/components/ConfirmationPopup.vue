@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, defineEmits } from 'vue';
+import { ref, defineEmits } from 'vue';
 
 const dialogRef = ref<HTMLDialogElement | null>(null);
 
@@ -16,13 +16,12 @@ function handelDelete() {
   emit('delete');
 }
 
-const dialogOpen = computed(() => {
-  const dialog = dialogRef.value;
-  if (dialog) {
-    dialog.showModal();
-    return true;
-  }
-  return false;
+function openDialog() {
+  dialogRef.value?.showModal();
+}
+
+defineExpose({
+  openDialog,
 });
 </script>
 
@@ -30,13 +29,12 @@ const dialogOpen = computed(() => {
   <dialog
     ref="dialogRef"
     id="confirmation-dialog"
-    :open="dialogOpen"
     aria-labelledby="dialog-title"
-    class="dialog-base"
+    class="m-auto fixed inset-0 flex items-center justify-center bg-white w-[600px] p-4 rounded-2xl border-2 border-solid border-[#ccc]"
     @click.self="handelCancel"
   >
-    <div class="dialog-content">
-      <div class="dialog-icon">
+    <div class="flex flex-col gap-[30px]">
+      <div class="flex justify-center items-center">
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -44,7 +42,7 @@ const dialogOpen = computed(() => {
           stroke-width="1.5"
           data-slot="icon"
           aria-hidden="true"
-          class="icon"
+          class="w-10 h-10 text-red-600"
         >
           <path
             d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
@@ -53,96 +51,28 @@ const dialogOpen = computed(() => {
           />
         </svg>
       </div>
-      <div class="dialog-text">
-        <h3 id="dialog-title" class="dialog-title">Delete task</h3>
-        <p class="dialog-message">Are you sure you want to delete this task? <br />This action cannot be undone.</p>
+      <div>
+        <h3 id="dialog-title" class="font-semibold text-2xl leading-[100%] text-center mb-2">Delete task</h3>
+        <p class="font-normal text-xl text-gray-500 text-center">
+          Are you sure you want to delete this task? <br />This action cannot be undone.
+        </p>
       </div>
-      <div class="dialog-buttons">
-        <button type="button" @click="handelDelete" class="delete-button">Delete</button>
-        <button type="button" @click="handelCancel" class="cancel-button">Cancel</button>
+      <div class="flex justify-end gap-3">
+        <button
+          type="button"
+          @click="handelDelete"
+          class="bg-red-600 rounded-2xl text-[white] font-semibold px-4 py-2 border-[none] hover:bg-red-700"
+        >
+          Delete
+        </button>
+        <button
+          type="button"
+          @click="handelCancel"
+          class="bg-[rgb(188,182,182)] rounded-2xl text-gray-900 font-semibold border-gray-300 px-4 py-2 border-2 border-solid hover:bg-[#8e8989]"
+        >
+          Cancel
+        </button>
       </div>
     </div>
   </dialog>
 </template>
-
-<style scoped>
-.dialog-base {
-  width: 600px;
-  padding: 16px;
-  border: 2px solid #ccc;
-  border-radius: 16px;
-  background: white;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  font-family: 'Neue Haas Grotesk Display Pro', sans-serif;
-}
-
-.dialog-content {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
-.dialog-icon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.icon {
-  width: 40px;
-  height: 40px;
-  color: #dc2626;
-}
-
-.dialog-title {
-  font-weight: 600;
-  font-size: 24px;
-  line-height: 100%;
-  margin-bottom: 8px;
-  text-align: center;
-}
-
-.dialog-message {
-  font-weight: 400;
-  font-size: 20px;
-  color: #6b7280;
-  text-align: center;
-}
-
-.dialog-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-}
-
-.delete-button {
-  background-color: #dc2626;
-  color: white;
-  font-weight: 600;
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-}
-
-.delete-button:hover {
-  background-color: #b91c1c;
-}
-
-.cancel-button {
-  background-color: rgb(188, 182, 182);
-  color: #111827;
-  font-weight: 600;
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  cursor: pointer;
-}
-
-.cancel-button:hover {
-  background-color: #8e8989;
-}
-</style>
