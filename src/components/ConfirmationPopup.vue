@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, defineEmits } from 'vue';
 
 const dialogRef = ref<HTMLDialogElement | null>(null);
 
@@ -8,55 +8,54 @@ const emit = defineEmits<{
   (e: 'delete'): void;
 }>();
 
-const closeNativeDialog = () => {
-  if (dialogRef.value && dialogRef.value.open) {
-    dialogRef.value.close();
-  }
-};
-
 function handelCancel() {
-  closeNativeDialog();
   emit('cancel');
 }
 
 function handelDelete() {
-  closeNativeDialog();
   emit('delete');
 }
 
-onMounted(() => {
-  if (dialogRef.value) {
-    dialogRef.value.showModal();
+const dialogOpen = computed(() => {
+  const dialog = dialogRef.value;
+  if (dialog) {
+    dialog.showModal();
+    return true;
   }
+  return false;
 });
-
-onBeforeUnmount(() => {
-  if (dialogRef.value) {
-    if (dialogRef.value.open) {
-      dialogRef.value.close();
-    }
-  }
-});
-
 </script>
 
 <template>
   <dialog
     ref="dialogRef"
     id="confirmation-dialog"
+    :open="dialogOpen"
     aria-labelledby="dialog-title"
     class="dialog-base"
     @click.self="handelCancel"
   >
     <div class="dialog-content">
       <div class="dialog-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="icon">
-          <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" stroke-linecap="round" stroke-linejoin="round" />
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          data-slot="icon"
+          aria-hidden="true"
+          class="icon"
+        >
+          <path
+            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
       </div>
       <div class="dialog-text">
         <h3 id="dialog-title" class="dialog-title">Delete task</h3>
-        <p class="dialog-message">Are you sure you want to delete this task? <br/>This action cannot be undone.</p>
+        <p class="dialog-message">Are you sure you want to delete this task? <br />This action cannot be undone.</p>
       </div>
       <div class="dialog-buttons">
         <button type="button" @click="handelDelete" class="delete-button">Delete</button>
@@ -109,7 +108,7 @@ onBeforeUnmount(() => {
 .dialog-message {
   font-weight: 400;
   font-size: 20px;
-  color: #6b7280; 
+  color: #6b7280;
   text-align: center;
 }
 

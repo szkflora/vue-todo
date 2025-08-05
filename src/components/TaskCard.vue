@@ -31,11 +31,17 @@ function getImportance(imp: Importance): string {
 <template>
   <div class="task h-[150px]" @click="handleClick">
     <div class="flex justify-between gap-16">
-      <h1 class="text-[#000000] text-[42px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">{{ props.task.title }}</h1>
-      <p :class="[getImportance(props.task.importance), 'w-[120px] h-[30px] tracking-[0px] text-center rounded-2xl']">{{ props.task.importance }}</p>
+      <h1 class="text-[#000000] text-[42px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">
+        {{ props.task.title }}
+      </h1>
+      <p :class="[getImportance(props.task.importance), 'w-[120px] h-[30px] tracking-[0px] text-center rounded-2xl']">
+        {{ props.task.importance }}
+      </p>
     </div>
     <div class="flex justify-between">
-      <p class="text-[#757575] text-[28px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">{{ props.task.description }}</p>
+      <p class="text-[#757575] text-[28px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">
+        {{ props.task.description }}
+      </p>
       <button type="button" class="lil_button"></button>
     </div>
   </div>

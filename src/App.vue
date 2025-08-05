@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import Header from './components/Header.vue';
 import TaskForm from './components/TaskForm.vue';
 import TaskCard from './components/TaskCard.vue';
-import ConfirmationPopup from './components/ConfirmationPopup.vue'
+import ConfirmationPopup from './components/ConfirmationPopup.vue';
 import type { Task } from './types/Task';
 
 const tasks = ref<Task[]>([]);

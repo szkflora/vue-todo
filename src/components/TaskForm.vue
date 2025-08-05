@@ -67,7 +67,12 @@ function deleteTask(): void {
   <form @submit.prevent="handleSubmit">
     <div class="task">
       <div class="flex justify-between gap-16">
-        <input v-model="formData.title" placeholder="Title" required class="text-[#000000] text-[42px] max-w-xs task_text" />
+        <input
+          v-model="formData.title"
+          placeholder="Title"
+          required
+          class="text-[#000000] text-[42px] max-w-xs task_text"
+        />
         <select v-model="formData.importance" placeholder="Importance">
           <option value="Low">Low</option>
           <option value="Medium">Medium</option>
