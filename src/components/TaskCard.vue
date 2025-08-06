@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 import { Importance, Task } from '../types/Task';
 import { CheckIcon } from '@heroicons/vue/24/solid';
 
