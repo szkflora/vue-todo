@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineEmits } from 'vue';
 import { PlusIcon } from '@heroicons/vue/24/outline';
+import BaseButton from './BaseButton.vue';
 
 const emit = defineEmits<{
   (e: 'showForm'): void;
@@ -14,8 +15,8 @@ function showTaskForm(): void {
 <template>
   <div class="flex justify-between items-center px-4">
     <h1 class="text-7xl text-black">To do list</h1>
-    <button type="button" class="w-12 h-12 bg-[#38cb89] text-[white] border-[none] rounded-[50%]" @click="showTaskForm">
+    <BaseButton html-type="button" class="w-12 h-12 bg-[#38cb89] text-[white]" @click="showTaskForm">
       <PlusIcon></PlusIcon>
-    </button>
+    </BaseButton>
   </div>
 </template>

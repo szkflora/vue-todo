@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue';
+import { ref, defineEmits, watch } from 'vue';
+import BaseButton from './BaseButton.vue';
 
 const dialogRef = ref<HTMLDialogElement | null>(null);
+
+const props = defineProps<{
+  isOpen: boolean;
+}>();
 
 const emit = defineEmits<{
   (e: 'cancel'): void;
@@ -16,13 +21,16 @@ function handelDelete() {
   emit('delete');
 }
 
-function openDialog() {
-  dialogRef.value?.showModal();
-}
-
-defineExpose({
-  openDialog,
-});
+watch(
+  () => props.isOpen,
+  (newVal) => {
+    if (newVal) {
+      dialogRef.value?.showModal();
+    } else {
+      dialogRef.value?.close();
+    }
+  },
+);
 </script>
 
 <template>
@@ -58,20 +66,22 @@ defineExpose({
         </p>
       </div>
       <div class="flex justify-end gap-3">
-        <button
-          type="button"
+        <BaseButton
+          html-type="button"
+          type="secondary"
           @click="handelDelete"
-          class="bg-red-600 rounded-2xl text-[white] font-semibold px-4 py-2 border-[none] hover:bg-red-700"
+          class="bg-red-600 text-[white] hover:bg-red-700"
         >
           Delete
-        </button>
-        <button
-          type="button"
+        </BaseButton>
+        <BaseButton
+          html-type="button"
+          type="secondary"
           @click="handelCancel"
-          class="bg-[rgb(188,182,182)] rounded-2xl text-gray-900 font-semibold border-gray-300 px-4 py-2 border-2 border-solid hover:bg-[#8e8989]"
+          class="bg-[rgb(188,182,182)] text-gray-900 hover:bg-[#8e8989]"
         >
           Cancel
-        </button>
+        </BaseButton>
       </div>
     </div>
   </dialog>
