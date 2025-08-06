@@ -8,7 +8,6 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const isChecked = ref<boolean>(false);
 
 const emit = defineEmits<{
   (e: 'clickEvent', task: Task): void;
@@ -20,7 +19,6 @@ function handleClick(): void {
 }
 
 function checkedTask(): void {
-  isChecked.value = !isChecked.value;
   props.task.completed = !props.task.completed;
   emit('checked', props.task);
 }
@@ -53,11 +51,20 @@ function checkedTask(): void {
         type="button"
         :class="[
           'w-7 h-7 bg-[white] border-4 rounded-2xl border-solid',
-          isChecked ? 'border-[#38cb89]' : 'border-[#000000]',
+          task.completed ? 'border-[#38cb89]' : 'border-[#000000]',
         ]"
         @click.stop="checkedTask"
       >
-        <CheckIcon v-show="isChecked" class="w-[170%] relative -left-[5px] -top-2.5 text-[#38CB89]"></CheckIcon>
+        <Transition
+          enter-active-class="transition duration-500 ease-out"
+          enter-from-class="opacity-0 scale-50"
+          enter-to-class="opacity-100 scale-100"
+          leave-active-class="transition duration-500 ease-in"
+          leave-from-class="opacity-100 scale-100"
+          leave-to-class="opacity-0 scale-50"
+        >
+          <CheckIcon v-show="task.completed" class="w-[170%] relative -left-[5px] -top-2.5 text-[#38CB89]"></CheckIcon>
+        </Transition>
       </button>
     </div>
   </div>

@@ -16,6 +16,7 @@ const formData = reactive({
   title: '',
   description: '',
   importance: Importance.HIGH,
+  completed: false
 });
 
 const editMode = computed(() => modelValue.value !== null);
@@ -25,6 +26,7 @@ function populateFormFromModel(task: Task): void {
   formData.title = task.title;
   formData.description = task.description;
   formData.importance = task.importance;
+  formData.completed = task.completed;
 }
 
 watch(
@@ -56,7 +58,7 @@ function handleSubmit(): void {
     title: formData.title,
     description: formData.description,
     importance: formData.importance,
-    completed: false,
+    completed: formData.completed,
   };
 
   if (editMode.value) {
