@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, defineEmits, defineModel, watch, nextTick } from 'vue';
 import { Task, Importance } from '../types/Task';
+import BaseButton from './BaseButton.vue';
 
 const modelValue = defineModel<Task | null>();
 
@@ -100,19 +101,17 @@ function deleteTask(): void {
           class="text-[#757575] text-[28px] overflow-hidden resize-none task_text"
         ></textarea>
         <div class="flex gap-3">
-          <button
-            type="submit"
-            class="bg-[#38cb89] text-[white] rounded-2xl w-[110px] h-[50px] text-lg border-[none] mr-[20px] hover:bg-[#23a068]"
-          >
+          <BaseButton html-type="submit" type="primary" class="bg-[#38cb89] text-[white] mr-[20px] hover:bg-[#23a068]">
             Save
-          </button>
-          <button
-            type="button"
-            class="bg-[#e6e6e6] text-black rounded-2xl w-[110px] h-[50px] text-lg border-[none] hover:bg-[#b1b1b1]"
+          </BaseButton>
+          <BaseButton
+            html-type="button"
+            type="primary"
+            class="bg-[#e6e6e6] text-black hover:bg-[#b1b1b1]"
             @click="deleteTask"
           >
             Delete
-          </button>
+          </BaseButton>
         </div>
       </div>
     </div>

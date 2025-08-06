@@ -40,10 +40,7 @@ function handleClick(): void {
       <p class="text-[#757575] text-[28px] whitespace-nowrap w-[500px] overflow-hidden text-ellipsis task_text">
         {{ task.description }}
       </p>
-      <button
-        type="button"
-        class="w-7 h-7 bg-[white] border-4 rounded-2xl border-solid border-black"
-      ></button>
+      <button type="button" class="w-7 h-7 bg-[white] border-4 rounded-2xl border-solid border-black"></button>
     </div>
   </div>
 </template>
