@@ -21,18 +21,8 @@ function handleClick(): void {
 
 function checkedTask(): void {
   isChecked.value = !isChecked.value;
-  emit('checked', props.task)
-}
-
-function getImportance(imp: Importance): string {
-  switch (imp) {
-    case Importance.LOW:
-      return 'low';
-    case Importance.MEDIUM:
-      return 'medium';
-    case Importance.HIGH:
-      return 'high';
-  }
+  props.task.completed = !props.task.completed;
+  emit('checked', props.task);
 }
 </script>
 
@@ -59,19 +49,16 @@ function getImportance(imp: Importance): string {
       <p class="text-[#757575] text-[28px] whitespace-nowrap w-[500px] overflow-hidden text-ellipsis task_text">
         {{ task.description }}
       </p>
-      <button type="button" :class="['w-7 h-7 bg-[white] border-4 rounded-2xl border-solid border-black', isChecked? 'checked' : 'unchecked']" @click.stop="checkedTask">
+      <button
+        type="button"
+        :class="[
+          'w-7 h-7 bg-[white] border-4 rounded-2xl border-solid',
+          isChecked ? 'border-[#38cb89]' : 'border-[#000000]',
+        ]"
+        @click.stop="checkedTask"
+      >
         <CheckIcon v-show="isChecked" class="w-[170%] relative -left-[5px] -top-2.5 text-[#38CB89]"></CheckIcon>
       </button>
     </div>
   </div>
 </template>
-
-<style scoped>
-.unchecked {
-  border-color: #000000;
-}
-
-.checked {
-  border-color: #38CB89;
-}
-</style>

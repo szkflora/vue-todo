@@ -57,9 +57,13 @@ function intoEditMode(task: Task): void {
   isFormVisible.value = true;
 }
 
-function taskChecked(taskToCheck: Task): void{
+function taskCheckedOrUnchecked(taskToCheck: Task): void {
   tasks.value = tasks.value.filter((task) => task.id !== taskToCheck.id);
-  tasks.value.unshift(taskToCheck);
+  if (taskToCheck.completed === true) {
+    tasks.value.unshift(taskToCheck);
+  } else {
+    tasks.value.push(taskToCheck);
+  }
 }
 </script>
 
@@ -83,7 +87,13 @@ function taskChecked(taskToCheck: Task): void{
 
     <div v-if="tasks.length" class="flex flex-col-reverse">
       <div v-for="task in tasks" :key="task.id">
-        <TaskCard v-if="task.id !== taskToEdit?.id" :task="task" @clickEvent="intoEditMode" @checked="taskChecked"> </TaskCard>
+        <TaskCard
+          v-if="task.id !== taskToEdit?.id"
+          :task="task"
+          @clickEvent="intoEditMode"
+          @checked="taskCheckedOrUnchecked"
+        >
+        </TaskCard>
       </div>
     </div>
     <div v-else-if="!isFormVisible" class="text-center m-10">
