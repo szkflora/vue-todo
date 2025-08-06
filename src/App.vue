@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue';
+import { ref, computed, nextTick } from 'vue';
 import Header from './components/Header.vue';
 import TaskForm from './components/TaskForm.vue';
 import TaskCard from './components/TaskCard.vue';
@@ -8,6 +8,7 @@ import SearchBar from './components/SearchBar.vue';
 import type { Task } from './types/Task';
 
 const tasks = ref<Task[]>([]);
+const filteredTasks = ref<Task[]>([]);
 const isFormVisible = ref<boolean>(false);
 const taskToEdit = ref<Task | null>(null);
 const showConfirmation = ref<boolean>(false);
@@ -15,8 +16,12 @@ const taskToDelete = ref<Task>();
 const idCounter = ref<number>(1);
 const dialogRef = ref<InstanceType<typeof ConfirmationPopup> | null>(null);
 const enableAnimation = ref<boolean>(false);
-
+const searchword = ref<string>('');
 const openPopup = ref<boolean>(true);
+
+const tasksToShow = computed(() => {
+  return searchword.value.trim() ? filteredTasks.value : tasks.value;
+});
 
 function showEmptyTaskForm(): void {
   isFormVisible.value = true;
@@ -74,8 +79,13 @@ function taskCheckedOrUnchecked(taskToCheck: Task): void {
   });
 }
 
-function searchAmongTasks(keyword:string): void {
-  console.log(keyword);
+function searchAmongTasks(keyword: string): void {
+  searchword.value = keyword.trim();
+  filteredTasks.value = tasks.value.filter(
+    (task) =>
+      task.title.toLowerCase().includes(searchword.value.toLowerCase()) ||
+      task.description.toLowerCase().includes(searchword.value.toLowerCase()),
+  );
 }
 </script>
 
@@ -105,7 +115,7 @@ function searchAmongTasks(keyword:string): void {
 
     <div v-if="tasks.length" class="flex flex-col">
       <TransitionGroup tag="div" :move-class="enableAnimation ? 'transition-transform duration-500 ease-in-out' : ''">
-        <div v-for="task in tasks" :key="task.id">
+        <div v-for="task in tasksToShow" :key="task.id">
           <TaskCard
             v-if="task.id !== taskToEdit?.id"
             :task="task"
