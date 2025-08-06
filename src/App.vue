@@ -13,10 +13,7 @@ const showConfirmation = ref<boolean>(false);
 const taskToDelete = ref<Task>();
 const idCounter = ref<number>(1);
 const dialogRef = ref<InstanceType<typeof ConfirmationPopup> | null>(null);
-
-function showDialog() {
-  dialogRef.value?.openDialog();
-}
+const openPopup = ref<boolean>(true);
 
 function showEmptyTaskForm(): void {
   isFormVisible.value = true;
@@ -39,7 +36,6 @@ function handleTaskSubmission(newTask: Task): void {
 function handleConfirmation(task: Task): void {
   showConfirmation.value = true;
   taskToDelete.value = task;
-  showDialog();
 }
 
 function cancelDeletion(): void {
@@ -73,7 +69,12 @@ function intoEditMode(task: Task): void {
     </div>
 
     <div v-if="showConfirmation">
-      <ConfirmationPopup ref="dialogRef" @cancel="cancelDeletion" @delete="handleTaskDeletion"></ConfirmationPopup>
+      <ConfirmationPopup
+        ref="dialogRef"
+        :is-open="openPopup"
+        @cancel="cancelDeletion"
+        @delete="handleTaskDeletion"
+      ></ConfirmationPopup>
     </div>
 
     <div v-if="tasks.length" class="flex flex-col-reverse">

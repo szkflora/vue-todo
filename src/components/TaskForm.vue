@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { ref, reactive, computed, defineEmits, defineModel, watch, nextTick } from 'vue';
+import { ref, reactive, computed, defineEmits, defineProps, watch, nextTick } from 'vue';
 import { Task, Importance } from '../types/Task';
 import BaseButton from './BaseButton.vue';
 
-const modelValue = defineModel<Task | null>();
+const props = defineProps<{
+  modelValue: Task | null;
+}>();
 
 const emit = defineEmits<{
   (e: 'taskSubmitted', task: Task): void;
@@ -19,7 +21,7 @@ const formData = reactive({
   importance: Importance.HIGH,
 });
 
-const editMode = computed(() => modelValue.value !== null);
+const editMode = computed(() => props.modelValue !== null);
 
 function populateFormFromModel(task: Task): void {
   formData.id = task.id;
@@ -29,7 +31,7 @@ function populateFormFromModel(task: Task): void {
 }
 
 watch(
-  modelValue,
+  props.modelValue,
   async (task) => {
     if (task) {
       populateFormFromModel(task);
@@ -60,15 +62,11 @@ function handleSubmit(): void {
     completed: false,
   };
 
-  if (editMode.value) {
-    emit('taskSubmitted', submittedTask);
-  } else {
-    emit('taskSubmitted', submittedTask);
-  }
+  emit('taskSubmitted', submittedTask);
 }
 
 function deleteTask(): void {
-  emit('confirmDeletion', modelValue.value);
+  emit('confirmDeletion', props.modelValue);
 }
 </script>
 

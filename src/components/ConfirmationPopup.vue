@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue';
+import { ref, defineEmits, watch } from 'vue';
 import BaseButton from './BaseButton.vue';
 
 const dialogRef = ref<HTMLDialogElement | null>(null);
+
+const props = defineProps<{
+  isOpen: boolean;
+}>();
 
 const emit = defineEmits<{
   (e: 'cancel'): void;
@@ -17,13 +21,16 @@ function handelDelete() {
   emit('delete');
 }
 
-function openDialog() {
-  dialogRef.value?.showModal();
-}
-
-defineExpose({
-  openDialog,
-});
+watch(
+  () => props.isOpen,
+  (newVal) => {
+    if (newVal) {
+      dialogRef.value?.showModal();
+    } else {
+      dialogRef.value?.close();
+    }
+  },
+);
 </script>
 
 <template>
