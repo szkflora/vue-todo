@@ -13,28 +13,13 @@ function showTaskForm(): void {
 
 <template>
   <div class="flex justify-between items-center px-4">
-    <h1 class="title">To do list</h1>
-    <button type="button" class="plus-button" @click="showTaskForm">
+    <h1 class="text-7xl text-black">To do list</h1>
+    <button
+      type="button"
+      class="w-12 h-12 bg-[#38cb89] text-[white] border-[none] rounded-[50%]"
+      @click="showTaskForm"
+    >
       <PlusIcon></PlusIcon>
     </button>
   </div>
 </template>
-
-<style scoped>
-.title {
-  font-family: 'Neue Haas Grotesk Display Pro';
-  font-weight: 600;
-  font-size: 72px;
-  color: #000000;
-}
-
-.plus-button {
-  width: 50px;
-  height: 50px;
-  border: none;
-  background-color: #38cb89;
-  cursor: pointer;
-  color: white;
-  border-radius: 50%;
-}
-</style>

@@ -12,27 +12,34 @@ const taskToEdit = ref<Task | null>(null);
 const showConfirmation = ref<boolean>(false);
 const taskToDelete = ref<Task>();
 const idCounter = ref<number>(1);
+const dialogRef = ref<InstanceType<typeof ConfirmationPopup> | null>(null);
+
+function showDialog() {
+  dialogRef.value?.openDialog();
+}
 
 function showEmptyTaskForm(): void {
   isFormVisible.value = true;
   taskToEdit.value = null;
 }
 
-function handleTaskSubmission(data: { newTask: Task; mode: 'create' | 'edit' }): void {
-  if (data.mode === 'create') {
-    tasks.value.push(data.newTask);
+function handleTaskSubmission(newTask: Task): void {
+  if (newTask.id === 0) {
+    newTask.id = idCounter.value;
+    tasks.value.push(newTask);
     idCounter.value++;
   } else {
-    const index = tasks.value.findIndex((t) => t.id === data.newTask.id);
-    tasks.value[index] = data.newTask;
+    const index = tasks.value.findIndex((t) => t.id === newTask.id);
+    tasks.value[index] = newTask;
   }
   taskToEdit.value = null;
   isFormVisible.value = false;
 }
 
-function handelConfirmation(task: Task): void {
+function handleConfirmation(task: Task): void {
   showConfirmation.value = true;
   taskToDelete.value = task;
+  showDialog();
 }
 
 function cancelDeletion(): void {
@@ -58,49 +65,29 @@ function taskChecked(taskToCheck: Task): void{
 
 <template>
   <header>
-    <Header @showForm="showEmptyTaskForm"></Header>
+    <Header @show-form="showEmptyTaskForm"></Header>
   </header>
 
   <main>
     <div v-if="isFormVisible">
       <TaskForm
-        v-model:modelValue="taskToEdit"
-        :idCounter="idCounter"
-        @taskSubmitted="handleTaskSubmission"
-        @confirmDeletion="handelConfirmation"
+        :model-value="taskToEdit"
+        @task-submitted="handleTaskSubmission"
+        @confirm-deletion="handleConfirmation"
       ></TaskForm>
     </div>
 
-    <div v-if="showConfirmation" class="popup">
-      <ConfirmationPopup @cancel="cancelDeletion" @delete="handleTaskDeletion"></ConfirmationPopup>
+    <div v-if="showConfirmation">
+      <ConfirmationPopup ref="dialogRef" @cancel="cancelDeletion" @delete="handleTaskDeletion"></ConfirmationPopup>
     </div>
 
-    <div v-if="tasks.length !== 0" class="flex flex-col-reverse">
+    <div v-if="tasks.length" class="flex flex-col-reverse">
       <div v-for="task in tasks" :key="task.id">
         <TaskCard v-if="task.id !== taskToEdit?.id" :task="task" @clickEvent="intoEditMode" @checked="taskChecked"> </TaskCard>
       </div>
     </div>
-    <div v-else-if="!isFormVisible" class="placeholder">
+    <div v-else-if="!isFormVisible" class="text-center m-10">
       <img src="../public/no_todos.svg" />
     </div>
   </main>
 </template>
-
-<style scoped>
-.popup_button {
-  background-color: #ffffff;
-  color: #000000;
-  width: 90px;
-  height: 40px;
-  border: none;
-  border-radius: 16px;
-  cursor: pointer;
-  font-size: 17px;
-  margin: 10px;
-}
-
-.placeholder {
-  margin: 40px;
-  text-align: center;
-}
-</style>
