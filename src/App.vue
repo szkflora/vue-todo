@@ -4,6 +4,7 @@ import Header from './components/Header.vue';
 import TaskForm from './components/TaskForm.vue';
 import TaskCard from './components/TaskCard.vue';
 import ConfirmationPopup from './components/ConfirmationPopup.vue';
+import SearchBar from './components/SearchBar.vue';
 import type { Task } from './types/Task';
 
 const tasks = ref<Task[]>([]);
@@ -72,11 +73,16 @@ function taskCheckedOrUnchecked(taskToCheck: Task): void {
     }, 300);
   });
 }
+
+function searchAmongTasks(keyword:string): void {
+  console.log(keyword);
+}
 </script>
 
 <template>
   <header>
     <Header @show-form="showEmptyTaskForm"></Header>
+    <SearchBar v-show="tasks.length" @search="searchAmongTasks"></SearchBar>
   </header>
 
   <main>

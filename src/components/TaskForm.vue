@@ -32,7 +32,7 @@ function populateFormFromModel(task: Task): void {
   formData.completed = task.completed;
 }
 
-watch(
+watch(() =>
   props.modelValue,
   async (task) => {
     if (task) {
