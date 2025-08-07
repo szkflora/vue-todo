@@ -9,11 +9,9 @@ import type { Task } from './types/Task';
 const tasks = ref<Task[]>([]);
 const isFormVisible = ref<boolean>(false);
 const taskToEdit = ref<Task | null>(null);
-const showConfirmation = ref<boolean>(false);
 const taskToDelete = ref<Task>();
 const idCounter = ref<number>(1);
-const dialogRef = ref<InstanceType<typeof ConfirmationPopup> | null>(null);
-// const openPopup = ref<boolean>(true);
+const openPopup = ref<boolean>(false);
 
 function showEmptyTaskForm(): void {
   isFormVisible.value = true;
@@ -34,18 +32,18 @@ function handleTaskSubmission(newTask: Task): void {
 }
 
 function handleConfirmation(task: Task): void {
-  showConfirmation.value = true;
   taskToDelete.value = task;
+  openPopup.value = true;
 }
 
 function cancelDeletion(): void {
-  showConfirmation.value = false;
+  openPopup.value = false;
 }
 
 function handleTaskDeletion(): void {
   tasks.value = tasks.value.filter((task) => task.id !== taskToDelete.value.id);
   isFormVisible.value = false;
-  showConfirmation.value = false;
+  openPopup.value = false;
 }
 
 function intoEditMode(task: Task): void {
@@ -68,13 +66,7 @@ function intoEditMode(task: Task): void {
       ></TaskForm>
     </div>
 
-    <div v-if="showConfirmation">
-      <ConfirmationPopup
-        ref="dialogRef"
-        @cancel="cancelDeletion"
-        @delete="handleTaskDeletion"
-      ></ConfirmationPopup>
-    </div>
+    <ConfirmationPopup :is-open="openPopup" @cancel="cancelDeletion" @delete="handleTaskDeletion"></ConfirmationPopup>
 
     <div v-if="tasks.length" class="flex flex-col-reverse">
       <div v-for="task in tasks" :key="task.id">
