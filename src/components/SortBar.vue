@@ -1,11 +1,25 @@
 <script setup lang="ts">
 import BaseButton from './BaseButton.vue';
-import { ref, watch, defineEmits } from 'vue';
+import { ref, reactive, defineEmits } from 'vue';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/vue/24/outline';
 
 const emit = defineEmits<{
   (e: 'sort', order: string, property: string): void;
 }>();
+
+type SortOrder = 'ascending' | 'descending' | 'unorganized';
+
+const data = reactive<{
+  title: SortOrder;
+  description: SortOrder;
+  priority: SortOrder;
+  date: SortOrder;
+}>({
+  title: 'unorganized',
+  description: 'unorganized',
+  priority: 'unorganized',
+  date: 'unorganized',
+});
 
 const order = ref<string>('unorganized');
 const property = ref<string>('');
@@ -15,32 +29,37 @@ function changeOrder(newOrder: string): void {
 }
 
 function changeProperty(newProperty: string): void {
-  if (property.value === newProperty) {
+  property.value = newProperty;
+
+  if (data[newProperty as keyof typeof data] === (order.value as SortOrder)) {
+    data[newProperty as keyof typeof data] = 'unorganized';
     order.value = 'unorganized';
   } else {
-    property.value = newProperty;
+    data[newProperty as keyof typeof data] = order.value as SortOrder;
   }
+  emit('sort', order.value, property.value);
 }
-
-watch([order, property], ([newOrder, newProperty]) => {
-  if (newProperty !== '') {
-    emit('sort', newOrder, newProperty);
-  }
-  property.value = '';
-});
 </script>
 
 <template>
   <div class="w-[600px] flex justify-between items-center m-6">
     <div class="flex justify-start gap-3.5">
-      <BaseButton html-type="button" type="bar" class="default" @click="changeProperty('title')">Title </BaseButton>
-      <BaseButton html-type="button" type="bar" class="default" @click="changeProperty('description')"
+      <BaseButton html-type="button" type="bar" :class="['default', data.title]" @click="changeProperty('title')"
+        >Title
+      </BaseButton>
+      <BaseButton
+        html-type="button"
+        type="bar"
+        :class="['default', data.description]"
+        @click="changeProperty('description')"
         >Description
       </BaseButton>
-      <BaseButton html-type="button" type="bar" class="default" @click="changeProperty('priority')"
+      <BaseButton html-type="button" type="bar" :class="['default', data.priority]" @click="changeProperty('priority')"
         >Priority</BaseButton
       >
-      <BaseButton html-type="button" type="bar" class="default" @click="changeProperty('date')">Date</BaseButton>
+      <BaseButton html-type="button" type="bar" :class="['default', data.date]" @click="changeProperty('date')"
+        >Date</BaseButton
+      >
     </div>
     <div class="flex justify-end gap-3.5">
       <BaseButton html-type="button" type="bar" class="default ascending" @click="changeOrder('ascending')">
@@ -72,7 +91,7 @@ watch([order, property], ([newOrder, newProperty]) => {
   color: white;
 }
 
-.inactive {
+.unorganized {
   background-color: white;
   border-width: 1.5px;
   border-color: black;
