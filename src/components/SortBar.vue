@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import BaseButton from './BaseButton.vue';
-import { ref, reactive, defineEmits } from 'vue';
+import { ref, defineEmits } from 'vue';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/vue/24/outline';
 
 const emit = defineEmits<{
@@ -9,17 +9,14 @@ const emit = defineEmits<{
 
 type SortOrder = 'ascending' | 'descending' | 'unorganized';
 
-const data = reactive<{
+interface SortData {
   title: SortOrder;
   description: SortOrder;
   priority: SortOrder;
   date: SortOrder;
-}>({
-  title: 'unorganized',
-  description: 'unorganized',
-  priority: 'unorganized',
-  date: 'unorganized',
-});
+}
+
+const props = defineProps<{ data: SortData }>();
 
 const order = ref<string>('unorganized');
 const property = ref<string>('');
@@ -30,13 +27,6 @@ function changeOrder(newOrder: string): void {
 
 function changeProperty(newProperty: string): void {
   property.value = newProperty;
-
-  if (data[newProperty as keyof typeof data] === (order.value as SortOrder)) {
-    data[newProperty as keyof typeof data] = 'unorganized';
-    order.value = 'unorganized';
-  } else {
-    data[newProperty as keyof typeof data] = order.value as SortOrder;
-  }
   emit('sort', order.value, property.value);
 }
 </script>

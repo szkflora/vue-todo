@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, nextTick } from 'vue';
+import { ref, reactive, computed, nextTick } from 'vue';
 import Header from './components/Header.vue';
 import TaskForm from './components/TaskForm.vue';
 import TaskCard from './components/TaskCard.vue';
@@ -7,6 +7,9 @@ import ConfirmationPopup from './components/ConfirmationPopup.vue';
 import SearchBar from './components/SearchBar.vue';
 import type { Task } from './types/Task';
 import SortBar from './components/SortBar.vue';
+
+type SortOrder = 'ascending' | 'descending' | 'unorganized';
+const sortPriority = ['title', 'description', 'priority', 'date'];
 
 const tasks = ref<Task[]>([]);
 const filteredTasks = ref<Task[]>([]);
@@ -19,6 +22,17 @@ const dialogRef = ref<InstanceType<typeof ConfirmationPopup> | null>(null);
 const enableAnimation = ref<boolean>(false);
 const searchword = ref<string>('');
 const openPopup = ref<boolean>(true);
+const data = reactive<{
+  title: SortOrder;
+  description: SortOrder;
+  priority: SortOrder;
+  date: SortOrder;
+}>({
+  title: 'unorganized',
+  description: 'unorganized',
+  priority: 'unorganized',
+  date: 'unorganized',
+});
 
 const tasksToShow = computed(() => {
   return searchword.value.trim() ? filteredTasks.value : tasks.value;
@@ -40,6 +54,10 @@ function handleTaskSubmission(newTask: Task): void {
   }
   taskToEdit.value = null;
   isFormVisible.value = false;
+
+  for (const property in data) {
+    data[property as keyof typeof data] = 'unorganized';
+  }
 }
 
 function handleConfirmation(task: Task): void {
@@ -90,7 +108,28 @@ function searchAmongTasks(keyword: string): void {
 }
 
 function handleSort(order: string, property: string): void {
-  console.log(order, property);
+  const key = property as keyof typeof data;
+  const sortOrder = order as SortOrder;
+
+  data[key] = data[key] === sortOrder ? 'unorganized' : sortOrder;
+
+  const tasksClone = [...(searchword.value.trim() ? filteredTasks.value : tasks.value)];
+  const activeSorters = sortPriority.filter((prop) => data[prop] !== 'unorganized');
+
+  tasksClone.sort((a, b) => {
+    for (const prop of activeSorters) {
+      if (a[prop] !== b[prop]) {
+        return data[prop] === 'ascending' ? a[prop].localeCompare(b[prop]) : b[prop].localeCompare(a[prop]);
+      }
+    }
+    return 0;
+  });
+
+  if (searchword.value.trim()) {
+    filteredTasks.value = tasksClone;
+  } else {
+    tasks.value = tasksClone;
+  }
 }
 </script>
 
@@ -98,7 +137,7 @@ function handleSort(order: string, property: string): void {
   <header>
     <Header @show-form="showEmptyTaskForm"></Header>
     <SearchBar v-show="tasks.length" @search="searchAmongTasks"></SearchBar>
-    <SortBar @sort="handleSort" v-show="tasks.length"></SortBar>
+    <SortBar :data="data" @sort="handleSort" v-show="tasks.length"></SortBar>
   </header>
 
   <main>
