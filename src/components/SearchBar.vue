@@ -25,7 +25,7 @@ function handleSearch(): void {
       <div class="flex items-center pr-1">
         <BaseButton
           html-type="submit"
-          type="search"
+          type="bar"
           class="bg-[#000000] text-white flex items-center justify-center text-sm"
           >Search</BaseButton
         >

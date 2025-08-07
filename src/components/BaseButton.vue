@@ -3,7 +3,7 @@ import { computed, defineProps, defineEmits } from 'vue';
 
 const props = defineProps<{
   htmlType?: 'submit' | 'button' | 'reset';
-  type?: 'primary' | 'secondary' | 'search' | 'danger' | 'default';
+  type?: 'primary' | 'secondary' | 'bar' | 'danger' | 'default';
 }>();
 
 const emit = defineEmits<{
@@ -18,8 +18,8 @@ const typeClasses = computed(() => {
       return 'rounded-2xl w-[110px] h-[50px] text-lg border-[none]';
     case 'secondary':
       return 'rounded-2xl w-[90px] h-[40px] font-semibold px-4 py-2 border-[none]';
-    case 'search':
-      return 'rounded-md w-[60px] h-[26px] font-semibold px-4 py-2 border-[none]';
+    case 'bar':
+      return 'rounded-md h-[28px] font-semibold px-4 py-2';
     case 'danger':
       return 'bg-red-500 text-white hover:bg-red-600';
     default:

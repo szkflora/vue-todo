@@ -19,7 +19,7 @@ const formData = reactive({
   title: '',
   description: '',
   importance: Importance.HIGH,
-  completed: false
+  completed: false,
 });
 
 const editMode = computed(() => props.modelValue !== null);
@@ -32,8 +32,8 @@ function populateFormFromModel(task: Task): void {
   formData.completed = task.completed;
 }
 
-watch(() =>
-  props.modelValue,
+watch(
+  () => props.modelValue,
   async (task) => {
     if (task) {
       populateFormFromModel(task);

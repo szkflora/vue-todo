@@ -6,6 +6,7 @@ import TaskCard from './components/TaskCard.vue';
 import ConfirmationPopup from './components/ConfirmationPopup.vue';
 import SearchBar from './components/SearchBar.vue';
 import type { Task } from './types/Task';
+import SortBar from './components/SortBar.vue';
 
 const tasks = ref<Task[]>([]);
 const filteredTasks = ref<Task[]>([]);
@@ -87,12 +88,17 @@ function searchAmongTasks(keyword: string): void {
       task.description.toLowerCase().includes(searchword.value.toLowerCase()),
   );
 }
+
+function handleSort(order: string, property: string): void {
+  console.log(order, property);
+}
 </script>
 
 <template>
   <header>
     <Header @show-form="showEmptyTaskForm"></Header>
     <SearchBar v-show="tasks.length" @search="searchAmongTasks"></SearchBar>
+    <SortBar @sort="handleSort" v-show="tasks.length"></SortBar>
   </header>
 
   <main>
