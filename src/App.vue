@@ -13,7 +13,7 @@ const showConfirmation = ref<boolean>(false);
 const taskToDelete = ref<Task>();
 const idCounter = ref<number>(1);
 const dialogRef = ref<InstanceType<typeof ConfirmationPopup> | null>(null);
-const openPopup = ref<boolean>(true);
+// const openPopup = ref<boolean>(true);
 
 function showEmptyTaskForm(): void {
   isFormVisible.value = true;
@@ -71,7 +71,6 @@ function intoEditMode(task: Task): void {
     <div v-if="showConfirmation">
       <ConfirmationPopup
         ref="dialogRef"
-        :is-open="openPopup"
         @cancel="cancelDeletion"
         @delete="handleTaskDeletion"
       ></ConfirmationPopup>
