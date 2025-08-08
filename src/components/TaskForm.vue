@@ -19,6 +19,7 @@ const formData = reactive({
   title: '',
   description: '',
   importance: Importance.HIGH,
+  date: null,
   completed: false,
 });
 
@@ -61,6 +62,7 @@ function handleSubmit(): void {
     title: formData.title,
     description: formData.description,
     importance: formData.importance,
+    date: new Date(),
     completed: formData.completed,
   };
 

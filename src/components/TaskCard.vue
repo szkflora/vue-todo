@@ -2,12 +2,15 @@
 import { defineProps, defineEmits } from 'vue';
 import { Importance, Task } from '../types/Task';
 import { CheckIcon } from '@heroicons/vue/24/solid';
+import { useDateFormat } from '@vueuse/core';
+import { CalendarDaysIcon } from '@heroicons/vue/24/outline';
 
 interface Props {
   task: Task;
 }
 
 const props = defineProps<Props>();
+const formatted = useDateFormat(props.task.date, 'DD.MM.YY');
 
 const emit = defineEmits<{
   (e: 'clickEvent', task: Task): void;
@@ -27,9 +30,19 @@ function checkedTask(): void {
 <template>
   <div class="task h-[150px]" @click="handleClick">
     <div class="flex justify-between gap-16">
-      <h1 class="text-[#000000] text-[42px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">
-        {{ task.title }}
-      </h1>
+      <div class="flex flex-col">
+        <div>
+          <h1 class="text-[#000000] text-[42px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">
+            {{ task.title }}
+          </h1>
+        </div>
+        <div class="flex gap-1">
+          <CalendarDaysIcon class="w-4"></CalendarDaysIcon>
+          <p>
+            {{ formatted }}
+          </p>
+        </div>
+      </div>
       <p
         :class="[
           'text-white px-2 py-0.5 w-[120px] h-[30px] tracking-[0px] text-center rounded-2xl',
