@@ -12,7 +12,7 @@ type SortOrder = 'ascending' | 'descending' | 'unorganized';
 interface SortData {
   title: SortOrder;
   description: SortOrder;
-  priority: SortOrder;
+  importance: SortOrder;
   date: SortOrder;
 }
 
@@ -44,7 +44,7 @@ function changeProperty(newProperty: string): void {
         @click="changeProperty('description')"
         >Description
       </BaseButton>
-      <BaseButton html-type="button" type="bar" :class="['default', data.priority]" @click="changeProperty('priority')"
+      <BaseButton html-type="button" type="bar" :class="['default', data.importance]" @click="changeProperty('importance')"
         >Priority</BaseButton
       >
       <BaseButton html-type="button" type="bar" :class="['default', data.date]" @click="changeProperty('date')"

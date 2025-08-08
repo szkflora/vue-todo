@@ -5,11 +5,16 @@ import TaskForm from './components/TaskForm.vue';
 import TaskCard from './components/TaskCard.vue';
 import ConfirmationPopup from './components/ConfirmationPopup.vue';
 import SearchBar from './components/SearchBar.vue';
-import type { Task } from './types/Task';
+import { Task, Importance } from './types/Task';
 import SortBar from './components/SortBar.vue';
 
 type SortOrder = 'ascending' | 'descending' | 'unorganized';
-const sortPriority = ['title', 'description', 'priority', 'date'];
+const sortPriority = ['title', 'description', 'importance', 'date'];
+const importanceOrder: Record<Importance, number> = {
+  [Importance.LOW]: 1,
+  [Importance.MEDIUM]: 2,
+  [Importance.HIGH]: 3,
+};
 
 const tasks = ref<Task[]>([]);
 const filteredTasks = ref<Task[]>([]);
@@ -25,12 +30,12 @@ const openPopup = ref<boolean>(true);
 const data = reactive<{
   title: SortOrder;
   description: SortOrder;
-  priority: SortOrder;
+  importance: SortOrder;
   date: SortOrder;
 }>({
   title: 'unorganized',
   description: 'unorganized',
-  priority: 'unorganized',
+  importance: 'unorganized',
   date: 'unorganized',
 });
 
@@ -119,7 +124,23 @@ function handleSort(order: string, property: string): void {
   tasksClone.sort((a, b) => {
     for (const prop of activeSorters) {
       if (a[prop] !== b[prop]) {
-        return data[prop] === 'ascending' ? a[prop].localeCompare(b[prop]) : b[prop].localeCompare(a[prop]);
+        const direction = data[prop] === 'ascending' ? 1 : -1;
+
+        const aVal = a[prop];
+        const bVal = b[prop];
+
+        if (prop === 'importance') {
+          const aImp = importanceOrder[aVal as Importance];
+          const bImp = importanceOrder[bVal as Importance];
+          if (aImp !== bImp) return (aImp - bImp) * direction;
+        } else if (aVal instanceof Date) {
+          if (aVal.getTime() !== bVal.getTime()) {
+            return (aVal.getTime() - bVal.getTime()) * direction;
+          }
+        } else {
+          const comp = aVal.localeCompare(bVal);
+          if (comp !== 0) return comp * direction;
+        }
       }
     }
     return 0;
