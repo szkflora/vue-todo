@@ -162,7 +162,7 @@ function handleSort(order: string, property: string): void {
   </header>
 
   <main>
-    <div v-if="isFormVisible">
+    <div v-if="isFormVisible" class="flex items-center justify-center">
       <TaskForm
         :model-value="taskToEdit"
         @task-submitted="handleTaskSubmission"
@@ -179,7 +179,7 @@ function handleSort(order: string, property: string): void {
       ></ConfirmationPopup>
     </div>
 
-    <div v-if="tasks.length" class="flex flex-col">
+    <div v-if="tasks.length" class="flex flex-col items-center justify-center">
       <TransitionGroup tag="div" :move-class="enableAnimation ? 'transition-transform duration-500 ease-in-out' : ''">
         <div v-for="task in tasksToShow" :key="task.id">
           <TaskCard

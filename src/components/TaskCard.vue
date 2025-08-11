@@ -28,11 +28,11 @@ function checkedTask(): void {
 </script>
 
 <template>
-  <div class="task h-[150px]" @click="handleClick">
-    <div class="flex justify-between gap-16">
+  <div class="task px-4 md:h-[150px]" @click="handleClick">
+    <div class="flex justify-between md:gap-16">
       <div class="flex flex-col">
         <div>
-          <h1 class="text-[#000000] text-[42px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">
+          <h1 class="text-[#000000] text-[28px] md:text-[42px] whitespace-nowrap w-full overflow-hidden text-ellipsis task_text">
             {{ task.title }}
           </h1>
         </div>
@@ -45,7 +45,7 @@ function checkedTask(): void {
       </div>
       <p
         :class="[
-          'text-white px-2 py-0.5 w-[120px] h-[30px] tracking-[0px] text-center rounded-2xl',
+          'text-white px-2 py-0.5 w-[80px] md:w-[120px] h-[20px] md:h-[30px] tracking-[0px] text-center rounded-2xl',
           {
             'bg-[#38cbcb]': task.importance === Importance.LOW,
             'bg-[#ffab00]': task.importance === Importance.MEDIUM,
@@ -57,7 +57,7 @@ function checkedTask(): void {
       </p>
     </div>
     <div class="flex justify-between">
-      <p class="text-[#757575] text-[28px] whitespace-nowrap w-[500px] overflow-hidden text-ellipsis task_text">
+      <p class="text-[#757575] text-[20px] md:text-[28px] whitespace-nowrap w-full overflow-hidden text-ellipsis task_text">
         {{ task.description }}
       </p>
       <button

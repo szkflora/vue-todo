@@ -15,11 +15,11 @@ const htmlType = props.htmlType ?? 'button';
 const typeClasses = computed(() => {
   switch (props.type) {
     case 'primary':
-      return 'rounded-2xl w-[110px] h-[50px] text-lg border-[none]';
+      return 'rounded-2xl w-[80px] md:w-[110px] h-[36px] md:h-[50px] text-lg border-[none]';
     case 'secondary':
-      return 'rounded-2xl w-[90px] h-[40px] font-semibold px-4 py-2 border-[none]';
+      return 'rounded-2xl w-[50px] md:w-[90px] h-[20px] md:h-[40px] font-semibold px-4 py-2 border-[none]';
     case 'bar':
-      return 'rounded-md h-[28px] font-semibold px-4 py-2';
+      return 'rounded-md h-[20px] md:h-[28px] font-semibold px-4 py-2';
     case 'danger':
       return 'bg-red-500 text-white hover:bg-red-600';
     default:
