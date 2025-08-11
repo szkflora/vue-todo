@@ -14,11 +14,11 @@ const taskToEdit = ref<Task | null>(null);
 const taskToDelete = ref<Task>();
 const idCounter = ref<number>(1);
 const enableAnimation = ref<boolean>(false);
-const searchword = ref<string>('');
+const searchWord = ref<string>('');
 const openPopup = ref<boolean>(false);
 
 const tasksToShow = computed(() => {
-  return searchword.value.trim() ? filteredTasks.value : tasks.value;
+  return searchWord.value.trim() ? filteredTasks.value : tasks.value;
 });
 
 function showEmptyTaskForm(): void {
@@ -59,7 +59,7 @@ function intoEditMode(task: Task): void {
   isFormVisible.value = true;
 }
 
-function taskCheckedOrUnchecked(taskToCheck: Task): void {
+function handleCheckAction(taskToCheck: Task): void {
   enableAnimation.value = true;
   nextTick(() => {
     setTimeout(() => {
@@ -78,19 +78,19 @@ function taskCheckedOrUnchecked(taskToCheck: Task): void {
 }
 
 function searchAmongTasks(keyword: string): void {
-  searchword.value = keyword.trim();
+  searchWord.value = keyword.trim();
   filteredTasks.value = tasks.value.filter(
     (task) =>
-      task.title.toLowerCase().includes(searchword.value.toLowerCase()) ||
-      task.description.toLowerCase().includes(searchword.value.toLowerCase()),
+      task.title.toLowerCase().includes(searchWord.value.toLowerCase()) ||
+      task.description.toLowerCase().includes(searchWord.value.toLowerCase()),
   );
 }
 </script>
 
 <template>
   <header>
-    <Header @show-form="showEmptyTaskForm"></Header>
-    <SearchBar v-show="tasks.length" @search="searchAmongTasks"></SearchBar>
+    <Header @show-form="showEmptyTaskForm"/>
+    <SearchBar v-show="tasks.length" @search="searchAmongTasks"/>
   </header>
 
   <main>
@@ -99,10 +99,10 @@ function searchAmongTasks(keyword: string): void {
         :model-value="taskToEdit"
         @task-submitted="handleTaskSubmission"
         @confirm-deletion="handleConfirmation"
-      ></TaskForm>
+      />
     </div>
 
-    <ConfirmationPopup :is-open="openPopup" @cancel="cancelDeletion" @delete="handleTaskDeletion"></ConfirmationPopup>
+    <ConfirmationPopup :is-open="openPopup" @cancel="cancelDeletion" @delete="handleTaskDeletion"/>
 
     <div v-if="tasks.length" class="flex flex-col">
       <TransitionGroup tag="div" :move-class="enableAnimation ? 'transition-transform duration-500 ease-in-out' : ''">
@@ -111,9 +111,8 @@ function searchAmongTasks(keyword: string): void {
             v-if="task.id !== taskToEdit?.id"
             :task="task"
             @clickEvent="intoEditMode"
-            @checked="taskCheckedOrUnchecked"
-          >
-          </TaskCard>
+            @checked="handleCheckAction"
+          />
         </div>
       </TransitionGroup>
     </div>

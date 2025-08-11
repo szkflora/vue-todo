@@ -19,7 +19,7 @@ function handleSearch(): void {
   <form @submit.prevent="handleSearch">
     <div class="w-[600px] h-[40px] flex justify-between items-center m-6 rounded-xl border-2 border-solid">
       <div class="flex gap-3">
-        <MagnifyingGlassIcon class="w-6 pl-1"></MagnifyingGlassIcon>
+        <MagnifyingGlassIcon class="w-6 pl-1"/>
         <input v-model="keyword" class="task_text w-[480px]" placeholder="Search todos..." />
       </div>
       <div class="flex items-center pr-1">

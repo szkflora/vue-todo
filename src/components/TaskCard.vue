@@ -63,7 +63,7 @@ function checkedTask(): void {
           leave-from-class="opacity-100 scale-100"
           leave-to-class="opacity-0 scale-50"
         >
-          <CheckIcon v-show="task.completed" class="w-[170%] relative -left-[5px] -top-2.5 text-[#38CB89]"></CheckIcon>
+          <CheckIcon v-show="task.completed" class="w-[170%] relative -left-[5px] -top-2.5 text-[#38CB89]"/>
         </Transition>
       </button>
     </div>
