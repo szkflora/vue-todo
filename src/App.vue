@@ -11,13 +11,11 @@ const tasks = ref<Task[]>([]);
 const filteredTasks = ref<Task[]>([]);
 const isFormVisible = ref<boolean>(false);
 const taskToEdit = ref<Task | null>(null);
-const showConfirmation = ref<boolean>(false);
 const taskToDelete = ref<Task>();
 const idCounter = ref<number>(1);
-const dialogRef = ref<InstanceType<typeof ConfirmationPopup> | null>(null);
 const enableAnimation = ref<boolean>(false);
 const searchword = ref<string>('');
-const openPopup = ref<boolean>(true);
+const openPopup = ref<boolean>(false);
 
 const tasksToShow = computed(() => {
   return searchword.value.trim() ? filteredTasks.value : tasks.value;
@@ -42,18 +40,18 @@ function handleTaskSubmission(newTask: Task): void {
 }
 
 function handleConfirmation(task: Task): void {
-  showConfirmation.value = true;
   taskToDelete.value = task;
+  openPopup.value = true;
 }
 
 function cancelDeletion(): void {
-  showConfirmation.value = false;
+  openPopup.value = false;
 }
 
 function handleTaskDeletion(): void {
   tasks.value = tasks.value.filter((task) => task.id !== taskToDelete.value.id);
   isFormVisible.value = false;
-  showConfirmation.value = false;
+  openPopup.value = false;
 }
 
 function intoEditMode(task: Task): void {
@@ -104,14 +102,7 @@ function searchAmongTasks(keyword: string): void {
       ></TaskForm>
     </div>
 
-    <div v-if="showConfirmation">
-      <ConfirmationPopup
-        ref="dialogRef"
-        :is-open="openPopup"
-        @cancel="cancelDeletion"
-        @delete="handleTaskDeletion"
-      ></ConfirmationPopup>
-    </div>
+    <ConfirmationPopup :is-open="openPopup" @cancel="cancelDeletion" @delete="handleTaskDeletion"></ConfirmationPopup>
 
     <div v-if="tasks.length" class="flex flex-col">
       <TransitionGroup tag="div" :move-class="enableAnimation ? 'transition-transform duration-500 ease-in-out' : ''">

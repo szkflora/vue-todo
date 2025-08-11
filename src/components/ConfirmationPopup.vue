@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, defineEmits, watch } from 'vue';
+import { defineEmits } from 'vue';
+import { Dialog, TransitionRoot, TransitionChild, DialogPanel, DialogTitle } from '@headlessui/vue';
+import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
 import BaseButton from './BaseButton.vue';
-
-const dialogRef = ref<HTMLDialogElement | null>(null);
 
 const props = defineProps<{
   isOpen: boolean;
@@ -13,76 +13,75 @@ const emit = defineEmits<{
   (e: 'delete'): void;
 }>();
 
-function handelCancel() {
+function handleCancel() {
   emit('cancel');
 }
 
-function handelDelete() {
+function handleDelete() {
   emit('delete');
 }
-
-watch(
-  () => props.isOpen,
-  (newVal) => {
-    if (newVal) {
-      dialogRef.value?.showModal();
-    } else {
-      dialogRef.value?.close();
-    }
-  },
-);
 </script>
 
 <template>
-  <dialog
-    ref="dialogRef"
-    id="confirmation-dialog"
-    aria-labelledby="dialog-title"
-    class="m-auto fixed inset-0 flex items-center justify-center bg-white w-[600px] p-4 rounded-2xl border-2 border-solid border-[#ccc]"
-    @click.self="handelCancel"
-  >
-    <div class="flex flex-col gap-[30px]">
-      <div class="flex justify-center items-center">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-          data-slot="icon"
-          aria-hidden="true"
-          class="w-10 h-10 text-red-600"
+  <TransitionRoot :show="isOpen" as="template">
+    <Dialog as="div" class="relative z-50" @close="handleCancel">
+      <TransitionChild
+        as="template"
+        enter="ease-out duration-300"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="ease-in duration-200"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
+      >
+        <div class="fixed inset-0 bg-black/30 transition-opacity" />
+      </TransitionChild>
+
+      <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <TransitionChild
+          as="template"
+          enter="ease-out duration-300"
+          enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+          enter-to="opacity-100 translate-y-0 sm:scale-100"
+          leave="ease-in duration-200"
+          leave-from="opacity-100 translate-y-0 sm:scale-100"
+          leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         >
-          <path
-            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+          <DialogPanel
+            class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+          >
+            <div class="flex justify-center items-center mb-4">
+              <ExclamationTriangleIcon class="h-10 w-10 text-red-600" aria-hidden="true" />
+            </div>
+
+            <DialogTitle as="h3" class="text-lg font-semibold leading-6 text-gray-900 text-center">
+              Delete task
+            </DialogTitle>
+            <p class="mt-2 text-center text-lg text-gray-500">
+              Are you sure you want to delete this task?<br />This action cannot be undone.
+            </p>
+
+            <div class="mt-6 flex justify-end gap-3">
+              <BaseButton
+                html-type="button"
+                type="secondary"
+                @click="handleDelete"
+                class="bg-red-600 text-white hover:bg-red-700"
+              >
+                Delete
+              </BaseButton>
+              <BaseButton
+                html-type="button"
+                type="secondary"
+                @click="handleCancel"
+                class="bg-[rgb(188,182,182)] text-gray-900 hover:bg-[#8e8989]"
+              >
+                Cancel
+              </BaseButton>
+            </div>
+          </DialogPanel>
+        </TransitionChild>
       </div>
-      <div>
-        <h3 id="dialog-title" class="font-semibold text-2xl leading-[100%] text-center mb-2">Delete task</h3>
-        <p class="font-normal text-xl text-gray-500 text-center">
-          Are you sure you want to delete this task? <br />This action cannot be undone.
-        </p>
-      </div>
-      <div class="flex justify-end gap-3">
-        <BaseButton
-          html-type="button"
-          type="secondary"
-          @click="handelDelete"
-          class="bg-red-600 text-[white] hover:bg-red-700"
-        >
-          Delete
-        </BaseButton>
-        <BaseButton
-          html-type="button"
-          type="secondary"
-          @click="handelCancel"
-          class="bg-[rgb(188,182,182)] text-gray-900 hover:bg-[#8e8989]"
-        >
-          Cancel
-        </BaseButton>
-      </div>
-    </div>
-  </dialog>
+    </Dialog>
+  </TransitionRoot>
 </template>
