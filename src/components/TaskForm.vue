@@ -82,7 +82,7 @@ function deleteTask(): void {
           v-model="formData.title"
           placeholder="Title"
           required
-          class="text-[#000000] text-[28px] md:text-[42px] max-w-xs w-full md:w-auto task_text"
+          class="text-[#000000] text-[28px] md:text-[42px] w-full task_text"
         />
         <select
           v-model="formData.importance"
