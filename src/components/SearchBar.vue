@@ -26,7 +26,7 @@ function handleSearch(): void {
         <BaseButton
           html-type="submit"
           type="search"
-          class="bg-[#000000] text-white flex items-center justify-center text-sm"
+          class="bg-black text-white flex items-center justify-center text-sm"
           >Search</BaseButton
         >
       </div>

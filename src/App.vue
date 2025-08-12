@@ -17,9 +17,9 @@ const enableAnimation = ref<boolean>(false);
 const searchWord = ref<string>('');
 const openPopup = ref<boolean>(false);
 
-const tasksToShow = computed(() => {
-  return searchWord.value.trim() ? filteredTasks.value : tasks.value;
-});
+const tasksToShow = computed(() => 
+  searchWord.value.trim() ? filteredTasks.value : tasks.value
+);
 
 function showEmptyTaskForm(): void {
   isFormVisible.value = true;
@@ -109,7 +109,7 @@ function searchAmongTasks(keyword: string): void {
         <div v-for="task in tasksToShow" :key="task.id">
           <TaskCard
             v-if="task.id !== taskToEdit?.id"
-            :task="task"
+            :task
             @clickEvent="intoEditMode"
             @checked="handleCheckAction"
           />

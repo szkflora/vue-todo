@@ -27,7 +27,7 @@ function checkedTask(): void {
 <template>
   <div class="task h-[150px]" @click="handleClick">
     <div class="flex justify-between gap-16">
-      <h1 class="text-[#000000] text-[42px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">
+      <h1 class="text-black text-[42px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">
         {{ task.title }}
       </h1>
       <p
@@ -50,7 +50,7 @@ function checkedTask(): void {
       <button
         type="button"
         :class="[
-          'w-7 h-7 bg-[white] border-4 rounded-2xl border-solid',
+          'w-7 h-7 bg-white border-4 rounded-2xl border-solid',
           task.completed ? 'border-[#38cb89]' : 'border-[#000000]',
         ]"
         @click.stop="checkedTask"
