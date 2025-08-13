@@ -33,7 +33,7 @@ function changeProperty(newProperty: string): void {
 
 <template>
   <div class="flex justify-center">
-    <div class="w-[348px] md:w-[600px] flex justify-between items-center flex-wrap m-2 gap-2">
+    <div class="w-[348px] md:w-[600px] flex justify-between items-center flex-wrap mx-2 md:mx-4 my-3 md:my-5 gap-2">
       <div class="flex justify-start gap-2 md:gap-3.5">
         <BaseButton html-type="button" type="bar" :class="['default', data.title]" @click="changeProperty('title')"
           >Title

@@ -28,7 +28,10 @@ function checkedTask(): void {
 </script>
 
 <template>
-  <div class="task px-4 w-[348px] md:w-[600px] justify-between md:flex-col" @click="handleClick">
+  <div
+    class="task px-4 w-[348px] md:w-[600px] justify-between md:flex-col mx-3 md:mx-5 my-6 md:my-10"
+    @click="handleClick"
+  >
     <div class="flex justify-center self-center md:hidden">
       <button
         type="button"
@@ -46,7 +49,7 @@ function checkedTask(): void {
           leave-from-class="opacity-100 scale-100"
           leave-to-class="opacity-0 scale-50"
         >
-          <CheckIcon v-show="task.completed" class="w-[170%] relative -left-[5px] -top-2.5 text-[#38CB89]"/>
+          <CheckIcon v-show="task.completed" class="w-[170%] relative -left-[5px] -top-2.5 text-[#38CB89]" />
         </Transition>
       </button>
     </div>
@@ -60,7 +63,7 @@ function checkedTask(): void {
           </h1>
         </div>
         <div class="flex gap-1">
-          <CalendarDaysIcon class="w-4"/>
+          <CalendarDaysIcon class="w-4" />
           <p>
             {{ formatted }}
           </p>
@@ -101,7 +104,7 @@ function checkedTask(): void {
           leave-from-class="opacity-100 scale-100"
           leave-to-class="opacity-0 scale-50"
         >
-          <CheckIcon v-show="task.completed" class="w-[170%] relative -left-[5px] -top-2.5 text-[#38CB89]"/>
+          <CheckIcon v-show="task.completed" class="w-[170%] relative -left-[5px] -top-2.5 text-[#38CB89]" />
         </Transition>
       </button>
     </div>

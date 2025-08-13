@@ -2,6 +2,8 @@
 import { ref, reactive, computed, defineEmits, defineProps, watch, nextTick } from 'vue';
 import { Task, Importance } from '../types/Task';
 import BaseButton from './BaseButton.vue';
+import { CalendarDaysIcon } from '@heroicons/vue/24/outline';
+import DatePicker from 'primevue/datepicker';
 
 const props = defineProps<{
   modelValue: Task | null;
@@ -20,7 +22,7 @@ const formData = reactive({
   title: '',
   description: '',
   importance: Importance.HIGH,
-  date: null,
+  date: new Date(),
   completed: false,
 });
 
@@ -49,7 +51,8 @@ watch(
 function resizeTextArea(): void {
   const desc = descriptionRef.value;
   if (desc) {
-    desc.style.height = '60px';
+    const isMd = window.innerWidth >= 768;
+    desc.style.height = isMd ? '60px' : '40px';
 
     if (formData.description.trim() !== '') {
       desc.style.height = `${desc.scrollHeight}px`;
@@ -63,7 +66,7 @@ function handleSubmit(): void {
     title: formData.title,
     description: formData.description,
     importance: formData.importance,
-    date: new Date(),
+    date: formData.date,
     completed: formData.completed,
   };
 
@@ -127,18 +130,24 @@ function setImportance(importance: Importance): void {
           placeholder="Description"
           class="text-[#757575] text-[20px] md:text-[28px] overflow-hidden resize-none task_text w-full"
         ></textarea>
-        <div class="flex md:gap-3">
-          <BaseButton html-type="submit" type="primary" class="bg-[#38cb89] text-white mr-[20px] hover:bg-[#23a068]">
-            Save
-          </BaseButton>
-          <BaseButton
-            html-type="button"
-            type="primary"
-            class="bg-[#e6e6e6] text-black hover:bg-[#b1b1b1]"
-            @click="deleteTask"
-          >
-            Delete
-          </BaseButton>
+        <div class="flex justify-between">
+          <div class="flex md:gap-3">
+            <BaseButton html-type="submit" type="primary" class="bg-[#38cb89] text-white mr-[20px] hover:bg-[#23a068]">
+              Save
+            </BaseButton>
+            <BaseButton
+              html-type="button"
+              type="primary"
+              class="bg-[#e6e6e6] text-black hover:bg-[#b1b1b1]"
+              @click="deleteTask"
+            >
+              Delete
+            </BaseButton>
+          </div>
+          <div class="flex">
+            <CalendarDaysIcon class="w-4" />
+            <DatePicker v-model="formData.date" class="w-[84px]" />
+          </div>
         </div>
       </div>
     </div>

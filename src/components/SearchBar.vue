@@ -17,16 +17,15 @@ function handleSearch(): void {
 
 <template>
   <form @submit.prevent="handleSearch" class="flex justify-center">
-    <div class="w-[348px] md:w-[600px] h-[40px] flex justify-between items-center m-2 md:m-4 rounded-xl border-2 border-solid">
+    <div
+      class="w-[348px] md:w-[600px] h-[40px] flex justify-between items-center mx-2 md:mx-4 my-3 md:my-5 rounded-xl border-2 border-solid"
+    >
       <div class="flex gap-3">
-        <MagnifyingGlassIcon class="w-6 pl-1"/>
+        <MagnifyingGlassIcon class="w-6 pl-1" />
         <input v-model="keyword" class="task_text md:w-[480px]" placeholder="Search todos..." />
       </div>
       <div class="flex items-center pr-1">
-        <BaseButton
-          html-type="submit"
-          type="bar"
-          class="bg-black text-white flex items-center justify-center text-sm"
+        <BaseButton html-type="submit" type="bar" class="bg-black text-white flex items-center justify-center text-sm"
           >Search</BaseButton
         >
       </div>

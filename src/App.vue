@@ -37,9 +37,7 @@ const data = reactive<{
 const searchWord = ref<string>('');
 const openPopup = ref<boolean>(false);
 
-const tasksToShow = computed(() => 
-  searchWord.value.trim() ? filteredTasks.value : tasks.value
-);
+const tasksToShow = computed(() => (searchWord.value.trim() ? filteredTasks.value : tasks.value));
 
 function showEmptyTaskForm(): void {
   isFormVisible.value = true;
@@ -154,9 +152,9 @@ function handleSort(order: string, property: string): void {
 
 <template>
   <header>
-    <Header @show-form="showEmptyTaskForm"/>
-    <SearchBar v-show="tasks.length" @search="searchAmongTasks"/>
-    <SortBar :data="data" @sort="handleSort" v-show="tasks.length"/>
+    <Header @show-form="showEmptyTaskForm" />
+    <SearchBar v-show="tasks.length" @search="searchAmongTasks" />
+    <SortBar :data="data" @sort="handleSort" v-show="tasks.length" />
   </header>
 
   <main>
@@ -168,17 +166,12 @@ function handleSort(order: string, property: string): void {
       />
     </div>
 
-    <ConfirmationPopup :is-open="openPopup" @cancel="cancelDeletion" @delete="handleTaskDeletion"/>
+    <ConfirmationPopup :is-open="openPopup" @cancel="cancelDeletion" @delete="handleTaskDeletion" />
 
     <div v-if="tasks.length" class="flex flex-col items-center justify-center">
       <TransitionGroup tag="div" :move-class="enableAnimation ? 'transition-transform duration-500 ease-in-out' : ''">
         <div v-for="task in tasksToShow" :key="task.id">
-          <TaskCard
-            v-if="task.id !== taskToEdit?.id"
-            :task
-            @clickEvent="intoEditMode"
-            @checked="handleCheckAction"
-          />
+          <TaskCard v-if="task.id !== taskToEdit?.id" :task @clickEvent="intoEditMode" @checked="handleCheckAction" />
         </div>
       </TransitionGroup>
     </div>
