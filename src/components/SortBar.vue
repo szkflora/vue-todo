@@ -32,32 +32,38 @@ function changeProperty(newProperty: string): void {
 </script>
 
 <template>
-  <div class="w-[600px] flex justify-between items-center m-6">
-    <div class="flex justify-start gap-3.5">
-      <BaseButton html-type="button" type="bar" :class="['default', data.title]" @click="changeProperty('title')"
-        >Title
-      </BaseButton>
-      <BaseButton
-        html-type="button"
-        type="bar"
-        :class="['default', data.description]"
-        @click="changeProperty('description')"
-        >Description
-      </BaseButton>
-      <BaseButton html-type="button" type="bar" :class="['default', data.importance]" @click="changeProperty('importance')"
-        >Priority</BaseButton
-      >
-      <BaseButton html-type="button" type="bar" :class="['default', data.date]" @click="changeProperty('date')"
-        >Date</BaseButton
-      >
-    </div>
-    <div class="flex justify-end gap-3.5">
-      <BaseButton html-type="button" type="bar" class="default ascending" @click="changeOrder('ascending')">
-        <ArrowUpIcon class="w-4"></ArrowUpIcon>
-      </BaseButton>
-      <BaseButton html-type="button" type="bar" class="default descending" @click="changeOrder('descending')">
-        <ArrowDownIcon class="w-4"></ArrowDownIcon>
-      </BaseButton>
+  <div class="flex justify-center">
+    <div class="w-[348px] md:w-[600px] flex justify-between items-center flex-wrap m-2 gap-2">
+      <div class="flex justify-start gap-2 md:gap-3.5">
+        <BaseButton html-type="button" type="bar" :class="['default', data.title]" @click="changeProperty('title')"
+          >Title
+        </BaseButton>
+        <BaseButton
+          html-type="button"
+          type="bar"
+          :class="['default', data.description]"
+          @click="changeProperty('description')"
+          >Description
+        </BaseButton>
+        <BaseButton
+          html-type="button"
+          type="bar"
+          :class="['default', data.importance]"
+          @click="changeProperty('importance')"
+          >Priority</BaseButton
+        >
+        <BaseButton html-type="button" type="bar" :class="['default', data.date]" @click="changeProperty('date')"
+          >Date</BaseButton
+        >
+      </div>
+      <div class="flex justify-end gap-3.5">
+        <BaseButton html-type="button" type="bar" class="default ascending" @click="changeOrder('ascending')">
+          <ArrowUpIcon class="w-4"></ArrowUpIcon>
+        </BaseButton>
+        <BaseButton html-type="button" type="bar" class="default descending" @click="changeOrder('descending')">
+          <ArrowDownIcon class="w-4"></ArrowDownIcon>
+        </BaseButton>
+      </div>
     </div>
   </div>
 </template>

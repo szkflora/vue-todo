@@ -12,7 +12,7 @@ const emit = defineEmits<{
   (e: 'confirmDeletion', task: Task): void;
 }>();
 
-const descriptionRef = ref<HTMLTextAreaElement>(null); // referencia a DOM textarea elemre
+const descriptionRef = ref<HTMLTextAreaElement>(null);
 
 const formData = reactive({
   id: 0,
@@ -76,7 +76,7 @@ function deleteTask(): void {
 
 <template>
   <form @submit.prevent="handleSubmit">
-    <div class="task px-4">
+    <div class="task px-4 w-[348px] md:w-[600px]">
       <div class="flex justify-between md:gap-16">
         <input
           v-model="formData.title"

@@ -28,11 +28,11 @@ function checkedTask(): void {
 </script>
 
 <template>
-  <div class="task px-4 md:h-[150px]" @click="handleClick">
+  <div class="task px-4 w-[348px] md:w-[600px]" @click="handleClick">
     <div class="flex justify-between md:gap-16">
       <div class="flex flex-col">
         <div>
-          <h1 class="text-[#000000] text-[28px] md:text-[42px] whitespace-nowrap w-full overflow-hidden text-ellipsis task_text">
+          <h1 class="text-[#000000] text-[28px] md:text-[42px] whitespace-nowrap overflow-hidden text-ellipsis task_text">
             {{ task.title }}
           </h1>
         </div>
@@ -56,14 +56,14 @@ function checkedTask(): void {
         {{ task.importance }}
       </p>
     </div>
-    <div class="flex justify-between">
-      <p class="text-[#757575] text-[20px] md:text-[28px] whitespace-nowrap w-full overflow-hidden text-ellipsis task_text">
+    <div class="flex justify-between gap-16">
+      <p class="text-[#757575] text-[20px] md:text-[28px] whitespace-nowrap overflow-hidden text-ellipsis task_text w-[220px] md:w-[500px]">
         {{ task.description }}
       </p>
       <button
         type="button"
         :class="[
-          'w-7 h-7 bg-[white] border-4 rounded-2xl border-solid',
+          'w-7 h-7 bg-[white] border-4 rounded-[50%] border-solid',
           task.completed ? 'border-[#38cb89]' : 'border-[#000000]',
         ]"
         @click.stop="checkedTask"

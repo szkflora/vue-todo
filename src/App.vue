@@ -192,8 +192,8 @@ function handleSort(order: string, property: string): void {
         </div>
       </TransitionGroup>
     </div>
-    <div v-else-if="!isFormVisible" class="text-center m-10">
-      <img src="../public/no_todos.svg" />
+    <div v-else-if="!isFormVisible" class="flex items-center justify-center">
+      <img class="m-10 w-[300px] md:w-[410px]" src="../public/no_todos.svg" />
     </div>
   </main>
 </template>
