@@ -38,10 +38,10 @@ watch(
     ref="dialogRef"
     id="confirmation-dialog"
     aria-labelledby="dialog-title"
-    class="m-auto fixed inset-0 flex items-center justify-center bg-white w-[600px] p-4 rounded-2xl border-2 border-solid border-[#ccc]"
+    class="m-auto fixed inset-0 flex items-center justify-center bg-white w-[348px] md:w-[600px] p-4 rounded-2xl border-2 border-solid border-[#ccc]"
     @click.self="handelCancel"
   >
-    <div class="flex flex-col gap-[30px]">
+    <div class="flex flex-col md:gap-[30px]">
       <div class="flex justify-center items-center">
         <svg
           viewBox="0 0 24 24"
@@ -59,9 +59,9 @@ watch(
           />
         </svg>
       </div>
-      <div>
-        <h3 id="dialog-title" class="font-semibold text-2xl leading-[100%] text-center mb-2">Delete task</h3>
-        <p class="font-normal text-xl text-gray-500 text-center">
+      <div class="pb-2">
+        <h3 id="dialog-title" class="font-semibold md:text-2xl leading-[100%] text-center mb-2">Delete task</h3>
+        <p class="font-normal md:text-xl text-gray-500 text-center">
           Are you sure you want to delete this task? <br />This action cannot be undone.
         </p>
       </div>
@@ -70,7 +70,7 @@ watch(
           html-type="button"
           type="secondary"
           @click="handelDelete"
-          class="bg-red-600 text-[white] hover:bg-red-700"
+          class="bg-red-600 text-[white] hover:bg-red-700 flex items-center justify-center text-xs"
         >
           Delete
         </BaseButton>
@@ -78,7 +78,7 @@ watch(
           html-type="button"
           type="secondary"
           @click="handelCancel"
-          class="bg-[rgb(188,182,182)] text-gray-900 hover:bg-[#8e8989]"
+          class="bg-[rgb(188,182,182)] text-gray-900 hover:bg-[#8e8989] flex items-center justify-center text-xs"
         >
           Cancel
         </BaseButton>
