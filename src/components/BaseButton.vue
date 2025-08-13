@@ -17,7 +17,7 @@ const typeClasses = computed(() => {
     case 'primary':
       return 'rounded-md md:rounded-2xl w-[80px] md:w-[110px] h-[36px] md:h-[50px] text-lg border-[none]';
     case 'secondary':
-      return 'rounded-md md:rounded-2xl w-[50px] md:w-[90px] h-[30px] md:h-[40px] font-semibold px-4 py-2 border-[none]';
+      return 'rounded-md md:rounded-2xl w-[70px] md:w-[90px] h-[30px] md:h-[40px] font-semibold px-4 py-2 border-[none]';
     case 'bar':
       return 'rounded-md h-[26px] md:h-[28px] font-semibold px-4 py-2';
     case 'danger':

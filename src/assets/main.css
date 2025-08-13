@@ -1,7 +1,6 @@
 @import './base.css';
 @import "tailwindcss";
 
-
 body {
   display: flex;
   justify-content: center;
@@ -29,4 +28,5 @@ h1 {
   letter-spacing: 0%;
   border: none;
   outline: none;
+  padding: 2px 0px;
 }

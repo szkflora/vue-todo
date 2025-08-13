@@ -57,7 +57,7 @@ function checkedTask(): void {
       <div class="flex flex-col">
         <div>
           <h1
-            class="text-black text-[28px] md:text-[42px] w-[160px] md:w-[340px] whitespace-nowrap overflow-hidden text-ellipsis task_text"
+            class="text-black text-[28px] md:text-[42px] w-[160px] md:w-[340px] h-[40px] md:h-[50px] whitespace-nowrap overflow-hidden text-ellipsis task_text"
           >
             {{ task.title }}
           </h1>
