@@ -20,13 +20,9 @@ const tasks = ref<Task[]>([]);
 const filteredTasks = ref<Task[]>([]);
 const isFormVisible = ref<boolean>(false);
 const taskToEdit = ref<Task | null>(null);
-const showConfirmation = ref<boolean>(false);
 const taskToDelete = ref<Task>();
 const idCounter = ref<number>(1);
-const dialogRef = ref<InstanceType<typeof ConfirmationPopup> | null>(null);
 const enableAnimation = ref<boolean>(false);
-const searchword = ref<string>('');
-const openPopup = ref<boolean>(true);
 const data = reactive<{
   title: SortOrder;
   description: SortOrder;
@@ -38,10 +34,12 @@ const data = reactive<{
   importance: 'unorganized',
   date: 'unorganized',
 });
+const searchWord = ref<string>('');
+const openPopup = ref<boolean>(false);
 
-const tasksToShow = computed(() => {
-  return searchword.value.trim() ? filteredTasks.value : tasks.value;
-});
+const tasksToShow = computed(() => 
+  searchWord.value.trim() ? filteredTasks.value : tasks.value
+);
 
 function showEmptyTaskForm(): void {
   isFormVisible.value = true;
@@ -66,18 +64,18 @@ function handleTaskSubmission(newTask: Task): void {
 }
 
 function handleConfirmation(task: Task): void {
-  showConfirmation.value = true;
   taskToDelete.value = task;
+  openPopup.value = true;
 }
 
 function cancelDeletion(): void {
-  showConfirmation.value = false;
+  openPopup.value = false;
 }
 
 function handleTaskDeletion(): void {
   tasks.value = tasks.value.filter((task) => task.id !== taskToDelete.value.id);
   isFormVisible.value = false;
-  showConfirmation.value = false;
+  openPopup.value = false;
 }
 
 function intoEditMode(task: Task): void {
@@ -85,7 +83,7 @@ function intoEditMode(task: Task): void {
   isFormVisible.value = true;
 }
 
-function taskCheckedOrUnchecked(taskToCheck: Task): void {
+function handleCheckAction(taskToCheck: Task): void {
   enableAnimation.value = true;
   nextTick(() => {
     setTimeout(() => {
@@ -104,11 +102,11 @@ function taskCheckedOrUnchecked(taskToCheck: Task): void {
 }
 
 function searchAmongTasks(keyword: string): void {
-  searchword.value = keyword.trim();
+  searchWord.value = keyword.trim();
   filteredTasks.value = tasks.value.filter(
     (task) =>
-      task.title.toLowerCase().includes(searchword.value.toLowerCase()) ||
-      task.description.toLowerCase().includes(searchword.value.toLowerCase()),
+      task.title.toLowerCase().includes(searchWord.value.toLowerCase()) ||
+      task.description.toLowerCase().includes(searchWord.value.toLowerCase()),
   );
 }
 
@@ -118,7 +116,7 @@ function handleSort(order: string, property: string): void {
 
   data[key] = data[key] === sortOrder ? 'unorganized' : sortOrder;
 
-  const tasksClone = [...(searchword.value.trim() ? filteredTasks.value : tasks.value)];
+  const tasksClone = [...(searchWord.value.trim() ? filteredTasks.value : tasks.value)];
   const activeSorters = sortPriority.filter((prop) => data[prop] !== 'unorganized');
 
   tasksClone.sort((a, b) => {
@@ -146,7 +144,7 @@ function handleSort(order: string, property: string): void {
     return 0;
   });
 
-  if (searchword.value.trim()) {
+  if (searchWord.value.trim()) {
     filteredTasks.value = tasksClone;
   } else {
     tasks.value = tasksClone;
@@ -156,9 +154,9 @@ function handleSort(order: string, property: string): void {
 
 <template>
   <header>
-    <Header @show-form="showEmptyTaskForm"></Header>
-    <SearchBar v-show="tasks.length" @search="searchAmongTasks"></SearchBar>
-    <SortBar :data="data" @sort="handleSort" v-show="tasks.length"></SortBar>
+    <Header @show-form="showEmptyTaskForm"/>
+    <SearchBar v-show="tasks.length" @search="searchAmongTasks"/>
+    <SortBar :data="data" @sort="handleSort" v-show="tasks.length"/>
   </header>
 
   <main>
@@ -167,28 +165,20 @@ function handleSort(order: string, property: string): void {
         :model-value="taskToEdit"
         @task-submitted="handleTaskSubmission"
         @confirm-deletion="handleConfirmation"
-      ></TaskForm>
+      />
     </div>
 
-    <div v-if="showConfirmation">
-      <ConfirmationPopup
-        ref="dialogRef"
-        :is-open="openPopup"
-        @cancel="cancelDeletion"
-        @delete="handleTaskDeletion"
-      ></ConfirmationPopup>
-    </div>
+    <ConfirmationPopup :is-open="openPopup" @cancel="cancelDeletion" @delete="handleTaskDeletion"/>
 
     <div v-if="tasks.length" class="flex flex-col items-center justify-center">
       <TransitionGroup tag="div" :move-class="enableAnimation ? 'transition-transform duration-500 ease-in-out' : ''">
         <div v-for="task in tasksToShow" :key="task.id">
           <TaskCard
             v-if="task.id !== taskToEdit?.id"
-            :task="task"
+            :task
             @clickEvent="intoEditMode"
-            @checked="taskCheckedOrUnchecked"
-          >
-          </TaskCard>
+            @checked="handleCheckAction"
+          />
         </div>
       </TransitionGroup>
     </div>

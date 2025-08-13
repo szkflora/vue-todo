@@ -33,8 +33,8 @@ function checkedTask(): void {
       <button
         type="button"
         :class="[
-          'w-7 h-7 bg-[white] border-4 rounded-[50%] border-solid',
-          task.completed ? 'border-[#38cb89]' : 'border-[#000000]',
+          'w-7 h-7 bg-white border-4 rounded-[50%] border-solid',
+          task.completed ? 'border-[#38cb89]' : 'border-black',
         ]"
         @click.stop="checkedTask"
       >
@@ -46,7 +46,7 @@ function checkedTask(): void {
           leave-from-class="opacity-100 scale-100"
           leave-to-class="opacity-0 scale-50"
         >
-          <CheckIcon v-show="task.completed" class="w-[170%] relative -left-[5px] -top-2.5 text-[#38CB89]"></CheckIcon>
+          <CheckIcon v-show="task.completed" class="w-[170%] relative -left-[5px] -top-2.5 text-[#38CB89]"/>
         </Transition>
       </button>
     </div>
@@ -54,13 +54,13 @@ function checkedTask(): void {
       <div class="flex flex-col">
         <div>
           <h1
-            class="text-[#000000] text-[28px] md:text-[42px] w-[160px] md:w-[340px] whitespace-nowrap overflow-hidden text-ellipsis task_text"
+            class="text-black text-[28px] md:text-[42px] w-[160px] md:w-[340px] whitespace-nowrap overflow-hidden text-ellipsis task_text"
           >
             {{ task.title }}
           </h1>
         </div>
         <div class="flex gap-1">
-          <CalendarDaysIcon class="w-4"></CalendarDaysIcon>
+          <CalendarDaysIcon class="w-4"/>
           <p>
             {{ formatted }}
           </p>
@@ -88,8 +88,8 @@ function checkedTask(): void {
       <button
         type="button"
         :class="[
-          'w-7 h-7 bg-[white] border-4 rounded-[50%] border-solid',
-          task.completed ? 'border-[#38cb89]' : 'border-[#000000]',
+          'w-7 h-7 bg-white border-4 rounded-[50%] border-solid',
+          task.completed ? 'border-[#38cb89]' : 'border-black',
         ]"
         @click.stop="checkedTask"
       >
@@ -101,7 +101,7 @@ function checkedTask(): void {
           leave-from-class="opacity-100 scale-100"
           leave-to-class="opacity-0 scale-50"
         >
-          <CheckIcon v-show="task.completed" class="w-[170%] relative -left-[5px] -top-2.5 text-[#38CB89]"></CheckIcon>
+          <CheckIcon v-show="task.completed" class="w-[170%] relative -left-[5px] -top-2.5 text-[#38CB89]"/>
         </Transition>
       </button>
     </div>

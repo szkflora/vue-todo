@@ -88,13 +88,13 @@ function setImportance(importance: Importance): void {
           v-model="formData.title"
           placeholder="Title"
           required
-          class="text-[#000000] text-[28px] md:text-[42px] w-[160px] md:w-[340px] task_text"
+          class="text-black text-[28px] md:text-[42px] w-[160px] md:w-[340px] task_text"
         />
         <div class="hidden md:flex">
           <select
             v-model="formData.importance"
             placeholder="Importance"
-            class="font-sans w-[80px] md:w-[120px] h-[20px] md:h-[30px] tracking-[0px] text-center rounded-2xl border-2 border-solid border-[black]"
+            class="font-sans w-[80px] md:w-[120px] h-[20px] md:h-[30px] tracking-[0px] text-center rounded-2xl border-2 border-solid border-black"
           >
             <option value="Low">Low</option>
             <option value="Medium">Medium</option>
@@ -128,7 +128,7 @@ function setImportance(importance: Importance): void {
           class="text-[#757575] text-[20px] md:text-[28px] overflow-hidden resize-none task_text w-full"
         ></textarea>
         <div class="flex md:gap-3">
-          <BaseButton html-type="submit" type="primary" class="bg-[#38cb89] text-[white] mr-[20px] hover:bg-[#23a068]">
+          <BaseButton html-type="submit" type="primary" class="bg-[#38cb89] text-white mr-[20px] hover:bg-[#23a068]">
             Save
           </BaseButton>
           <BaseButton
