@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import BaseButton from './BaseButton.vue';
-import { ref, defineEmits } from 'vue';
+import { ref, watch, defineEmits } from 'vue';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 
 const keyword = ref<string>('');
+
+let debounceId: number | null = null;
 
 const emit = defineEmits<{
   (e: 'search', keyword: string): void;
@@ -13,12 +15,22 @@ function handleSearch(): void {
   emit('search', keyword.value);
   keyword.value = '';
 }
+
+watch(keyword, () => {
+  if(debounceId != null) {
+    clearTimeout(debounceId);
+  }
+
+  debounceId = window.setTimeout(() => {
+    emit('search', keyword.value);
+  }, 1000);
+});
 </script>
 
 <template>
   <form @submit.prevent="handleSearch" class="flex justify-center">
     <div
-      class="w-[348px] md:w-[600px] h-[40px] flex justify-between items-center mx-2 md:mx-4 my-3 md:my-5 rounded-xl border-2 border-solid"
+      class="w-full h-[40px] flex justify-between items-center my-3 md:my-5 rounded-xl border-2 border-solid"
     >
       <div class="flex gap-3">
         <MagnifyingGlassIcon class="w-6 pl-1" />

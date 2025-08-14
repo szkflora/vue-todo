@@ -29,7 +29,7 @@ function checkedTask(): void {
 
 <template>
   <div
-    class="task px-4 w-[348px] md:w-[600px] justify-between md:flex-col mx-3 md:mx-5 my-6 md:my-10"
+    class="task w-full justify-between md:flex-col my-6 md:my-10 gap-10 md:gap-0"
     @click="handleClick"
   >
     <div class="flex justify-center self-center md:hidden">
@@ -53,7 +53,7 @@ function checkedTask(): void {
         </Transition>
       </button>
     </div>
-    <div class="flex justify-between md:gap-16 md:pb-4">
+    <div class="flex justify-between md:gap-26 md:pb-4">
       <div class="flex flex-col">
         <div>
           <h1

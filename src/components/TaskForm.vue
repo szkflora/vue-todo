@@ -85,8 +85,8 @@ function setImportance(importance: Importance): void {
 
 <template>
   <form @submit.prevent="handleSubmit">
-    <div class="task flex-col px-4 w-[348px] md:w-[600px]">
-      <div class="flex justify-between md:gap-16 pb-2 md:pb-4">
+    <div class="task flex-col w-full">
+      <div class="flex justify-between md:gap-26 pb-2 md:pb-4">
         <input
           v-model="formData.title"
           placeholder="Title"
@@ -130,9 +130,9 @@ function setImportance(importance: Importance): void {
           placeholder="Description"
           class="text-[#757575] text-[20px] md:text-[28px] overflow-hidden resize-none task_text w-full"
         ></textarea>
-        <div class="flex justify-between">
+        <div class="flex justify-between gap-3">
           <div class="flex md:gap-3">
-            <BaseButton html-type="submit" type="primary" class="bg-[#38cb89] text-white mr-[20px] hover:bg-[#23a068]">
+            <BaseButton html-type="submit" type="primary" class="bg-[#38cb89] text-white mr-[10px] md:mr-[20px] hover:bg-[#23a068]">
               Save
             </BaseButton>
             <BaseButton
@@ -145,7 +145,7 @@ function setImportance(importance: Importance): void {
             </BaseButton>
           </div>
           <div class="flex">
-            <CalendarDaysIcon class="w-4" />
+            <CalendarDaysIcon class="hidden md:flex w-4" />
             <DatePicker v-model="formData.date" class="w-[106px]" />
           </div>
         </div>

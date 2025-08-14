@@ -151,13 +151,11 @@ function handleSort(order: string, property: string): void {
 </script>
 
 <template>
-  <header>
+  <div class="w-[328px] md:w-[600px] mx-2">
     <Header @show-form="showEmptyTaskForm" />
     <SearchBar v-show="tasks.length" @search="searchAmongTasks" />
     <SortBar :data="data" @sort="handleSort" v-show="tasks.length" />
-  </header>
 
-  <main>
     <div v-if="isFormVisible" class="flex items-center justify-center">
       <TaskForm
         :model-value="taskToEdit"
@@ -178,5 +176,5 @@ function handleSort(order: string, property: string): void {
     <div v-else-if="!isFormVisible" class="flex items-center justify-center">
       <img class="m-10 w-[300px] md:w-[410px]" src="../public/no_todos.svg" />
     </div>
-  </main>
+  </div>
 </template>
