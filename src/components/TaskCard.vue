@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue';
-import { Task, Importance } from '../types/Task';
+import { Importance, Task } from '../types/Task';
+import { CheckIcon } from '@heroicons/vue/24/solid';
 
 interface Props {
   task: Task;
@@ -10,17 +11,23 @@ const props = defineProps<Props>();
 
 const emit = defineEmits<{
   (e: 'clickEvent', task: Task): void;
+  (e: 'checked', task: Task): void;
 }>();
 
 function handleClick(): void {
   emit('clickEvent', props.task);
+}
+
+function checkedTask(): void {
+  props.task.completed = !props.task.completed;
+  emit('checked', props.task);
 }
 </script>
 
 <template>
   <div class="task h-[150px]" @click="handleClick">
     <div class="flex justify-between gap-16">
-      <h1 class="text-[#000000] text-[42px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">
+      <h1 class="text-black text-[42px] whitespace-nowrap w-[400px] overflow-hidden text-ellipsis task_text">
         {{ task.title }}
       </h1>
       <p
@@ -40,7 +47,25 @@ function handleClick(): void {
       <p class="text-[#757575] text-[28px] whitespace-nowrap w-[500px] overflow-hidden text-ellipsis task_text">
         {{ task.description }}
       </p>
-      <button type="button" class="w-7 h-7 bg-[white] border-4 rounded-2xl border-solid border-black"></button>
+      <button
+        type="button"
+        :class="[
+          'w-7 h-7 bg-white border-4 rounded-2xl border-solid',
+          task.completed ? 'border-[#38cb89]' : 'border-[#000000]',
+        ]"
+        @click.stop="checkedTask"
+      >
+        <Transition
+          enter-active-class="transition duration-500 ease-out"
+          enter-from-class="opacity-0 scale-50"
+          enter-to-class="opacity-100 scale-100"
+          leave-active-class="transition duration-500 ease-in"
+          leave-from-class="opacity-100 scale-100"
+          leave-to-class="opacity-0 scale-50"
+        >
+          <CheckIcon v-show="task.completed" class="w-[170%] relative -left-[5px] -top-2.5 text-[#38CB89]"/>
+        </Transition>
+      </button>
     </div>
   </div>
 </template>

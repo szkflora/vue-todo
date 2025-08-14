@@ -1,17 +1,25 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed, nextTick } from 'vue';
 import Header from './components/Header.vue';
 import TaskForm from './components/TaskForm.vue';
 import TaskCard from './components/TaskCard.vue';
 import ConfirmationPopup from './components/ConfirmationPopup.vue';
+import SearchBar from './components/SearchBar.vue';
 import type { Task } from './types/Task';
 
 const tasks = ref<Task[]>([]);
+const filteredTasks = ref<Task[]>([]);
 const isFormVisible = ref<boolean>(false);
 const taskToEdit = ref<Task | null>(null);
 const taskToDelete = ref<Task>();
 const idCounter = ref<number>(1);
+const enableAnimation = ref<boolean>(false);
+const searchWord = ref<string>('');
 const openPopup = ref<boolean>(false);
+
+const tasksToShow = computed(() => 
+  searchWord.value.trim() ? filteredTasks.value : tasks.value
+);
 
 function showEmptyTaskForm(): void {
   isFormVisible.value = true;
@@ -21,7 +29,7 @@ function showEmptyTaskForm(): void {
 function handleTaskSubmission(newTask: Task): void {
   if (newTask.id === 0) {
     newTask.id = idCounter.value;
-    tasks.value.push(newTask);
+    tasks.value.unshift(newTask);
     idCounter.value++;
   } else {
     const index = tasks.value.findIndex((t) => t.id === newTask.id);
@@ -50,11 +58,39 @@ function intoEditMode(task: Task): void {
   taskToEdit.value = task;
   isFormVisible.value = true;
 }
+
+function handleCheckAction(taskToCheck: Task): void {
+  enableAnimation.value = true;
+  nextTick(() => {
+    setTimeout(() => {
+      tasks.value = tasks.value.filter((task) => task.id !== taskToCheck.id);
+      if (taskToCheck.completed === true) {
+        tasks.value.push(taskToCheck);
+      } else {
+        tasks.value.unshift(taskToCheck);
+      }
+
+      setTimeout(() => {
+        enableAnimation.value = false;
+      }, 500);
+    }, 300);
+  });
+}
+
+function searchAmongTasks(keyword: string): void {
+  searchWord.value = keyword.trim();
+  filteredTasks.value = tasks.value.filter(
+    (task) =>
+      task.title.toLowerCase().includes(searchWord.value.toLowerCase()) ||
+      task.description.toLowerCase().includes(searchWord.value.toLowerCase()),
+  );
+}
 </script>
 
 <template>
   <header>
-    <Header @show-form="showEmptyTaskForm"></Header>
+    <Header @show-form="showEmptyTaskForm"/>
+    <SearchBar v-show="tasks.length" @search="searchAmongTasks"/>
   </header>
 
   <main>
@@ -63,15 +99,22 @@ function intoEditMode(task: Task): void {
         :model-value="taskToEdit"
         @task-submitted="handleTaskSubmission"
         @confirm-deletion="handleConfirmation"
-      ></TaskForm>
+      />
     </div>
 
-    <ConfirmationPopup :is-open="openPopup" @cancel="cancelDeletion" @delete="handleTaskDeletion"></ConfirmationPopup>
+    <ConfirmationPopup :is-open="openPopup" @cancel="cancelDeletion" @delete="handleTaskDeletion"/>
 
-    <div v-if="tasks.length" class="flex flex-col-reverse">
-      <div v-for="task in tasks" :key="task.id">
-        <TaskCard v-if="task.id !== taskToEdit?.id" :task="task" @click-event="intoEditMode"> </TaskCard>
-      </div>
+    <div v-if="tasks.length" class="flex flex-col">
+      <TransitionGroup tag="div" :move-class="enableAnimation ? 'transition-transform duration-500 ease-in-out' : ''">
+        <div v-for="task in tasksToShow" :key="task.id">
+          <TaskCard
+            v-if="task.id !== taskToEdit?.id"
+            :task
+            @clickEvent="intoEditMode"
+            @checked="handleCheckAction"
+          />
+        </div>
+      </TransitionGroup>
     </div>
     <div v-else-if="!isFormVisible" class="text-center m-10">
       <img src="../public/no_todos.svg" />
