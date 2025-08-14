@@ -9,5 +9,6 @@ export interface Task {
   title: string;
   description: string;
   importance: Importance;
+  date: Date;
   completed: boolean;
 }
