@@ -146,7 +146,7 @@ function setImportance(importance: Importance): void {
           </div>
           <div class="flex">
             <CalendarDaysIcon class="w-4" />
-            <DatePicker v-model="formData.date" class="datepicker w-[84px]" />
+            <DatePicker v-model="formData.date" class="w-[106px]" />
           </div>
         </div>
       </div>

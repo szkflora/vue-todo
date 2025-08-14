@@ -18,16 +18,35 @@ interface SortData {
 
 const props = defineProps<{ data: SortData }>();
 
-const order = ref<string>('unorganized');
+const orders: Record<string, SortOrder> = {
+  'title': 'unorganized',
+  'description': 'unorganized',
+  'importance': 'unorganized',
+  'date': 'unorganized'
+}
+
 const property = ref<string>('');
 
-function changeOrder(newOrder: string): void {
-  order.value = newOrder;
-}
+// function changeOrder(newOrder: string): void {
+//   order.value = newOrder;
+// }
 
 function changeProperty(newProperty: string): void {
   property.value = newProperty;
-  emit('sort', order.value, property.value);
+
+  switch (orders[property.value]) {
+    case 'unorganized':
+      orders[property.value] = 'ascending';
+      break;
+    case 'ascending':
+      orders[property.value] = 'descending';
+      break;
+    case 'descending':
+      orders[property.value] = 'unorganized';
+      break;
+  }
+
+  emit('sort', orders[property.value], property.value);
 }
 </script>
 
@@ -57,10 +76,10 @@ function changeProperty(newProperty: string): void {
         >
       </div>
       <div class="flex justify-end gap-3.5">
-        <BaseButton html-type="button" type="bar" class="default ascending" @click="changeOrder('ascending')">
+        <BaseButton html-type="button" type="bar" class="default ascending">
           <ArrowUpIcon class="w-4"></ArrowUpIcon>
         </BaseButton>
-        <BaseButton html-type="button" type="bar" class="default descending" @click="changeOrder('descending')">
+        <BaseButton html-type="button" type="bar" class="default descending">
           <ArrowDownIcon class="w-4"></ArrowDownIcon>
         </BaseButton>
       </div>
