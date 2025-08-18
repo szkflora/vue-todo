@@ -106,17 +106,14 @@ function setImportance(importance: Importance): void {
         </div>
         <div class="flex md:hidden justify-between items-center gap-1">
           <BaseButton
-            html-type="button"
             :class="['w-4 h-4 bg-[#38cbcb]', selectedImportance === Importance.LOW ? 'border-2 border-black' : '']"
             @click="setImportance(Importance.LOW)"
           />
           <BaseButton
-            html-type="button"
             :class="['w-4 h-4 bg-[#ffab00]', selectedImportance === Importance.MEDIUM ? 'border-2 border-black' : '']"
             @click="setImportance(Importance.MEDIUM)"
           />
           <BaseButton
-            html-type="button"
             :class="['w-4 h-4 bg-[#ff481f]', selectedImportance === Importance.HIGH ? 'border-2 border-black' : '']"
             @click="setImportance(Importance.HIGH)"
           />
@@ -132,12 +129,10 @@ function setImportance(importance: Importance): void {
         ></textarea>
         <div class="flex justify-between gap-3">
           <div class="flex md:gap-3">
-            <BaseButton html-type="submit" type="primary" class="bg-[#38cb89] text-white mr-[10px] md:mr-[20px] hover:bg-[#23a068]">
+            <BaseButton html-type="submit" class="text-white">
               Save
             </BaseButton>
             <BaseButton
-              html-type="button"
-              type="primary"
               class="bg-[#e6e6e6] text-black hover:bg-[#b1b1b1]"
               @click="deleteTask"
             >

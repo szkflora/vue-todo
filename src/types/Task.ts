@@ -12,3 +12,9 @@ export interface Task {
   date: Date;
   completed: boolean;
 }
+
+export enum SortOrder {
+  ASC = 'ascending',
+  DSC = 'descending',
+  UNO = 'unorganized',
+}

@@ -2,12 +2,11 @@
 import BaseButton from './BaseButton.vue';
 import { ref, defineEmits } from 'vue';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/vue/24/outline';
+import { SortOrder } from '../types/Task';
 
 const emit = defineEmits<{
-  (e: 'sort', order: string, property: string): void;
+  (e: 'sort', order: SortOrder, property: string): void;
 }>();
-
-type SortOrder = 'ascending' | 'descending' | 'unorganized';
 
 interface SortData {
   title: SortOrder;
@@ -19,10 +18,10 @@ interface SortData {
 const props = defineProps<{ data: SortData }>();
 
 const orders: Record<string, SortOrder> = {
-  'title': 'unorganized',
-  'description': 'unorganized',
-  'importance': 'unorganized',
-  'date': 'unorganized'
+  'title': SortOrder.UNO,
+  'description': SortOrder.UNO,
+  'importance': SortOrder.UNO,
+  'date': SortOrder.UNO
 }
 
 const property = ref<string>('');
@@ -31,14 +30,14 @@ function changeProperty(newProperty: string): void {
   property.value = newProperty;
 
   switch (orders[property.value]) {
-    case 'unorganized':
-      orders[property.value] = 'ascending';
+    case SortOrder.UNO:
+      orders[property.value] = SortOrder.ASC;
       break;
-    case 'ascending':
-      orders[property.value] = 'descending';
+    case SortOrder.ASC:
+      orders[property.value] = SortOrder.DSC;
       break;
-    case 'descending':
-      orders[property.value] = 'unorganized';
+    case SortOrder.DSC:
+      orders[property.value] = SortOrder.UNO;
       break;
   }
 
@@ -50,32 +49,30 @@ function changeProperty(newProperty: string): void {
   <div class="flex justify-center">
     <div class="w-full flex justify-between items-center flex-wrap my-3 md:my-5 gap-2">
       <div class="flex justify-start gap-2 md:gap-3.5">
-        <BaseButton html-type="button" type="bar" :class="['default', data.title]" @click="changeProperty('title')"
+        <BaseButton type="bar" :class="['default', data.title]" @click="changeProperty('title')"
           >Title
         </BaseButton>
         <BaseButton
-          html-type="button"
           type="bar"
           :class="['default', data.description]"
           @click="changeProperty('description')"
           >Description
         </BaseButton>
         <BaseButton
-          html-type="button"
           type="bar"
           :class="['default', data.importance]"
           @click="changeProperty('importance')"
           >Priority</BaseButton
         >
-        <BaseButton html-type="button" type="bar" :class="['default', data.date]" @click="changeProperty('date')"
+        <BaseButton type="bar" :class="['default', data.date]" @click="changeProperty('date')"
           >Date</BaseButton
         >
       </div>
       <div class="flex justify-end gap-3.5">
-        <BaseButton html-type="button" type="bar" class="default ascending">
+        <BaseButton type="bar" class="default ascending">
           <ArrowUpIcon class="w-4"></ArrowUpIcon>
         </BaseButton>
-        <BaseButton html-type="button" type="bar" class="default descending">
+        <BaseButton type="bar" class="default descending">
           <ArrowDownIcon class="w-4"></ArrowDownIcon>
         </BaseButton>
       </div>

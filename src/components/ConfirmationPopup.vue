@@ -63,18 +63,16 @@ function handleDelete() {
 
             <div class="mt-6 flex justify-end gap-3">
               <BaseButton
-                html-type="button"
                 type="secondary"
                 @click="handleCancel"
-                class="flex justify-center items-center bg-[rgb(188,182,182)] text-gray-900 hover:bg-[#8e8989]"
+                class="flex justify-center items-center"
               >
                 Cancel
               </BaseButton>
               <BaseButton
-                html-type="button"
-                type="secondary"
+                type="danger"
                 @click="handleDelete"
-                class="flex justify-center items-center bg-red-600 text-white hover:bg-red-700"
+                class="flex justify-center items-center"
               >
                 Delete
               </BaseButton>

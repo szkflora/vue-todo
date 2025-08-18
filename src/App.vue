@@ -7,8 +7,8 @@ import ConfirmationPopup from './components/ConfirmationPopup.vue';
 import SearchBar from './components/SearchBar.vue';
 import { Task, Importance } from './types/Task';
 import SortBar from './components/SortBar.vue';
+import { SortOrder } from './types/Task';
 
-type SortOrder = 'ascending' | 'descending' | 'unorganized';
 const sortPriority = ['title', 'description', 'importance', 'date'];
 const importanceOrder: Record<Importance, number> = {
   [Importance.LOW]: 1,
@@ -29,10 +29,10 @@ const data = reactive<{
   importance: SortOrder;
   date: SortOrder;
 }>({
-  title: 'unorganized',
-  description: 'unorganized',
-  importance: 'unorganized',
-  date: 'unorganized',
+  title: SortOrder.UNO,
+  description: SortOrder.UNO,
+  importance: SortOrder.UNO,
+  date: SortOrder.UNO,
 });
 const searchWord = ref<string>('');
 const openPopup = ref<boolean>(false);
@@ -57,7 +57,7 @@ function handleTaskSubmission(newTask: Task): void {
   isFormVisible.value = false;
 
   for (const property in data) {
-    data[property as keyof typeof data] = 'unorganized';
+    data[property as keyof typeof data] = SortOrder.UNO;
   }
 }
 
@@ -108,19 +108,18 @@ function searchAmongTasks(keyword: string): void {
   );
 }
 
-function handleSort(order: string, property: string): void {
+function handleSort(order: SortOrder, property: string): void {
   const key = property as keyof typeof data;
-  const sortOrder = order as SortOrder;
 
-  data[key] = data[key] === sortOrder ? 'unorganized' : sortOrder;
+  data[key] = order;
 
   const tasksClone = [...(searchWord.value.trim() ? filteredTasks.value : tasks.value)];
-  const activeSorters = sortPriority.filter((prop) => data[prop] !== 'unorganized');
+  const activeSorters = sortPriority.filter((prop) => data[prop] !== SortOrder.UNO);
 
   tasksClone.sort((a, b) => {
     for (const prop of activeSorters) {
       if (a[prop] !== b[prop]) {
-        const direction = data[prop] === 'ascending' ? 1 : -1;
+        const direction = data[prop] === SortOrder.ASC ? 1 : -1;
 
         const aVal = a[prop];
         const bVal = b[prop];
