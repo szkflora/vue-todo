@@ -7,6 +7,8 @@ import ConfirmationPopup from './components/ConfirmationPopup.vue';
 import SearchBar from './components/SearchBar.vue';
 import { Task, Importance } from './types/Task';
 import SortBar from './components/SortBar.vue';
+import BaseButton from './components/BaseButton.vue';
+import AuthForm from './components/AuthForm.vue';
 
 type SortOrder = 'ascending' | 'descending' | 'unorganized';
 const sortPriority = ['title', 'description', 'importance', 'date'];
@@ -36,6 +38,8 @@ const data = reactive<{
 });
 const searchWord = ref<string>('');
 const openPopup = ref<boolean>(false);
+const loggedIn = ref<boolean>(false);
+const authMode = ref<string>('');
 
 const tasksToShow = computed(() => (searchWord.value.trim() ? filteredTasks.value : tasks.value));
 
@@ -148,10 +152,15 @@ function handleSort(order: string, property: string): void {
     tasks.value = tasksClone;
   }
 }
+
+function setAuthMode(mode: string): void {
+  authMode.value = mode;
+}
 </script>
 
 <template>
-  <div class="w-[328px] md:w-[600px] mx-2">
+  <div v-if="loggedIn" class="w-[328px] md:w-[600px] mx-2">
+    <BaseButton html-type="button" type="primary">Log out</BaseButton>
     <Header @show-form="showEmptyTaskForm" />
     <SearchBar v-show="tasks.length" @search="searchAmongTasks" />
     <SortBar :data="data" @sort="handleSort" v-show="tasks.length" />
@@ -176,5 +185,12 @@ function handleSort(order: string, property: string): void {
     <div v-else-if="!isFormVisible" class="flex items-center justify-center">
       <img class="m-10 w-[300px] md:w-[410px]" src="../public/no_todos.svg" />
     </div>
+  </div>
+  <div v-else-if="!authMode">
+    <BaseButton html-type="button" type="primary" @click="setAuthMode('login')">Login</BaseButton>
+    <BaseButton html-type="button" type="primary" @click="setAuthMode('signin')">Sign in</BaseButton>
+  </div>
+  <div v-else>
+    <AuthForm :mode="authMode"/>
   </div>
 </template>
