@@ -1,25 +1,18 @@
 import express, { Request, Response } from 'express';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cors from 'cors';
+import { connectToDb } from './db';
+import mongoose from 'mongoose';
+import taskRouter from './routes/tasks'
 
 dotenv.config();
 
 const app = express();
+app.use(cors());
 const port: number = 3000;
 
 mongoose.connect(process.env.atlas_URL as string).then(() => {
-  console.log('Connected to MongoDB Atlas');
-});
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, TypeScript + Node.js + Express + MongoDB Atlas!');
-});
-
-app.get('/movies', async(req: Request, res: Response) => {
-  const db = mongoose.connection.db;
-  const moviesCollection = db?.collection('movies');
-  const movies = await moviesCollection?.find({}).limit(5).toArray();
-  res.json(movies);
+  app.use('/tasks', taskRouter);
 });
 
 app.listen(port, () => {

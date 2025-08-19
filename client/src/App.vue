@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed, nextTick } from 'vue';
+import { ref, reactive, computed, nextTick, onMounted } from 'vue';
 import Header from './components/Header.vue';
 import TaskForm from './components/TaskForm.vue';
 import TaskCard from './components/TaskCard.vue';
@@ -19,6 +19,12 @@ const importanceOrder: Record<Importance, number> = {
 };
 
 const tasks = ref<Task[]>([]);
+
+onMounted(async () => {
+  const res = await fetch("http://localhost:3000/tasks");
+  tasks.value = await res.json();
+});
+
 const filteredTasks = ref<Task[]>([]);
 const isFormVisible = ref<boolean>(false);
 const taskToEdit = ref<Task | null>(null);
@@ -38,7 +44,7 @@ const data = reactive<{
 });
 const searchWord = ref<string>('');
 const openPopup = ref<boolean>(false);
-const loggedIn = ref<boolean>(false);
+const loggedIn = ref<boolean>(true);
 const authMode = ref<string>('');
 
 const tasksToShow = computed(() => (searchWord.value.trim() ? filteredTasks.value : tasks.value));
@@ -49,12 +55,12 @@ function showEmptyTaskForm(): void {
 }
 
 function handleTaskSubmission(newTask: Task): void {
-  if (newTask.id === 0) {
-    newTask.id = idCounter.value;
+  if (newTask._id === 0) {
+    newTask._id = idCounter.value;
     tasks.value.unshift(newTask);
     idCounter.value++;
   } else {
-    const index = tasks.value.findIndex((t) => t.id === newTask.id);
+    const index = tasks.value.findIndex((t) => t._id === newTask._id);
     tasks.value[index] = newTask;
   }
   taskToEdit.value = null;
@@ -75,7 +81,7 @@ function cancelDeletion(): void {
 }
 
 function handleTaskDeletion(): void {
-  tasks.value = tasks.value.filter((task) => task.id !== taskToDelete.value.id);
+  tasks.value = tasks.value.filter((task) => task._id !== taskToDelete.value._id);
   isFormVisible.value = false;
   openPopup.value = false;
 }
@@ -89,7 +95,7 @@ function handleCheckAction(taskToCheck: Task): void {
   enableAnimation.value = true;
   nextTick(() => {
     setTimeout(() => {
-      tasks.value = tasks.value.filter((task) => task.id !== taskToCheck.id);
+      tasks.value = tasks.value.filter((task) => task._id !== taskToCheck._id);
       if (taskToCheck.completed === true) {
         tasks.value.push(taskToCheck);
       } else {
@@ -158,38 +164,40 @@ function setAuthMode(mode: string): void {
 </script>
 
 <template>
-  <div v-if="loggedIn" class="w-[328px] md:w-[600px] mx-2">
-    <BaseButton html-type="button" type="primary">Log out</BaseButton>
-    <Header @show-form="showEmptyTaskForm" />
-    <SearchBar v-show="tasks.length" @search="searchAmongTasks" />
-    <SortBar :data="data" @sort="handleSort" v-show="tasks.length" />
+  <div class="w-[328px] md:w-[600px] mx-2">
+    <div v-if="loggedIn">
+      <BaseButton html-type="button" type="primary">Log out</BaseButton>
+      <Header @show-form="showEmptyTaskForm" />
+      <SearchBar v-show="tasks.length" @search="searchAmongTasks" />
+      <SortBar :data="data" @sort="handleSort" v-show="tasks.length" />
 
-    <div v-if="isFormVisible" class="flex items-center justify-center">
-      <TaskForm
-        :model-value="taskToEdit"
-        @task-submitted="handleTaskSubmission"
-        @confirm-deletion="handleConfirmation"
-      />
-    </div>
+      <div v-if="isFormVisible" class="flex items-center justify-center">
+        <TaskForm
+          :model-value="taskToEdit"
+          @task-submitted="handleTaskSubmission"
+          @confirm-deletion="handleConfirmation"
+        />
+      </div>
 
-    <ConfirmationPopup :is-open="openPopup" @cancel="cancelDeletion" @delete="handleTaskDeletion" />
+      <ConfirmationPopup :is-open="openPopup" @cancel="cancelDeletion" @delete="handleTaskDeletion" />
 
-    <div v-if="tasks.length" class="flex flex-col items-center justify-center">
-      <TransitionGroup tag="div" :move-class="enableAnimation ? 'transition-transform duration-500 ease-in-out' : ''">
-        <div v-for="task in tasksToShow" :key="task.id">
-          <TaskCard v-if="task.id !== taskToEdit?.id" :task @clickEvent="intoEditMode" @checked="handleCheckAction" />
-        </div>
-      </TransitionGroup>
+      <div v-if="tasks.length" class="flex flex-col items-center justify-center">
+        <TransitionGroup tag="div" :move-class="enableAnimation ? 'transition-transform duration-500 ease-in-out' : ''">
+          <div v-for="task in tasksToShow" :key="task._id">
+            <TaskCard v-if="task._id !== taskToEdit?._id" :task @clickEvent="intoEditMode" @checked="handleCheckAction" />
+          </div>
+        </TransitionGroup>
+      </div>
+      <div v-else-if="!isFormVisible" class="flex items-center justify-center">
+        <img class="m-10 w-[300px] md:w-[410px]" src="../public/no_todos.svg" />
+      </div>
     </div>
-    <div v-else-if="!isFormVisible" class="flex items-center justify-center">
-      <img class="m-10 w-[300px] md:w-[410px]" src="../public/no_todos.svg" />
+    <div v-else-if="!authMode">
+      <BaseButton class="mr-[10px] md:mr-[20px]" @click="setAuthMode('login')">Login</BaseButton>
+      <BaseButton @click="setAuthMode('signin')">Sign in</BaseButton>
     </div>
-  </div>
-  <div v-else-if="!authMode">
-    <BaseButton html-type="button" type="primary" @click="setAuthMode('login')">Login</BaseButton>
-    <BaseButton html-type="button" type="primary" @click="setAuthMode('signin')">Sign in</BaseButton>
-  </div>
-  <div v-else>
-    <AuthForm :mode="authMode"/>
+    <div v-else>
+      <AuthForm :mode="authMode" />
+    </div>
   </div>
 </template>

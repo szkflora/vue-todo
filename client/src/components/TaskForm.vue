@@ -29,7 +29,7 @@ const formData = reactive({
 const editMode = computed(() => props.modelValue !== null);
 
 function populateFormFromModel(task: Task): void {
-  formData.id = task.id;
+  formData.id = task._id;
   formData.title = task.title;
   formData.description = task.description;
   formData.importance = task.importance;
@@ -62,7 +62,7 @@ function resizeTextArea(): void {
 
 function handleSubmit(): void {
   const submittedTask: Task = {
-    id: editMode.value ? formData.id : 0,
+    _id: editMode.value ? formData.id : 0,
     title: formData.title,
     description: formData.description,
     importance: formData.importance,
