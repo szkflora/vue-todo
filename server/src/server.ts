@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import { connectToDb } from './db';
 import mongoose from 'mongoose';
 import taskRouter from './routes/tasks'
 

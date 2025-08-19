@@ -196,8 +196,12 @@ function setAuthMode(mode: string): void {
       <BaseButton class="mr-[10px] md:mr-[20px]" @click="setAuthMode('login')">Login</BaseButton>
       <BaseButton @click="setAuthMode('signin')">Sign in</BaseButton>
     </div>
+    <div v-else-if="!authMode">
+      <BaseButton html-type="button" type="primary" @click="setAuthMode('login')">Login</BaseButton>
+      <BaseButton html-type="button" type="primary" @click="setAuthMode('signin')">Sign in</BaseButton>
+    </div>
     <div v-else>
-      <AuthForm :mode="authMode" />
+      <AuthForm :mode="authMode"/>
     </div>
   </div>
 </template>
