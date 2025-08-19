@@ -166,7 +166,7 @@ function setAuthMode(mode: string): void {
 <template>
   <div class="w-[328px] md:w-[600px] mx-2">
     <div v-if="loggedIn">
-      <BaseButton html-type="button" type="primary">Log out</BaseButton>
+      <BaseButton>Log out</BaseButton>
       <Header @show-form="showEmptyTaskForm" />
       <SearchBar v-show="tasks.length" @search="searchAmongTasks" />
       <SortBar :data="data" @sort="handleSort" v-show="tasks.length" />
@@ -197,8 +197,8 @@ function setAuthMode(mode: string): void {
       <BaseButton @click="setAuthMode('signin')">Sign in</BaseButton>
     </div>
     <div v-else-if="!authMode">
-      <BaseButton html-type="button" type="primary" @click="setAuthMode('login')">Login</BaseButton>
-      <BaseButton html-type="button" type="primary" @click="setAuthMode('signin')">Sign in</BaseButton>
+      <BaseButton @click="setAuthMode('login')">Login</BaseButton>
+      <BaseButton @click="setAuthMode('signin')">Sign in</BaseButton>
     </div>
     <div v-else>
       <AuthForm :mode="authMode"/>
