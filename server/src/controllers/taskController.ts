@@ -21,7 +21,6 @@ export async function createTask(req: Request, res: Response) {
 
 export async function updateTaskImportance(req: Request, res: Response) {
   try {
-    console.log(req.body);
     const { _id } = req.params;
     await services.updateTaskImportance(_id, req.body.importance);
     res.sendStatus(200);
@@ -32,9 +31,28 @@ export async function updateTaskImportance(req: Request, res: Response) {
 
 export async function updateTaskState(req: Request, res: Response) {
   try {
-    console.log(req.body);
     const { _id } = req.params;
     await services.updateTaskState(_id, req.body.completed);
+    res.sendStatus(200);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+}
+
+export async function updateTaskText(req: Request, res: Response) {
+  try {
+    const { _id } = req.params;
+    await services.updateTaskText(_id, req.body.title, req.body.description);
+    res.sendStatus(200);
+  } catch (err) {
+    res.sendStatus(500);
+  }
+}
+
+export async function deleteTask(req: Request, res: Response) {
+  try {
+    const { _id } = req.params;
+    await services.deleteTask(_id);
     res.sendStatus(200);
   } catch (err) {
     res.sendStatus(500);

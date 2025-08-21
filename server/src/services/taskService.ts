@@ -25,3 +25,11 @@ export async function updateTaskImportance(id: string, importance: Importance) {
 export async function updateTaskState(id: string, completed: boolean) {
   await Task.updateOne({ _id: id }, { $set: { completed: completed } });
 }
+
+export async function updateTaskText(id: string, title: string, description: string) {
+  await Task.updateOne({ _id: id }, { $set: { title: title, description: description } });
+}
+
+export async function deleteTask(id: string) {
+  await Task.deleteOne({ _id: id });
+}
