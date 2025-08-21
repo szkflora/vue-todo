@@ -8,6 +8,8 @@ dotenv.config();
 
 const app = express();
 app.use(cors());
+app.use(express.json());
+
 const port: number = 3000;
 
 mongoose.connect(process.env.atlas_URL as string).then(() => {
