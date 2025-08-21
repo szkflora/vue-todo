@@ -22,7 +22,6 @@ function handleClick(): void {
 }
 
 function checkedTask(): void {
-  props.task.completed = !props.task.completed;
   emit('checked', props.task);
 }
 </script>
