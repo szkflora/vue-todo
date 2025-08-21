@@ -55,28 +55,41 @@ function showEmptyTaskForm(): void {
   taskToEdit.value = null;
 }
 
-async function handelTaskImportanceUpdate(index: number, task: Task, newImportance: Importance) {
+async function handelTaskImportanceUpdate(index: number, task: Task) {
   await fetch(`http://localhost:3000/tasks/${task._id}/importance`, {
-      method: 'PUT',
-      headers: {
-        'Content-type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({ importance: task.importance }),
-    });
-    tasks.value[index].importance = task.importance;
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({ importance: task.importance }),
+  });
+  tasks.value[index].importance = task.importance;
 }
 
 async function handelTaskStateUpdate(index: number, task: Task, newState: boolean) {
   await fetch(`http://localhost:3000/tasks/${task._id}/completed`, {
-      method: 'PUT',
-      headers: {
-        'Content-type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({ completed: newState }),
-    });
-    tasks.value[index].completed = newState;
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({ completed: newState }),
+  });
+  tasks.value[index].completed = newState;
+}
+
+async function handelTaskTextUpdate(index: number, task: Task) {
+  await fetch(`http://localhost:3000/tasks/${task._id}/text`, {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({ title: task.title, description: task.description }),
+  });
+  tasks.value[index].title = task.title;
+  tasks.value[index].description = task.description;
 }
 
 async function handelTaskUpdate(newTask: Task) {
@@ -84,12 +97,11 @@ async function handelTaskUpdate(newTask: Task) {
   const originalTask = tasks.value[index];
   console.log(originalTask.importance, newTask.importance);
   if (originalTask.importance !== newTask.importance) {
-    handelTaskImportanceUpdate(index, newTask, newTask.importance);
+    handelTaskImportanceUpdate(index, newTask);
   }
 
-  console.log(originalTask.completed, newTask.completed);
-  if (originalTask.completed !== newTask.completed) {
-    handelTaskStateUpdate(index, newTask, newTask.completed);
+  if (originalTask.title !== newTask.title || originalTask.description !== newTask.description) {
+    handelTaskTextUpdate(index, newTask);
   }
 }
 
@@ -125,8 +137,11 @@ function cancelDeletion(): void {
   openPopup.value = false;
 }
 
-function handleTaskDeletion(): void {
+async function handleTaskDeletion() {
   tasks.value = tasks.value.filter((task) => task._id !== taskToDelete.value._id);
+  await fetch(`http://localhost:3000/tasks/${taskToDelete.value._id}`, {
+    method: 'DELETE',
+  });
   isFormVisible.value = false;
   openPopup.value = false;
 }
