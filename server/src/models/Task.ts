@@ -6,7 +6,7 @@ export enum Importance {
   HIGH = 'High',
 }
 
-export interface TaskI extends Document {
+export interface ITask extends Document {
     title: string;
     description?: string;
     importance: Importance;
@@ -15,7 +15,7 @@ export interface TaskI extends Document {
     userId: mongoose.Types.ObjectId;
 }
 
-const TaskSchema: Schema<TaskI> = new Schema({
+const TaskSchema: Schema<ITask> = new Schema({
     title: {type: String, required: true},
     description: {type: String},
     importance: {
@@ -28,4 +28,4 @@ const TaskSchema: Schema<TaskI> = new Schema({
     userId: {type: Schema.Types.ObjectId, ref: 'User', required: true}
 });
 
-export const Task = mongoose.model<TaskI>('Task', TaskSchema);
+export const Task = mongoose.model<ITask>('Task', TaskSchema);
