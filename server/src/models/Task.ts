@@ -10,7 +10,8 @@ export interface TaskI extends Document {
     title: string;
     description?: string;
     importance: Importance;
-    date: Date;
+    dueDate: Date;
+    creationDate: Date;
     completed: boolean;
     userId: mongoose.Types.ObjectId;
 }
@@ -23,7 +24,8 @@ const TaskSchema: Schema<TaskI> = new Schema({
         enum: Object.values(Importance),
         required: true
     },
-    date: {type: Date, required: true},
+    dueDate: {type: Date, required: true},
+    creationDate: {type: Date, default: Date.now},
     completed: {type: Boolean, default: false},
     userId: {type: Schema.Types.ObjectId, ref: 'User', required: true}
 });

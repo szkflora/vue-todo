@@ -10,7 +10,7 @@ import SortBar from '../components/SortBar.vue';
 import { SortOrder } from '../types/Task';
 import BaseButton from '../components/BaseButton.vue';
 
-const sortPriority = ['title', 'description', 'importance', 'date'];
+const sortPriority = ['title', 'description', 'importance', 'dueDate'];
 const importanceOrder: Record<Importance, number> = {
   [Importance.LOW]: 1,
   [Importance.MEDIUM]: 2,
@@ -33,12 +33,12 @@ const data = reactive<{
   title: SortOrder;
   description: SortOrder;
   importance: SortOrder;
-  date: SortOrder;
+  dueDate: SortOrder;
 }>({
   title: SortOrder.UNO,
   description: SortOrder.UNO,
   importance: SortOrder.UNO,
-  date: SortOrder.UNO,
+  dueDate: SortOrder.UNO,
 });
 const searchWord = ref<string>('');
 const openPopup = ref<boolean>(false);
@@ -55,7 +55,7 @@ function showEmptyTaskForm(): void {
   taskToEdit.value = null;
 }
 
-async function handelTaskImportanceUpdate(index: number, task: Task) {
+async function handleTaskImportanceUpdate(index: number, task: Task) {
   await fetch(`http://localhost:3000/tasks/${task._id}/importance`, {
     method: 'PUT',
     headers: {
@@ -67,7 +67,7 @@ async function handelTaskImportanceUpdate(index: number, task: Task) {
   tasks.value[index].importance = task.importance;
 }
 
-async function handelTaskStateUpdate(index: number, task: Task, newState: boolean) {
+async function handleTaskStateUpdate(index: number, task: Task, newState: boolean) {
   await fetch(`http://localhost:3000/tasks/${task._id}/completed`, {
     method: 'PUT',
     headers: {
@@ -79,7 +79,7 @@ async function handelTaskStateUpdate(index: number, task: Task, newState: boolea
   tasks.value[index].completed = newState;
 }
 
-async function handelTaskTextUpdate(index: number, task: Task) {
+async function handleTaskTextUpdate(index: number, task: Task) {
   await fetch(`http://localhost:3000/tasks/${task._id}/text`, {
     method: 'PUT',
     headers: {
@@ -92,21 +92,19 @@ async function handelTaskTextUpdate(index: number, task: Task) {
   tasks.value[index].description = task.description;
 }
 
-async function handelTaskUpdate(newTask: Task) {
+async function handleTaskUpdate(newTask: Task) {
   const index = tasks.value.findIndex((t) => t._id === newTask._id);
   const originalTask = tasks.value[index];
-  console.log(originalTask.importance, newTask.importance);
   if (originalTask.importance !== newTask.importance) {
-    handelTaskImportanceUpdate(index, newTask);
+    handleTaskImportanceUpdate(index, newTask);
   }
 
   if (originalTask.title !== newTask.title || originalTask.description !== newTask.description) {
-    handelTaskTextUpdate(index, newTask);
+    handleTaskTextUpdate(index, newTask);
   }
 }
 
 async function handleTaskSubmission(newTask: Task) {
-  console.log(newTask._id);
   if (newTask._id === 0) {
     tasks.value.unshift(newTask);
     await fetch('http://localhost:3000/tasks', {
@@ -118,7 +116,7 @@ async function handleTaskSubmission(newTask: Task) {
       body: JSON.stringify(newTask),
     });
   } else {
-    handelTaskUpdate(newTask);
+    handleTaskUpdate(newTask);
   }
   taskToEdit.value = null;
   isFormVisible.value = false;
@@ -158,7 +156,7 @@ function handleCheckAction(taskToCheck: Task): void {
     setTimeout(() => {
       const index = tasks.value.findIndex((t) => t._id === taskToCheck._id);
 
-      handelTaskStateUpdate(index, taskToCheck, newState);
+      handleTaskStateUpdate(index, taskToCheck, newState);
 
       setTimeout(() => {
         enableAnimation.value = false;
