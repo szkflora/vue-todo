@@ -1,4 +1,3 @@
-import { Date } from 'mongoose';
 import { Task, Importance } from '../models/Task';
 
 export async function getTasks() {

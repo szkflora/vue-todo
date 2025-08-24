@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import taskRouter from './routes/tasks'
+import userRouter from './routes/users'
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ const port: number = 3000;
 
 mongoose.connect(process.env.atlas_URL as string).then(() => {
   app.use('/tasks', taskRouter);
+  app.use('/signup', userRouter);
 });
 
 app.listen(port, () => {

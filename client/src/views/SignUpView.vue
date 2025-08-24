@@ -1,35 +1,55 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { reactive } from 'vue';
+import { User } from '../types/User'
 import BaseButton from '../components/BaseButton.vue';
 
-const firstName = ref<string>('');
-const lastName = ref<string>('');
-const email = ref<string>('');
-const password = ref<string>('');
+const newUser = reactive({
+  firstName: '',
+  lastName: '',
+  email: '',
+  password: '',
+});
+
+async function signUp() {
+  const submittedUser: User = {
+    firstName: newUser.firstName,
+    lastName: newUser.lastName,
+    email: newUser.email,
+    password: newUser.password,
+  };
+  await fetch('http://localhost:3000/signup', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify(submittedUser),
+  });
+}
 </script>
 
 <template>
-  <form>
+  <form @submit.prevent="signUp">
     <div class="bg-[#efefef] px-6 py-4 font-sans border-0 rounded-2xl text-lg">
       <div class="flex items-center">
         <label>First name: </label>
-        <input v-model="firstName" /><br />
+        <input v-model="newUser.firstName" /><br />
       </div>
       <div class="flex items-center">
         <label>Last name: </label>
-        <input v-model="lastName" /><br />
+        <input v-model="newUser.lastName" /><br />
       </div>
       <div class="flex items-center">
         <label>Email address: </label>
-        <input v-model="email" /><br />
+        <input v-model="newUser.email" /><br />
       </div>
       <div class="flex items-center">
         <label>Password: </label>
-        <input type="password" v-model="password" /><br />
+        <input type="password" v-model="newUser.password" /><br />
       </div>
       <br />
       <div class="flex justify-end">
-        <BaseButton html-type="submit">Sign in</BaseButton>
+        <BaseButton html-type="submit">Sign Up</BaseButton>
       </div>
     </div>
   </form>
