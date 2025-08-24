@@ -12,7 +12,7 @@ interface SortData {
   title: SortOrder;
   description: SortOrder;
   importance: SortOrder;
-  date: SortOrder;
+  dueDate: SortOrder;
 }
 
 const props = defineProps<{ data: SortData }>();
@@ -21,7 +21,7 @@ const orders: Record<string, SortOrder> = {
   'title': SortOrder.UNO,
   'description': SortOrder.UNO,
   'importance': SortOrder.UNO,
-  'date': SortOrder.UNO
+  'dueDate': SortOrder.UNO
 }
 
 const property = ref<string>('');
@@ -64,7 +64,7 @@ function changeProperty(newProperty: string): void {
           @click="changeProperty('importance')"
           >Priority</BaseButton
         >
-        <BaseButton type="bar" :class="['default', data.date]" @click="changeProperty('date')"
+        <BaseButton type="bar" :class="['default', data.dueDate]" @click="changeProperty('dueDate')"
           >Date</BaseButton
         >
       </div>

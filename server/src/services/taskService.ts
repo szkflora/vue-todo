@@ -1,9 +1,8 @@
 import { Date } from 'mongoose';
 import { Task, Importance } from '../models/Task';
-import mongoose from 'mongoose';
 
 export async function getTasks() {
-  return await Task.find();
+  return await Task.find().sort({ creationDate: -1});
 }
 
 export async function createTask(title: string, description: string, importance: Importance, date: Date) {
@@ -11,7 +10,7 @@ export async function createTask(title: string, description: string, importance:
     title: title,
     description: description,
     importance: importance,
-    date: date,
+    dueDate: date,
     completed: false,
     userId: '68a339848eee20ff69c1841c',
   });

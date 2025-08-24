@@ -10,7 +10,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const formatted = useDateFormat(props.task.date, 'DD.MM.YY');
+const formatted = useDateFormat(props.task.dueDate, 'DD.MM.YY');
 
 const emit = defineEmits<{
   (e: 'clickEvent', task: Task): void;

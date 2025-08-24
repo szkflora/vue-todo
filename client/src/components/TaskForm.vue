@@ -22,7 +22,8 @@ const formData = reactive({
   title: '',
   description: '',
   importance: Importance.HIGH,
-  date: new Date(),
+  dueDate: new Date(),
+  creationDate: new Date(),
   completed: false,
 });
 
@@ -66,7 +67,8 @@ function handleSubmit(): void {
     title: formData.title,
     description: formData.description,
     importance: formData.importance,
-    date: formData.date,
+    dueDate: formData.dueDate,
+    creationDate: formData.creationDate,
     completed: formData.completed,
   };
 
@@ -141,7 +143,7 @@ function setImportance(importance: Importance): void {
           </div>
           <div class="flex">
             <CalendarDaysIcon class="hidden md:flex w-4" />
-            <DatePicker v-model="formData.date" class="w-[106px]" />
+            <DatePicker v-model="formData.dueDate" class="w-[106px]" />
           </div>
         </div>
       </div>
