@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import BaseButton from './BaseButton.vue';
+import BaseButton from '@/components/BaseButton.vue';
 import { ref, defineEmits } from 'vue';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/vue/24/outline';
-import { SortOrder } from '../types/Task';
+import { SortOrder, SortCriteria } from '@/types/Task';
 
 const emit = defineEmits<{
   (e: 'sort', order: SortOrder, property: string): void;
@@ -17,11 +17,11 @@ interface SortData {
 
 const props = defineProps<{ data: SortData }>();
 
-const orders: Record<string, SortOrder> = {
-  'title': SortOrder.UNO,
-  'description': SortOrder.UNO,
-  'importance': SortOrder.UNO,
-  'dueDate': SortOrder.UNO
+const orders: Record<SortCriteria, SortOrder> = {
+  [SortCriteria.TITLE]: SortOrder.UNO,
+  [SortCriteria.DESCRIPTION]: SortOrder.UNO,
+  [SortCriteria.IMPORTANCE]: SortOrder.UNO,
+  [SortCriteria.DATE]: SortOrder.UNO
 }
 
 const property = ref<string>('');

@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { ref, reactive, computed, nextTick, onMounted } from 'vue';
-import Header from '../components/Header.vue';
-import TaskForm from '../components/TaskForm.vue';
-import TaskCard from '../components/TaskCard.vue';
-import ConfirmationPopup from '../components/ConfirmationPopup.vue';
-import SearchBar from '../components/SearchBar.vue';
-import { Task, Importance } from '../types/Task';
-import SortBar from '../components/SortBar.vue';
-import { SortOrder } from '../types/Task';
-import BaseButton from '../components/BaseButton.vue';
+import TaskForm from '@/components/TaskForm.vue';
+import TaskCard from '@/components/TaskCard.vue';
+import ConfirmationPopup from '@/components/ConfirmationPopup.vue';
+import SearchBar from '@/components/SearchBar.vue';
+import { Task, Importance } from '@/types/Task';
+import SortBar from '@/components/SortBar.vue';
+import { SortOrder } from '@/types/Task';
+import BaseButton from '@/components/BaseButton.vue';
+import Header from '@/components/Header.vue';
+import { URL } from '@/config';
 
 const sortPriority = ['title', 'description', 'importance', 'dueDate'];
 const importanceOrder: Record<Importance, number> = {
@@ -56,7 +57,7 @@ function showEmptyTaskForm(): void {
 }
 
 async function handleTaskImportanceUpdate(index: number, task: Task) {
-  await fetch(`http://localhost:3000/tasks/${task._id}/importance`, {
+  await fetch(`${URL}/tasks/${task._id}/importance`, {
     method: 'PUT',
     headers: {
       'Content-type': 'application/json',
@@ -68,7 +69,7 @@ async function handleTaskImportanceUpdate(index: number, task: Task) {
 }
 
 async function handleTaskStateUpdate(index: number, task: Task, newState: boolean) {
-  await fetch(`http://localhost:3000/tasks/${task._id}/completed`, {
+  await fetch(`${URL}/tasks/${task._id}/completed`, {
     method: 'PUT',
     headers: {
       'Content-type': 'application/json',
@@ -80,7 +81,7 @@ async function handleTaskStateUpdate(index: number, task: Task, newState: boolea
 }
 
 async function handleTaskTextUpdate(index: number, task: Task) {
-  await fetch(`http://localhost:3000/tasks/${task._id}/text`, {
+  await fetch(`${URL}/tasks/${task._id}/text`, {
     method: 'PUT',
     headers: {
       'Content-type': 'application/json',
@@ -107,7 +108,7 @@ async function handleTaskUpdate(newTask: Task) {
 async function handleTaskSubmission(newTask: Task) {
   if (newTask._id === 0) {
     tasks.value.unshift(newTask);
-    await fetch('http://localhost:3000/tasks', {
+    await fetch(`${URL}/tasks`, {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
@@ -137,7 +138,7 @@ function cancelDeletion(): void {
 
 async function handleTaskDeletion() {
   tasks.value = tasks.value.filter((task) => task._id !== taskToDelete.value._id);
-  await fetch(`http://localhost:3000/tasks/${taskToDelete.value._id}`, {
+  await fetch(`${URL}/tasks/${taskToDelete.value._id}`, {
     method: 'DELETE',
   });
   isFormVisible.value = false;
@@ -220,7 +221,7 @@ function handleSort(order: SortOrder, property: string): void {
     <BaseButton>Log out</BaseButton>
     <Header @show-form="showEmptyTaskForm" />
     <SearchBar v-show="tasks.length" @search="searchAmongTasks" />
-    <SortBar :data="data" @sort="handleSort" v-show="tasks.length" />
+    <SortBar :data @sort="handleSort" v-show="tasks.length" />
 
     <div v-if="isFormVisible" class="flex items-center justify-center">
       <TaskForm

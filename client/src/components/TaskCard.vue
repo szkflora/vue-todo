@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue';
-import { Importance, Task } from '../types/Task';
+import { Importance, Task } from '@/types/Task';
 import { CheckIcon } from '@heroicons/vue/24/solid';
 import { useDateFormat } from '@vueuse/core';
 import { CalendarDaysIcon } from '@heroicons/vue/24/outline';

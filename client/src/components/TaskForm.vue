@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, defineEmits, defineProps, watch, nextTick } from 'vue';
-import { Task, Importance } from '../types/Task';
-import BaseButton from './BaseButton.vue';
+import { Task, Importance } from '@/types/Task';
+import BaseButton from '@/components/BaseButton.vue';
 import { CalendarDaysIcon } from '@heroicons/vue/24/outline';
 import DatePicker from 'primevue/datepicker';
 

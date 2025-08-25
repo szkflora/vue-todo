@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseButton from './BaseButton.vue';
+import BaseButton from '@/components/BaseButton.vue';
 import { ref, watch, defineEmits } from 'vue';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 

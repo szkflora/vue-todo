@@ -19,3 +19,10 @@ export enum SortOrder {
   DSC = 'descending',
   UNO = 'unorganized',
 }
+
+export enum SortCriteria {
+  TITLE = 'title',
+  DESCRIPTION = 'description',
+  IMPORTANCE = 'importance',
+  DATE = 'dueDate'
+}
