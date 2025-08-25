@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
 import TodoView from "../views/TodoView.vue";
 import SignUpView from "../views/SignUpView.vue";
-import LoginView from "../views/LoginView.vue";
+import SignInView from "../views/SignInView.vue";
 
 const routes = [
     { path: '/tasks', component: TodoView },
     { path: '/signup', component: SignUpView },
-    { path: '/login', component: LoginView}
+    { path: '/signin', component: SignInView}
 ]
 
 const router = createRouter({

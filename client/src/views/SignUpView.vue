@@ -29,7 +29,7 @@ const password = ref<string>('');
       </div>
       <br />
       <div class="flex justify-end">
-        <BaseButton html-type="submit">Sign in</BaseButton>
+        <BaseButton html-type="submit">Sign up</BaseButton>
       </div>
     </div>
   </form>
