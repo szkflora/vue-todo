@@ -17,7 +17,7 @@ async function signUp() {
     email: newUser.email,
     password: newUser.password,
   };
-  await fetch('http://localhost:3000/signup', {
+  const res = await fetch('http://localhost:3000/signup', {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
@@ -25,6 +25,11 @@ async function signUp() {
     },
     body: JSON.stringify(submittedUser),
   });
+
+  if (res.status === 201){
+    await fetch('http://localhost:3000/tasks');
+    window.location.href = '/tasks';
+  }
 }
 </script>
 
@@ -49,7 +54,7 @@ async function signUp() {
       </div>
       <br />
       <div class="flex justify-end">
-        <BaseButton html-type="submit">Sign Up</BaseButton>
+        <BaseButton html-type="submit">Sign up</BaseButton>
       </div>
     </div>
   </form>
