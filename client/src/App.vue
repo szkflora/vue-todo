@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed, nextTick } from 'vue';
+import { ref, reactive, computed, nextTick, onMounted } from 'vue';
 import Header from './components/Header.vue';
 import TaskForm from './components/TaskForm.vue';
 import TaskCard from './components/TaskCard.vue';
@@ -8,6 +8,8 @@ import SearchBar from './components/SearchBar.vue';
 import { Task, Importance } from './types/Task';
 import SortBar from './components/SortBar.vue';
 import { SortOrder } from './types/Task';
+import BaseButton from './components/BaseButton.vue';
+import { URL } from './config';
 
 const sortPriority = ['title', 'description', 'importance', 'date'];
 const importanceOrder: Record<Importance, number> = {
@@ -17,6 +19,12 @@ const importanceOrder: Record<Importance, number> = {
 };
 
 const tasks = ref<Task[]>([]);
+
+onMounted(async () => {
+  const res = await fetch(`${URL}/tasks`);
+  tasks.value = await res.json();
+});
+
 const filteredTasks = ref<Task[]>([]);
 const isFormVisible = ref<boolean>(false);
 const taskToEdit = ref<Task | null>(null);
@@ -36,7 +44,6 @@ const data = reactive<{
 });
 const searchWord = ref<string>('');
 const openPopup = ref<boolean>(false);
-
 const tasksToShow = computed(() => (searchWord.value.trim() ? filteredTasks.value : tasks.value));
 
 function showEmptyTaskForm(): void {
@@ -45,12 +52,12 @@ function showEmptyTaskForm(): void {
 }
 
 function handleTaskSubmission(newTask: Task): void {
-  if (newTask.id === 0) {
-    newTask.id = idCounter.value;
+  if (!newTask._id) {
+    newTask._id = idCounter.value;
     tasks.value.unshift(newTask);
     idCounter.value++;
   } else {
-    const index = tasks.value.findIndex((t) => t.id === newTask.id);
+    const index = tasks.value.findIndex((t) => t._id === newTask._id);
     tasks.value[index] = newTask;
   }
   taskToEdit.value = null;
@@ -71,7 +78,7 @@ function cancelDeletion(): void {
 }
 
 function handleTaskDeletion(): void {
-  tasks.value = tasks.value.filter((task) => task.id !== taskToDelete.value.id);
+  tasks.value = tasks.value.filter((task) => task._id !== taskToDelete.value._id);
   isFormVisible.value = false;
   openPopup.value = false;
 }
@@ -85,8 +92,8 @@ function handleCheckAction(taskToCheck: Task): void {
   enableAnimation.value = true;
   nextTick(() => {
     setTimeout(() => {
-      tasks.value = tasks.value.filter((task) => task.id !== taskToCheck.id);
-      if (taskToCheck.completed === true) {
+      tasks.value = tasks.value.filter((task) => task._id !== taskToCheck._id);
+      if (taskToCheck.completed) {
         tasks.value.push(taskToCheck);
       } else {
         tasks.value.unshift(taskToCheck);
@@ -151,6 +158,7 @@ function handleSort(order: SortOrder, property: string): void {
 
 <template>
   <div class="w-[328px] md:w-[600px] mx-2">
+    <BaseButton>Log out</BaseButton>
     <Header @show-form="showEmptyTaskForm" />
     <SearchBar v-show="tasks.length" @search="searchAmongTasks" />
     <SortBar :data="data" @sort="handleSort" v-show="tasks.length" />
@@ -167,8 +175,8 @@ function handleSort(order: SortOrder, property: string): void {
 
     <div v-if="tasks.length" class="flex flex-col items-center justify-center">
       <TransitionGroup tag="div" :move-class="enableAnimation ? 'transition-transform duration-500 ease-in-out' : ''">
-        <div v-for="task in tasksToShow" :key="task.id">
-          <TaskCard v-if="task.id !== taskToEdit?.id" :task @clickEvent="intoEditMode" @checked="handleCheckAction" />
+        <div v-for="task in tasksToShow" :key="task._id">
+          <TaskCard v-if="task._id !== taskToEdit?._id" :task @clickEvent="intoEditMode" @checked="handleCheckAction" />
         </div>
       </TransitionGroup>
     </div>
