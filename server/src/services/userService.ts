@@ -9,3 +9,8 @@ export async function addUser(firstName: string, lastName: string, email: string
   });
   await newUser.save();
 }
+
+export async function getUserByEmail(email: string) {
+  const result = await User.findOne({ email: email}, { _id : 1 });
+  return result?._id;
+}
