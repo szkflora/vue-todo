@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineEmits } from 'vue';
 import { PlusIcon } from '@heroicons/vue/24/outline';
-import BaseButton from './BaseButton.vue';
+import BaseButton from '@/components/BaseButton.vue';
 
 const emit = defineEmits<{
   (e: 'showForm'): void;

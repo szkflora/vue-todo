@@ -9,7 +9,8 @@ export interface Task {
   title: string;
   description: string;
   importance: Importance;
-  date: Date;
+  dueDate: Date;
+  creationDate: Date;
   completed: boolean;
 }
 
@@ -17,4 +18,11 @@ export enum SortOrder {
   ASC = 'ascending',
   DSC = 'descending',
   UNO = 'unorganized',
+}
+
+export enum SortCriteria {
+  TITLE = 'title',
+  DESCRIPTION = 'description',
+  IMPORTANCE = 'importance',
+  DATE = 'dueDate'
 }

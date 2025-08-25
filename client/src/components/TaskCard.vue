@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue';
-import { Importance, Task } from '../types/Task';
+import { Importance, Task } from '@/types/Task';
 import { CheckIcon } from '@heroicons/vue/24/solid';
 import { useDateFormat } from '@vueuse/core';
 import { CalendarDaysIcon } from '@heroicons/vue/24/outline';
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const formatted = useDateFormat(props.task.date, 'DD.MM.YY');
+const formatted = useDateFormat(props.task.dueDate, 'DD.MM.YY');
 
 const emit = defineEmits<{
   (e: 'clickEvent', task: Task): void;
@@ -22,7 +22,6 @@ function handleClick(): void {
 }
 
 function checkedTask(): void {
-  props.task.completed = !props.task.completed;
   emit('checked', props.task);
 }
 </script>
