@@ -9,7 +9,9 @@ import SortBar from '@/components/SortBar.vue';
 import { SortOrder } from '@/types/Task';
 import BaseButton from '@/components/BaseButton.vue';
 import Header from '@/components/Header.vue';
-import { URL } from '@/config';
+import { useTaskStore } from '@/stores/tasks';
+
+const taskStore = useTaskStore();
 
 const sortPriority = ['title', 'description', 'importance', 'dueDate'];
 const importanceOrder: Record<Importance, number> = {
@@ -18,11 +20,8 @@ const importanceOrder: Record<Importance, number> = {
   [Importance.HIGH]: 3,
 };
 
-const tasks = ref<Task[]>([]);
-
 onMounted(async () => {
-  const res = await fetch('http://localhost:3000/tasks');
-  tasks.value = await res.json();
+  taskStore.getTasks();
 });
 
 const filteredTasks = ref<Task[]>([]);
@@ -43,7 +42,7 @@ const data = reactive<{
 });
 const searchWord = ref<string>('');
 const openPopup = ref<boolean>(false);
-const tasksToShow = computed(() => (searchWord.value.trim() ? filteredTasks.value : tasks.value));
+const tasksToShow = computed(() => (searchWord.value.trim() ? filteredTasks.value : taskStore.tasks));
 const orderedTasks = computed(() => {
   return [...tasksToShow.value].sort((a, b) => {
     if (a.completed === b.completed) return 0;
@@ -56,66 +55,21 @@ function showEmptyTaskForm(): void {
   taskToEdit.value = null;
 }
 
-async function handleTaskImportanceUpdate(index: number, task: Task) {
-  await fetch(`${URL}/tasks/${task._id}/importance`, {
-    method: 'PUT',
-    headers: {
-      'Content-type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify({ importance: task.importance }),
-  });
-  tasks.value[index].importance = task.importance;
-}
-
-async function handleTaskStateUpdate(index: number, task: Task, newState: boolean) {
-  await fetch(`${URL}/tasks/${task._id}/completed`, {
-    method: 'PUT',
-    headers: {
-      'Content-type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify({ completed: newState }),
-  });
-  tasks.value[index].completed = newState;
-}
-
-async function handleTaskTextUpdate(index: number, task: Task) {
-  await fetch(`${URL}/tasks/${task._id}/text`, {
-    method: 'PUT',
-    headers: {
-      'Content-type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify({ title: task.title, description: task.description }),
-  });
-  tasks.value[index].title = task.title;
-  tasks.value[index].description = task.description;
-}
-
 async function handleTaskUpdate(newTask: Task) {
-  const index = tasks.value.findIndex((t) => t._id === newTask._id);
-  const originalTask = tasks.value[index];
+  const index = taskStore.tasks.findIndex((t) => t._id === newTask._id);
+  const originalTask = taskStore.tasks[index];
   if (originalTask.importance !== newTask.importance) {
-    handleTaskImportanceUpdate(index, newTask);
+    taskStore.handleTaskImportanceUpdate(index, newTask);
   }
 
   if (originalTask.title !== newTask.title || originalTask.description !== newTask.description) {
-    handleTaskTextUpdate(index, newTask);
+    taskStore.handleTaskTextUpdate(index, newTask);
   }
 }
 
 async function handleTaskSubmission(newTask: Task) {
   if (newTask._id === 0) {
-    tasks.value.unshift(newTask);
-    await fetch(`${URL}/tasks`, {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(newTask),
-    });
+    taskStore.handleTaskSubmission(newTask);
   } else {
     handleTaskUpdate(newTask);
   }
@@ -137,10 +91,7 @@ function cancelDeletion(): void {
 }
 
 async function handleTaskDeletion() {
-  tasks.value = tasks.value.filter((task) => task._id !== taskToDelete.value._id);
-  await fetch(`${URL}/tasks/${taskToDelete.value._id}`, {
-    method: 'DELETE',
-  });
+  taskStore.handleTaskDeletion(taskToDelete.value);
   isFormVisible.value = false;
   openPopup.value = false;
 }
@@ -155,9 +106,9 @@ function handleCheckAction(taskToCheck: Task): void {
   const newState = !taskToCheck.completed;
   nextTick(() => {
     setTimeout(() => {
-      const index = tasks.value.findIndex((t) => t._id === taskToCheck._id);
+      const index = taskStore.tasks.findIndex((t) => t._id === taskToCheck._id);
 
-      handleTaskStateUpdate(index, taskToCheck, newState);
+      taskStore.handleTaskStateUpdate(index, taskToCheck, newState);
 
       setTimeout(() => {
         enableAnimation.value = false;
@@ -168,7 +119,7 @@ function handleCheckAction(taskToCheck: Task): void {
 
 function searchAmongTasks(keyword: string): void {
   searchWord.value = keyword.trim();
-  filteredTasks.value = tasks.value.filter(
+  filteredTasks.value = taskStore.tasks.filter(
     (task) =>
       task.title.toLowerCase().includes(searchWord.value.toLowerCase()) ||
       task.description.toLowerCase().includes(searchWord.value.toLowerCase()),
@@ -180,7 +131,7 @@ function handleSort(order: SortOrder, property: string): void {
 
   data[key] = order;
 
-  const tasksClone = [...(searchWord.value.trim() ? filteredTasks.value : tasks.value)];
+  const tasksClone = [...(searchWord.value.trim() ? filteredTasks.value : taskStore.tasks)];
   const activeSorters = sortPriority.filter((prop) => data[prop] !== SortOrder.UNO);
 
   tasksClone.sort((a, b) => {
@@ -211,7 +162,7 @@ function handleSort(order: SortOrder, property: string): void {
   if (searchWord.value.trim()) {
     filteredTasks.value = tasksClone;
   } else {
-    tasks.value = tasksClone;
+    taskStore.tasks = tasksClone;
   }
 }
 </script>
@@ -220,8 +171,8 @@ function handleSort(order: SortOrder, property: string): void {
   <div>
     <BaseButton>Log out</BaseButton>
     <Header @show-form="showEmptyTaskForm" />
-    <SearchBar v-show="tasks.length" @search="searchAmongTasks" />
-    <SortBar :data @sort="handleSort" v-show="tasks.length" />
+    <SearchBar v-show="taskStore.tasks.length" @search="searchAmongTasks" />
+    <SortBar :data @sort="handleSort" v-show="taskStore.tasks.length" />
 
     <div v-if="isFormVisible" class="flex items-center justify-center">
       <TaskForm
@@ -233,7 +184,7 @@ function handleSort(order: SortOrder, property: string): void {
 
     <ConfirmationPopup :is-open="openPopup" @cancel="cancelDeletion" @delete="handleTaskDeletion" />
 
-    <div v-if="tasks.length" class="flex flex-col items-center justify-center">
+    <div v-if="taskStore.tasks.length" class="flex flex-col items-center justify-center">
       <TransitionGroup tag="div" :move-class="enableAnimation ? 'transition-transform duration-500 ease-in-out' : ''">
         <div v-for="task in orderedTasks" :key="task._id">
           <TaskCard v-if="task._id !== taskToEdit?._id" :task @clickEvent="intoEditMode" @checked="handleCheckAction" />
