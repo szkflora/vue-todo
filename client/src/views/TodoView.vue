@@ -56,7 +56,7 @@ function showEmptyTaskForm(): void {
 }
 
 async function handleTaskUpdate(newTask: Task) {
-  const index = taskStore.tasks.findIndex((t) => t._id === newTask._id);
+  const index = taskStore.returnIndexById(newTask._id);
   const originalTask = taskStore.tasks[index];
   if (originalTask.importance !== newTask.importance) {
     taskStore.handleTaskImportanceUpdate(index, newTask);
@@ -68,7 +68,7 @@ async function handleTaskUpdate(newTask: Task) {
 }
 
 async function handleTaskSubmission(newTask: Task) {
-  if (newTask._id === 0) {
+  if (newTask._id === null) {
     taskStore.handleTaskSubmission(newTask);
   } else {
     handleTaskUpdate(newTask);
@@ -106,7 +106,7 @@ function handleCheckAction(taskToCheck: Task): void {
   const newState = !taskToCheck.completed;
   nextTick(() => {
     setTimeout(() => {
-      const index = taskStore.tasks.findIndex((t) => t._id === taskToCheck._id);
+      const index = taskStore.returnIndexById(taskToCheck._id);
 
       taskStore.handleTaskStateUpdate(index, taskToCheck, newState);
 
@@ -186,7 +186,7 @@ function handleSort(order: SortOrder, property: string): void {
 
     <div v-if="taskStore.tasks.length" class="flex flex-col items-center justify-center">
       <TransitionGroup tag="div" :move-class="enableAnimation ? 'transition-transform duration-500 ease-in-out' : ''">
-        <div v-for="task in orderedTasks" :key="task._id">
+        <div v-for="task in orderedTasks" :key="task._id ? task._id.toString() : 'newTask'">
           <TaskCard v-if="task._id !== taskToEdit?._id" :task @clickEvent="intoEditMode" @checked="handleCheckAction" />
         </div>
       </TransitionGroup>

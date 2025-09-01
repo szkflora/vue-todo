@@ -2,6 +2,7 @@ import { Task } from '@/types/Task';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { URL } from '@/config';
+import { Types } from 'mongoose';
 
 export const useTaskStore = defineStore('taskstore', () => {
   const tasks = ref<Task[]>([]);
@@ -49,8 +50,7 @@ export const useTaskStore = defineStore('taskstore', () => {
   }
 
   async function handleTaskSubmission(newTask: Task) {
-    tasks.value.unshift(newTask);
-    await fetch(`${URL}/tasks`, {
+    const res = await fetch(`${URL}/tasks`, {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
@@ -58,6 +58,9 @@ export const useTaskStore = defineStore('taskstore', () => {
       },
       body: JSON.stringify(newTask),
     });
+
+    const created = await res.json();
+    tasks.value.unshift(created);
   }
 
   async function handleTaskDeletion(taskToDelete: Task) {
@@ -65,6 +68,10 @@ export const useTaskStore = defineStore('taskstore', () => {
     await fetch(`${URL}/tasks/${taskToDelete._id}`, {
       method: 'DELETE',
     });
+  }
+
+  function returnIndexById(id: Types.ObjectId) {
+    return tasks.value.findIndex((t) => t._id === id);
   }
 
   return {
@@ -75,5 +82,6 @@ export const useTaskStore = defineStore('taskstore', () => {
     handleTaskTextUpdate,
     handleTaskSubmission,
     handleTaskDeletion,
+    returnIndexById,
   }
 });

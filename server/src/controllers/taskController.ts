@@ -23,8 +23,8 @@ export async function createTask(req: Request, res: Response) {
       return res.sendStatus(400);
     }
 
-    await services.createTask(req.body.title, req.body.description, req.body.importance, req.body.dueDate);
-    return res.sendStatus(201);
+    const task = await services.createTask(req.body.title, req.body.description, req.body.importance, req.body.dueDate);
+    return res.status(201).json(task)
   } catch (err) {
     return res.sendStatus(500);
   }

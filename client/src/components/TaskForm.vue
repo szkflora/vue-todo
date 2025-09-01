@@ -18,7 +18,7 @@ const descriptionRef = ref<HTMLTextAreaElement>(null);
 const selectedImportance = ref<Importance>(null);
 
 const formData = reactive({
-  id: 0,
+  id: null,
   title: '',
   description: '',
   importance: Importance.HIGH,
@@ -63,7 +63,7 @@ function resizeTextArea(): void {
 
 function handleSubmit(): void {
   const submittedTask: Task = {
-    _id: editMode.value ? formData.id : 0,
+    _id: editMode.value ? formData.id : null,
     title: formData.title,
     description: formData.description,
     importance: formData.importance,

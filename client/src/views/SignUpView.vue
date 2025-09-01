@@ -12,12 +12,11 @@ const password = ref<string>('');
 <template>
   <form>
     <div class="bg-[#efefef] px-6 py-4 font-sans border-0 rounded-2xl text-lg">
-      <BaseInput v-model="firstName" text="First name: "></BaseInput>
-      <BaseInput v-model="lastName" text="Last name: "></BaseInput>
-      <BaseInput v-model="email" text="Email address: "></BaseInput>
-      <BaseInput v-model="password" text="Password:"></BaseInput>
-      <br />
-      <div class="flex justify-end">
+      <BaseInput v-model="firstName" text="First name: "/>
+      <BaseInput v-model="lastName" text="Last name: "/>
+      <BaseInput v-model="email" text="Email address: "/>
+      <BaseInput v-model="password" type="password" text="Password:"/>
+      <div class="flex justify-end pt-5">
         <BaseButton html-type="submit">Sign up</BaseButton>
       </div>
     </div>

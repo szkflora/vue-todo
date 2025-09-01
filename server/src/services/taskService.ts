@@ -15,6 +15,7 @@ export async function createTask(title: string, description: string, importance:
     userId: '68a339848eee20ff69c1841c',
   });
   await newTask.save();
+  return newTask;
 }
 
 export async function updateTaskImportance(id: string, importance: Importance) {

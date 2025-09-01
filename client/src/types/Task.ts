@@ -1,3 +1,5 @@
+import { Types } from 'mongoose'
+
 export enum Importance {
   LOW = 'Low',
   MEDIUM = 'Medium',
@@ -5,7 +7,7 @@ export enum Importance {
 }
 
 export interface Task {
-  _id: number;
+  _id: Types.ObjectId | null;
   title: string;
   description: string;
   importance: Importance;
