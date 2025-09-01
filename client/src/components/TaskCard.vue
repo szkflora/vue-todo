@@ -70,7 +70,7 @@ function checkedTask(): void {
       </div>
       <div
         :class="[
-          'hidden md:flex justify-center items-center text-white px-2 py-0.5 w-[80px] md:w-[120px] h-[20px] md:h-[30px] tracking-[0px] rounded-2xl',
+          'hidden md:flex justify-center items-center text-white w-[80px] md:w-[120px] h-[20px] md:h-[30px] tracking-[0px] rounded-2xl',
           {
             'bg-[#38cbcb]': task.importance === Importance.LOW,
             'bg-[#ffab00]': task.importance === Importance.MEDIUM,
@@ -109,7 +109,7 @@ function checkedTask(): void {
     </div>
     <div
       :class="[
-        'flex md:hidden justify-center items-center px-2 py-0.5 w-[20px] h-[20px] tracking-[0px] rounded-2xl',
+        'flex md:hidden justify-center items-center w-[20px] h-[20px] tracking-[0px] rounded-2xl',
         {
           'bg-[#38cbcb]': task.importance === Importance.LOW,
           'bg-[#ffab00]': task.importance === Importance.MEDIUM,

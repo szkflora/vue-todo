@@ -56,7 +56,7 @@ function showEmptyTaskForm(): void {
 }
 
 async function handleTaskUpdate(newTask: Task) {
-  const index = taskStore.returnIndexById(newTask._id);
+  const index = taskStore.getTaskIndexById(newTask._id);
   const originalTask = taskStore.tasks[index];
   if (originalTask.importance !== newTask.importance) {
     taskStore.handleTaskImportanceUpdate(index, newTask);
@@ -106,7 +106,7 @@ function handleCheckAction(taskToCheck: Task): void {
   const newState = !taskToCheck.completed;
   nextTick(() => {
     setTimeout(() => {
-      const index = taskStore.returnIndexById(taskToCheck._id);
+      const index = taskStore.getTaskIndexById(taskToCheck._id);
 
       taskStore.handleTaskStateUpdate(index, taskToCheck, newState);
 

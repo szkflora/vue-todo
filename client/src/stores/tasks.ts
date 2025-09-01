@@ -70,7 +70,7 @@ export const useTaskStore = defineStore('taskstore', () => {
     });
   }
 
-  function returnIndexById(id: Types.ObjectId) {
+  function getTaskIndexById(id: Types.ObjectId) {
     return tasks.value.findIndex((t) => t._id === id);
   }
 
@@ -82,6 +82,6 @@ export const useTaskStore = defineStore('taskstore', () => {
     handleTaskTextUpdate,
     handleTaskSubmission,
     handleTaskDeletion,
-    returnIndexById,
+    getTaskIndexById,
   }
 });

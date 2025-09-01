@@ -16,7 +16,7 @@ const password = ref<string>('');
       <BaseInput v-model="lastName" text="Last name: "/>
       <BaseInput v-model="email" text="Email address: "/>
       <BaseInput v-model="password" type="password" text="Password:"/>
-      <div class="flex justify-end pt-5">
+      <div class="flex justify-end mt-5">
         <BaseButton html-type="submit">Sign up</BaseButton>
       </div>
     </div>

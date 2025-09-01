@@ -88,7 +88,7 @@ function setImportance(importance: Importance): void {
 <template>
   <form @submit.prevent="handleSubmit">
     <div class="task flex-col w-full">
-      <div class="flex justify-between md:gap-26 pb-2 md:pb-4">
+      <div class="flex justify-between md:gap-26 mb-2 md:mb-4">
         <input
           v-model="formData.title"
           placeholder="Title"
@@ -108,14 +108,17 @@ function setImportance(importance: Importance): void {
         </div>
         <div class="flex md:hidden justify-between items-center gap-1">
           <BaseButton
+            type="default"
             :class="['w-4 h-4 bg-[#38cbcb]', selectedImportance === Importance.LOW ? 'border-2 border-black' : '']"
             @click="setImportance(Importance.LOW)"
           />
           <BaseButton
+            type="default"
             :class="['w-4 h-4 bg-[#ffab00]', selectedImportance === Importance.MEDIUM ? 'border-2 border-black' : '']"
             @click="setImportance(Importance.MEDIUM)"
           />
           <BaseButton
+            type="default"
             :class="['w-4 h-4 bg-[#ff481f]', selectedImportance === Importance.HIGH ? 'border-2 border-black' : '']"
             @click="setImportance(Importance.HIGH)"
           />
