@@ -2,8 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import taskRouter from './routes/tasks'
-import userRouter from './routes/users'
+import taskRouter from '@/routes/tasks'
+import userRouter from '@/routes/users'
 
 dotenv.config();
 

@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import { User } from './models/User'
-import { Task } from './models/Task'
-import { Importance } from './models/Task';
+import { User } from '@/models/User'
+import { Task } from '@/models/Task'
+import { Importance } from '@/models/Task';
 
 dotenv.config({ path: __dirname + '/../.env' });
 

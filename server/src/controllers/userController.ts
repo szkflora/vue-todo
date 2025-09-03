@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import * as services from '../services/userService';
+import * as services from '@/services/userService';
 import bcrypt from 'bcrypt'
 
 export async function addUser(req: Request, res: Response) {

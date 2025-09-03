@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import BaseInput from '@/components/BaseInput.vue';
 import { reactive } from 'vue';
-import { User } from '../types/User'
-import BaseButton from '../components/BaseButton.vue';
+import { User } from '@/types/User'
+import BaseButton from '@/components/BaseButton.vue';
 
 const newUser = reactive({
   firstName: '',

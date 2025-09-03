@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "build": "tsc",
-    "dev": "ts-node src/server.ts",
+    "dev": "ts-node -r tsconfig-paths/register src/server.ts",
     "seed": "ts-node src/seed.ts"
   },
   "keywords": [],
@@ -19,6 +19,7 @@
     "@types/mongoose": "^5.11.96",
     "@types/node": "^24.2.1",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.2"
   },
   "dependencies": {
