@@ -15,7 +15,7 @@ const port: number = 3000;
 
 mongoose.connect(process.env.atlas_URL as string).then(() => {
   app.use('/tasks', taskRouter);
-  app.use('/signup', userRouter);
+  app.use('/', userRouter);
 });
 
 app.listen(port, () => {
