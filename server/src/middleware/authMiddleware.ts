@@ -1,21 +1,28 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
-interface AuthRequest extends Request {
+export interface AuthRequest extends Request {
     userId?: string;
+    firstName?: string;
+    lastName?: string;
 }
 
 interface TokenPayload extends JwtPayload {
     userId: string;
+    firstName: string;
+    lastName: string;
 }
 
 export function verifyToken(req: AuthRequest, res: Response, next: NextFunction) {
-  const token = req.header('Authorization');
-  console.log(token, 'n');
+  const authHeader = req.header('Authorization');
+  const token = authHeader?.split(' ')[1];
+  console.log(token);
   if (!token) return res.sendStatus(401);
   try {
     const decoded = jwt.verify(token, 'secret') as TokenPayload;
     req.userId = decoded.userId;
+    req.firstName = decoded.firstName;
+    req.lastName = decoded.lastName;
     next();
   } catch (error) {
     res.sendStatus(401);

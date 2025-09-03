@@ -3,6 +3,9 @@ import BaseInput from '@/components/BaseInput.vue';
 import { reactive } from 'vue';
 import { User } from '../types/User'
 import BaseButton from '../components/BaseButton.vue';
+import { useTaskStore } from '@/stores/tasks';
+
+const taskStore = useTaskStore();
 
 const newUser = reactive({
   firstName: '',
@@ -28,7 +31,10 @@ async function signUp() {
   });
 
   if (res.status === 201){
-    await fetch('http://localhost:3000/tasks');
+    const data = await res.json();
+    console.log(data);
+    localStorage.setItem('authToken', data.token);
+    taskStore.getTasks();
     window.location.href = '/tasks';
   }
 }

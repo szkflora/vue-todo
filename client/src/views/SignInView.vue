@@ -2,6 +2,9 @@
 import BaseInput from '@/components/BaseInput.vue';
 import { reactive } from 'vue';
 import BaseButton from '../components/BaseButton.vue';
+import { useTaskStore } from '@/stores/tasks';
+
+const taskStore = useTaskStore();
 
 const userData = reactive({
   email: '',
@@ -20,9 +23,7 @@ async function signIn() {
 
   if (res.status === 200){
     const data = await res.json();
-    console.log(data);
     localStorage.setItem('authToken', data.token);
-    
     window.location.href = '/tasks';
   }
 }

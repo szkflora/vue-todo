@@ -1,17 +1,17 @@
 import { Task, Importance } from '../models/Task';
 
-export async function getTasks() {
-  return await Task.find().sort({ creationDate: -1});
+export async function getTasks(userId: string) {
+  return await Task.find({userId: userId}).sort({ creationDate: -1});
 }
 
-export async function createTask(title: string, description: string, importance: Importance, date: Date) {
+export async function createTask(title: string, description: string, importance: Importance, date: Date, userId: string) {
   const newTask = new Task({
     title: title,
     description: description,
     importance: importance,
     dueDate: date,
     completed: false,
-    userId: '68a339848eee20ff69c1841c',
+    userId: userId,
   });
   await newTask.save();
   return newTask;
