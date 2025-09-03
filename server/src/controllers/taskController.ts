@@ -2,17 +2,18 @@ import { Request, Response } from 'express';
 import * as services from '@/services/taskService';
 import { Importance } from '@/models/Task';
 import mongoose from 'mongoose';
+import { AuthRequest } from '../middleware/authMiddleware';
 
-export async function getTasks(req: Request, res: Response) {
+export async function getTasks(req: AuthRequest, res: Response) {
   try {
-    const tasks = await services.getTasks();
-    res.json(tasks);
+    const tasks = await services.getTasks(req.userId as string);
+    res.status(200).json(tasks);
   } catch (err) {
     res.sendStatus(500);
   }
 }
 
-export async function createTask(req: Request, res: Response) {
+export async function createTask(req: AuthRequest, res: Response) {
   try {
     if(!req.body.title || !Object.values(Importance).includes(req.body.importance)) {
       return res.sendStatus(400);
@@ -22,8 +23,8 @@ export async function createTask(req: Request, res: Response) {
     if (isNaN(parsedDate.getTime())) {
       return res.sendStatus(400);
     }
-
-    const task = await services.createTask(req.body.title, req.body.description, req.body.importance, req.body.dueDate);
+    console.log(req.userId as string);
+    const task = await services.createTask(req.body.title, req.body.description, req.body.importance, req.body.dueDate, req.userId as string);
     return res.status(201).json(task)
   } catch (err) {
     return res.sendStatus(500);

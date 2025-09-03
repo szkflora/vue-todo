@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import BaseInput from '@/components/BaseInput.vue';
 import { reactive } from 'vue';
-import { User } from '@/types/User'
 import BaseButton from '@/components/BaseButton.vue';
 import { URL } from '@/config';
+import { User } from '@/types/User'
+import { useTaskStore } from '@/stores/tasks';
+
+const taskStore = useTaskStore();
 
 const newUser = reactive({
   firstName: '',
@@ -29,7 +32,10 @@ async function signUp() {
   });
 
   if (res.status === 201){
-    await fetch(`${URL}/tasks`);
+    const data = await res.json();
+    console.log(data);
+    localStorage.setItem('authToken', data.token);
+    taskStore.getTasks();
     window.location.href = '/tasks';
   }
 }

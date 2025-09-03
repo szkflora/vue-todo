@@ -10,8 +10,15 @@ import { SortOrder } from '@/types/Task';
 import BaseButton from '@/components/BaseButton.vue';
 import Header from '@/components/Header.vue';
 import { useTaskStore } from '@/stores/tasks';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 const taskStore = useTaskStore();
+
+interface TokenPayload extends JwtPayload {
+  userId: string;
+  firstName: string;
+  lastName: string;
+}
 
 const sortPriority = ['title', 'description', 'importance', 'dueDate'];
 const importanceOrder: Record<Importance, number> = {
@@ -21,7 +28,7 @@ const importanceOrder: Record<Importance, number> = {
 };
 
 onMounted(async () => {
-  taskStore.getTasks();
+  taskStore.getTasks(userId.value);
 });
 
 const filteredTasks = ref<Task[]>([]);
@@ -48,6 +55,21 @@ const orderedTasks = computed(() => {
     if (a.completed === b.completed) return 0;
     return a.completed ? 1 : -1;
   });
+});
+
+const userId = ref<string>('');
+const firstName = ref<string>('');
+const lastName = ref<string>('');
+
+const authenticated = computed(() => {
+  const token = localStorage.getItem('authToken');
+  console.log(token);
+  if (token != null) {
+    const decoded = jwtDecode(token) as TokenPayload;
+    firstName.value = decoded.firstName;
+    lastName.value = decoded.lastName;
+  }
+  return token != null;
 });
 
 function showEmptyTaskForm(): void {
@@ -165,11 +187,27 @@ function handleSort(order: SortOrder, property: string): void {
     taskStore.tasks = tasksClone;
   }
 }
+
+function logout(): void {
+  localStorage.removeItem('authToken');
+  window.location.href = '/tasks';
+}
+
+function signin(): void {
+  window.location.href = '/signin';
+}
+
+function signup(): void {
+  window.location.href = '/signup';
+}
 </script>
 
 <template>
-  <div>
-    <BaseButton>Log out</BaseButton>
+  <div v-if="authenticated">
+    <div>
+      <p>Welcome {{ firstName }} {{ lastName }}</p>
+      <BaseButton @click="logout">Log out</BaseButton>
+    </div>
     <Header @show-form="showEmptyTaskForm" />
     <SearchBar v-show="taskStore.tasks.length" @search="searchAmongTasks" />
     <SortBar :data @sort="handleSort" v-show="taskStore.tasks.length" />
@@ -192,7 +230,11 @@ function handleSort(order: SortOrder, property: string): void {
       </TransitionGroup>
     </div>
     <div v-else-if="!isFormVisible" class="flex items-center justify-center">
-      <img class="m-10 w-[300px] md:w-[410px]" src="../public/no_todos.svg" />
+      <img class="m-10 w-[300px] md:w-[410px]" src="/public/no_todos.svg" />
     </div>
+  </div>
+  <div v-else class="flex justify-center gap-10">
+    <BaseButton @click="signin">Sign in</BaseButton>
+    <BaseButton @click="signup">Sign up</BaseButton>
   </div>
 </template>

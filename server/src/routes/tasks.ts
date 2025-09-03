@@ -5,7 +5,7 @@ const router = Router();
 
 router.get("/", verifyToken, getTasks);
 
-router.post("/", createTask);
+router.post("/", verifyToken, createTask);
 
 router.put("/:_id/importance", updateTaskImportance);
 

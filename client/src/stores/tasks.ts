@@ -7,8 +7,14 @@ import { Types } from 'mongoose';
 export const useTaskStore = defineStore('taskstore', () => {
   const tasks = ref<Task[]>([]);
 
-  async function getTasks() {
-    const res = await fetch(`${URL}/tasks`);
+  async function getTasks(userId: string) {
+    const token = localStorage.getItem('authToken');
+    const res = await fetch(`${URL}/tasks`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
     tasks.value = await res.json();
   }
 
@@ -50,11 +56,13 @@ export const useTaskStore = defineStore('taskstore', () => {
   }
 
   async function handleTaskSubmission(newTask: Task) {
+    const token = localStorage.getItem('authToken');
     const res = await fetch(`${URL}/tasks`, {
       method: 'POST',
       headers: {
         'Content-type': 'application/json',
         Accept: 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify(newTask),
     });
