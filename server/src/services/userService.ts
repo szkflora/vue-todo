@@ -5,12 +5,19 @@ export async function addUser(firstName: string, lastName: string, email: string
     firstName: firstName,
     lastName: lastName,
     email: email,
-    hashedPsw: hashedPsw
+    hashedPsw: hashedPsw,
   });
   await newUser.save();
 }
 
 export async function getUserByEmail(email: string) {
-  const result = await User.findOne({ email: email}, { _id : 1 });
+  const result = await User.findOne({ email: email }, { _id: 1 });
   return result?._id;
+}
+
+export async function getHashedPassword(email: string) {
+  const result = await User.findOne({ email: email }, { hashedPsw: 1 });
+  if (!result) {
+    return '';
+  } else return result.hashedPsw;
 }

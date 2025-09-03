@@ -1,8 +1,9 @@
 import { Router } from 'express'
 import { getTasks, createTask, updateTaskImportance, updateTaskState, updateTaskText, deleteTask } from '../controllers/taskController'
+import { verifyToken } from '../middleware/authMiddleware';
 const router = Router();
 
-router.get("/", getTasks);
+router.get("/", verifyToken, getTasks);
 
 router.post("/", createTask);
 
