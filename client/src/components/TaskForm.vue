@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, defineEmits, defineProps, watch, nextTick } from 'vue';
-import { Task, Importance } from '../types/Task';
-import BaseButton from './BaseButton.vue';
+import { Task, Importance } from '@/types/Task';
+import BaseButton from '@/components/BaseButton.vue';
 import { CalendarDaysIcon } from '@heroicons/vue/24/outline';
 import DatePicker from 'primevue/datepicker';
 
@@ -18,11 +18,12 @@ const descriptionRef = ref<HTMLTextAreaElement>(null);
 const selectedImportance = ref<Importance>(null);
 
 const formData = reactive({
-  id: 0,
+  id: null,
   title: '',
   description: '',
   importance: Importance.HIGH,
-  date: new Date(),
+  dueDate: new Date(),
+  creationDate: new Date(),
   completed: false,
 });
 
@@ -62,11 +63,12 @@ function resizeTextArea(): void {
 
 function handleSubmit(): void {
   const submittedTask: Task = {
-    _id: editMode.value ? formData.id : 0,
+    _id: editMode.value ? formData.id : null,
     title: formData.title,
     description: formData.description,
     importance: formData.importance,
-    date: formData.date,
+    dueDate: formData.dueDate,
+    creationDate: formData.creationDate,
     completed: formData.completed,
   };
 
@@ -86,7 +88,7 @@ function setImportance(importance: Importance): void {
 <template>
   <form @submit.prevent="handleSubmit">
     <div class="task flex-col w-full">
-      <div class="flex justify-between md:gap-26 pb-2 md:pb-4">
+      <div class="flex justify-between md:gap-26 mb-2 md:mb-4">
         <input
           v-model="formData.title"
           placeholder="Title"
@@ -106,14 +108,17 @@ function setImportance(importance: Importance): void {
         </div>
         <div class="flex md:hidden justify-between items-center gap-1">
           <BaseButton
+            type="default"
             :class="['w-4 h-4 bg-[#38cbcb]', selectedImportance === Importance.LOW ? 'border-2 border-black' : '']"
             @click="setImportance(Importance.LOW)"
           />
           <BaseButton
+            type="default"
             :class="['w-4 h-4 bg-[#ffab00]', selectedImportance === Importance.MEDIUM ? 'border-2 border-black' : '']"
             @click="setImportance(Importance.MEDIUM)"
           />
           <BaseButton
+            type="default"
             :class="['w-4 h-4 bg-[#ff481f]', selectedImportance === Importance.HIGH ? 'border-2 border-black' : '']"
             @click="setImportance(Importance.HIGH)"
           />
@@ -141,7 +146,7 @@ function setImportance(importance: Importance): void {
           </div>
           <div class="flex">
             <CalendarDaysIcon class="hidden md:flex w-4" />
-            <DatePicker v-model="formData.date" class="w-[106px]" />
+            <DatePicker v-model="formData.dueDate" class="w-[106px]" />
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BaseButton from './BaseButton.vue';
+import BaseButton from '@/components/BaseButton.vue';
 import { ref, watch, defineEmits } from 'vue';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 
@@ -33,10 +33,10 @@ watch(keyword, () => {
       class="w-full h-[40px] flex justify-between items-center my-3 md:my-5 rounded-xl border-2 border-solid"
     >
       <div class="flex gap-3">
-        <MagnifyingGlassIcon class="w-6 pl-1" />
+        <MagnifyingGlassIcon class="w-6 ml-1" />
         <input v-model="keyword" class="task_text md:w-[480px]" placeholder="Search todos..." />
       </div>
-      <div class="flex items-center pr-1">
+      <div class="flex items-center mr-1">
         <BaseButton html-type="submit" type="bar" class="bg-black text-white flex items-center justify-center text-sm"
           >Search</BaseButton
         >

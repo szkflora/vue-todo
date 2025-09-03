@@ -1,3 +1,5 @@
+import { Types } from 'mongoose'
+
 export enum Importance {
   LOW = 'Low',
   MEDIUM = 'Medium',
@@ -5,11 +7,12 @@ export enum Importance {
 }
 
 export interface Task {
-  _id: number;
+  _id: Types.ObjectId | null;
   title: string;
   description: string;
   importance: Importance;
-  date: Date;
+  dueDate: Date;
+  creationDate: Date;
   completed: boolean;
 }
 
@@ -17,4 +20,11 @@ export enum SortOrder {
   ASC = 'ascending',
   DSC = 'descending',
   UNO = 'unorganized',
+}
+
+export enum SortCriteria {
+  TITLE = 'title',
+  DESCRIPTION = 'description',
+  IMPORTANCE = 'importance',
+  DATE = 'dueDate'
 }

@@ -2,7 +2,7 @@
 import { defineEmits } from 'vue';
 import { Dialog, TransitionRoot, TransitionChild, DialogPanel, DialogTitle } from '@headlessui/vue';
 import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline';
-import BaseButton from './BaseButton.vue';
+import BaseButton from '@/components/BaseButton.vue';
 
 const props = defineProps<{
   isOpen: boolean;
