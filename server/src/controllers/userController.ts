@@ -10,12 +10,12 @@ export async function addUser(req: Request, res: Response) {
       return res.sendStatus(400);
     }
     const userWithSameEmail = await services.getUserByEmail(req.body.email);
-    if (userWithSameEmail !== undefined) {
+    if (userWithSameEmail !== null) {
       return res.sendStatus(400);
     }
     const hashedPsw = await bcrypt.hash(req.body.password, 10);
     const user = await services.addUser(req.body.firstName, req.body.lastName, req.body.email, hashedPsw);
-    const token = jwt.sign({ userId: user._id }, 'secret', { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user._id, firstName: user.firstName, lastName: user.lastName }, 'secret', { expiresIn: '2m' });
     return res.status(201).json({ token });
   } catch (err) {
     return res.sendStatus(500);
@@ -33,7 +33,7 @@ export async function signIn(req: Request, res: Response) {
     if (!passwordMatch) {
       return res.sendStatus(401);
     }
-    const token = jwt.sign({ userId: user._id, firstName: user.firstName, lastName: user.lastName }, 'secret', { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user._id, firstName: user.firstName, lastName: user.lastName }, 'secret', { expiresIn: '2m' });
     console.log(token);
     res.status(200).json({ token });
   } catch (err) {

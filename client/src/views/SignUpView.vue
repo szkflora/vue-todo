@@ -2,11 +2,10 @@
 import BaseInput from '@/components/BaseInput.vue';
 import { reactive } from 'vue';
 import BaseButton from '@/components/BaseButton.vue';
-import { URL } from '@/config';
 import { User } from '@/types/User'
-import { useTaskStore } from '@/stores/tasks';
+import { useAuthStore } from '@/stores/auth';
 
-const taskStore = useTaskStore();
+const authStore = useAuthStore();
 
 const newUser = reactive({
   firstName: '',
@@ -22,20 +21,9 @@ async function signUp() {
     email: newUser.email,
     password: newUser.password,
   };
-  const res = await fetch(`${URL}/signup`, {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify(submittedUser),
-  });
-
-  if (res.status === 201){
-    const data = await res.json();
-    console.log(data);
-    localStorage.setItem('authToken', data.token);
-    taskStore.getTasks();
+  const res = await authStore.signUp(submittedUser);
+  
+  if (res === 201){
     window.location.href = '/tasks';
   }
 }
@@ -43,13 +31,14 @@ async function signUp() {
 
 <template>
   <form @submit.prevent="signUp">
-    <div class="bg-[#efefef] px-6 py-4 font-sans border-0 rounded-2xl text-lg">
-      <BaseInput v-model="newUser.firstName" text="First name: "/>
-      <BaseInput v-model="newUser.lastName" text="Last name: "/>
-      <BaseInput v-model="newUser.email" text="Email address: "/>
-      <BaseInput v-model="newUser.password" type="password" text="Password:"/>
+    <div class="w-[328px] md:w-[400px] font-sans border-0 text-lg">
+      <p class="font-medium text-3xl text-[black] text-center pb-10">Create an account</p>
+      <BaseInput v-model="newUser.firstName" text="First name"/>
+      <BaseInput v-model="newUser.lastName" text="Last name"/>
+      <BaseInput v-model="newUser.email" text="Email address"/>
+      <BaseInput v-model="newUser.password" type="password" text="Password"/>
       <div class="flex justify-end mt-5">
-        <BaseButton html-type="submit">Sign up</BaseButton>
+        <BaseButton html-type="submit" type="auth">Sign up</BaseButton>
       </div>
     </div>
   </form>
