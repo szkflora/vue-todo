@@ -7,7 +7,7 @@ import { Types } from 'mongoose';
 export const useTaskStore = defineStore('taskstore', () => {
   const tasks = ref<Task[]>([]);
 
-  async function getTasks(userId: string) {
+  async function getTasks() {
     const token = localStorage.getItem('authToken');
     const res = await fetch(`${URL}/tasks`, {
       method: 'GET',
@@ -15,7 +15,12 @@ export const useTaskStore = defineStore('taskstore', () => {
         'Authorization': `Bearer ${token}`,
       },
     });
-    tasks.value = await res.json();
+
+    const status = res.status;
+    if(status === 200){
+      tasks.value = await res.json();
+    }
+    return status;
   }
 
   async function handleTaskImportanceUpdate(index: number, task: Task) {

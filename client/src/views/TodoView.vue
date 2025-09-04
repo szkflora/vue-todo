@@ -15,7 +15,6 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 const taskStore = useTaskStore();
 
 interface TokenPayload extends JwtPayload {
-  userId: string;
   firstName: string;
   lastName: string;
 }
@@ -28,7 +27,17 @@ const importanceOrder: Record<Importance, number> = {
 };
 
 onMounted(async () => {
-  taskStore.getTasks(userId.value);
+  const res = await taskStore.getTasks();
+  console.log(res);
+  if (res === 200) {
+    const token = localStorage.getItem('authToken');
+    const decoded = jwtDecode(token) as TokenPayload;
+    firstName.value = decoded.firstName;
+    lastName.value = decoded.lastName;
+  } else {
+    localStorage.removeItem('authToken');
+    window.location.href = '/signin';
+  }
 });
 
 const filteredTasks = ref<Task[]>([]);
@@ -57,20 +66,8 @@ const orderedTasks = computed(() => {
   });
 });
 
-const userId = ref<string>('');
 const firstName = ref<string>('');
 const lastName = ref<string>('');
-
-const authenticated = computed(() => {
-  const token = localStorage.getItem('authToken');
-  console.log(token);
-  if (token != null) {
-    const decoded = jwtDecode(token) as TokenPayload;
-    firstName.value = decoded.firstName;
-    lastName.value = decoded.lastName;
-  }
-  return token != null;
-});
 
 function showEmptyTaskForm(): void {
   isFormVisible.value = true;
@@ -203,10 +200,13 @@ function signup(): void {
 </script>
 
 <template>
-  <div v-if="authenticated">
-    <div>
-      <p>Welcome {{ firstName }} {{ lastName }}</p>
-      <BaseButton @click="logout">Log out</BaseButton>
+  <div>
+    <div class="flex justify-between">
+      <div class="text-2xl font-bold mb-4">
+        <p>Welcome</p>
+        <p>{{ firstName }} {{ lastName }}</p>
+      </div>
+      <BaseButton @click="logout" class="bg-[#E5E5E5] hover:bg-[#d7d7d7]">Log out</BaseButton>
     </div>
     <Header @show-form="showEmptyTaskForm" />
     <SearchBar v-show="taskStore.tasks.length" @search="searchAmongTasks" />
@@ -232,9 +232,5 @@ function signup(): void {
     <div v-else-if="!isFormVisible" class="flex items-center justify-center">
       <img class="m-10 w-[300px] md:w-[410px]" src="/public/no_todos.svg" />
     </div>
-  </div>
-  <div v-else class="flex justify-center gap-10">
-    <BaseButton @click="signin">Sign in</BaseButton>
-    <BaseButton @click="signup">Sign up</BaseButton>
   </div>
 </template>
