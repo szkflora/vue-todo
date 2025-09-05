@@ -30,7 +30,7 @@ export const useTaskStore = defineStore('taskstore', () => {
         'Content-type': 'application/json',
         Accept: 'application/json',
       },
-      body: JSON.stringify({ importance: task.importance }),
+      body: JSON.stringify({ _id: task._id, importance: task.importance }),
     });
     tasks.value[index].importance = task.importance;
   }

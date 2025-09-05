@@ -5,6 +5,8 @@ import BaseButton from '../components/BaseButton.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const authStore = useAuthStore();
+const error = ref<Record<string, string[]>>({});
+const status = ref<number>();
 
 const userData = ref({
   email: '',
@@ -12,8 +14,12 @@ const userData = ref({
 });
 
 async function signIn() {
-  const res = await authStore.signIn(userData.value.email, userData.value.password)
-  if (res === 200){
+  const { status: serverStatus, error: serverErrors } = await authStore.signIn(userData.value.email, userData.value.password);
+
+  status.value = serverStatus;
+  error.value = serverErrors ?? {};
+
+  if (serverStatus === 200) {
     window.location.href = '/tasks';
   }
 }
@@ -28,8 +34,8 @@ async function signUp() {
   <form @submit.prevent="signIn">
     <div class="w-[328px] md:w-[400px] font-sans border-0 text-lg">
       <p class="font-medium text-3xl text-[black] text-center pb-10">Sign in to your account</p>
-      <BaseInput v-model="userData.email" text="Email address"/>
-      <BaseInput v-model="userData.password" type="password" text="Password"/>
+      <BaseInput v-model="userData.email" text="Email address" :error="error.email?.[0]"/>
+      <BaseInput v-model="userData.password" type="password" :error="error.password?.[0]" text="Password"/>
       <div class="flex justify-end">
         <BaseButton html-type="submit" type="auth">Sign in</BaseButton>
       </div>
