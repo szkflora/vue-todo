@@ -13,7 +13,7 @@ export async function addUser(req: Request, res: Response) {
     }
     const userWithSameEmail = await services.getUserByEmail(req.body.email);
     if (userWithSameEmail !== null) {
-      return res.status(400).json({ error: 'this email address already belongs to an account' });
+      return res.status(400).json({ error: { email: ['this email address already belongs to an account'] } });
     }
     const hashedPsw = await bcrypt.hash(req.body.password, 10);
     const user = await services.addUser(req.body.firstName, req.body.lastName, req.body.email, hashedPsw);
@@ -34,12 +34,12 @@ export async function signIn(req: Request, res: Response) {
     }
     const user = await services.getUserByEmail(req.body.email);
     if (user === null) {
-      return res.status(400).json({ error: 'we could not find an account with this email address' });
+      return res.status(400).json({ error: { email: ['we could not find an account with this email address'] } });
     }
     const originalPsw = await services.getHashedPassword(req.body.email);
     const passwordMatch = await bcrypt.compare(req.body.password, originalPsw);
     if (!passwordMatch) {
-      return res.status(401).json({ error: 'password is not correct' });
+      return res.status(401).json({ error: { password: ['password is not correct'] } });
     }
     const token = jwt.sign({ userId: user._id, firstName: user.firstName, lastName: user.lastName }, 'secret', {
       expiresIn: '2m',

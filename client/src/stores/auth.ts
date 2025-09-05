@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { URL } from '@/config';
 import { User } from '@/types/User';
+import { error } from 'console';
 
 export const useAuthStore = defineStore('authstore', () => {
   async function signIn(email: string, password: string) {
@@ -15,12 +16,13 @@ export const useAuthStore = defineStore('authstore', () => {
 
     const status = res.status;
 
+    const data = await res.json();
     if (status === 200) {
-      const data = await res.json();
       localStorage.setItem('authToken', data.token);
+    } else if (data.error) {
+      return { status, error: data.error };
     }
-
-    return status;
+    return { status, error: {} };
   }
 
   async function signUp(user: User) {
@@ -34,17 +36,17 @@ export const useAuthStore = defineStore('authstore', () => {
     });
 
     const status = res.status;
-
+    const data = await res.json();
     if (status === 201) {
-      const data = await res.json();
       localStorage.setItem('authToken', data.token);
+    } else if (data.error) {
+      return { status, error: data.error };
     }
-
-    return status;
+    return { status, error: {} };
   }
 
   return {
     signIn,
-    signUp
+    signUp,
   };
 });
