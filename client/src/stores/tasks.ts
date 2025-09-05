@@ -12,12 +12,12 @@ export const useTaskStore = defineStore('taskstore', () => {
     const res = await fetch(`${URL}/tasks`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
     const status = res.status;
-    if(status === 200){
+    if (status === 200) {
       tasks.value = await res.json();
     }
     return status;
@@ -67,13 +67,17 @@ export const useTaskStore = defineStore('taskstore', () => {
       headers: {
         'Content-type': 'application/json',
         Accept: 'application/json',
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(newTask),
     });
 
-    const created = await res.json();
-    tasks.value.unshift(created);
+    const result = await res.json();
+    if (!res.ok) {
+      console.log(result);
+    } else {
+      tasks.value.unshift(result);
+    }
   }
 
   async function handleTaskDeletion(taskToDelete: Task) {
@@ -96,5 +100,5 @@ export const useTaskStore = defineStore('taskstore', () => {
     handleTaskSubmission,
     handleTaskDeletion,
     getTaskIndexById,
-  }
+  };
 });

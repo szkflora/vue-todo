@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import BaseInput from '@/components/BaseInput.vue';
-import { reactive } from 'vue';
-import BaseButton from '@/components/BaseButton.vue';
+import { ref } from 'vue';
 import { User } from '@/types/User'
+import BaseButton from '@/components/BaseButton.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const authStore = useAuthStore();
 
-const newUser = reactive({
+const newUser = ref({
   firstName: '',
   lastName: '',
   email: '',
@@ -16,10 +16,10 @@ const newUser = reactive({
 
 async function signUp() {
   const submittedUser: User = {
-    firstName: newUser.firstName,
-    lastName: newUser.lastName,
-    email: newUser.email,
-    password: newUser.password,
+    firstName: newUser.value.firstName,
+    lastName: newUser.value.lastName,
+    email: newUser.value.email,
+    password: newUser.value.password,
   };
   const res = await authStore.signUp(submittedUser);
   

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed, nextTick, onMounted } from 'vue';
+import { ref, computed, nextTick, onMounted } from 'vue';
 import TaskForm from '@/components/TaskForm.vue';
 import TaskCard from '@/components/TaskCard.vue';
 import ConfirmationPopup from '@/components/ConfirmationPopup.vue';
@@ -45,7 +45,7 @@ const isFormVisible = ref<boolean>(false);
 const taskToEdit = ref<Task | null>(null);
 const taskToDelete = ref<Task>();
 const enableAnimation = ref<boolean>(false);
-const data = reactive<{
+const data = ref<{
   title: SortOrder;
   description: SortOrder;
   importance: SortOrder;
@@ -95,8 +95,8 @@ async function handleTaskSubmission(newTask: Task) {
   taskToEdit.value = null;
   isFormVisible.value = false;
 
-  for (const property in data) {
-    data[property as keyof typeof data] = SortOrder.UNO;
+  for (const property in data.value) {
+    data.value[property as keyof typeof data.value] = SortOrder.UNO;
   }
 }
 
@@ -146,17 +146,17 @@ function searchAmongTasks(keyword: string): void {
 }
 
 function handleSort(order: SortOrder, property: string): void {
-  const key = property as keyof typeof data;
+  const key = property as keyof typeof data.value;
 
-  data[key] = order;
+  data.value[key] = order;
 
   const tasksClone = [...(searchWord.value.trim() ? filteredTasks.value : taskStore.tasks)];
-  const activeSorters = sortPriority.filter((prop) => data[prop] !== SortOrder.UNO);
+  const activeSorters = sortPriority.filter((prop) => data.value[prop] !== SortOrder.UNO);
 
   tasksClone.sort((a, b) => {
     for (const prop of activeSorters) {
       if (a[prop] !== b[prop]) {
-        const direction = data[prop] === SortOrder.ASC ? 1 : -1;
+        const direction = data.value[prop] === SortOrder.ASC ? 1 : -1;
 
         const aVal = a[prop];
         const bVal = b[prop];
