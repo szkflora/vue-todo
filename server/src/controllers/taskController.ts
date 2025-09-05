@@ -1,8 +1,13 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import * as services from '../services/taskService';
-import { Importance } from '../models/Task';
-import mongoose from 'mongoose';
 import { AuthRequest } from '../middleware/authMiddleware';
+import validate from 'validate.js';
+import {
+  createTaskConstraints,
+  updateImportanceConstraints,
+  updateStateConstraints,
+  idConstraints,
+} from '../validators/taskConstraints';
 
 export async function getTasks(req: AuthRequest, res: Response) {
   try {
@@ -15,27 +20,30 @@ export async function getTasks(req: AuthRequest, res: Response) {
 
 export async function createTask(req: AuthRequest, res: Response) {
   try {
-    if(!req.body.title || !Object.values(Importance).includes(req.body.importance)) {
-      return res.sendStatus(400);
+    const validationRes = validate({ ...{ userId: req.userId }, ...req.body }, createTaskConstraints);
+    if (validationRes) {
+      return res.status(400).json({ error: validationRes });
     }
-
-    const parsedDate = new Date(req.body.dueDate);
-    if (isNaN(parsedDate.getTime())) {
-      return res.sendStatus(400);
-    }
-    console.log(req.userId as string);
-    const task = await services.createTask(req.body.title, req.body.description, req.body.importance, req.body.dueDate, req.userId as string);
-    return res.status(201).json(task)
+    const task = await services.createTask(
+      req.body.title,
+      req.body.description,
+      req.body.importance,
+      req.body.dueDate,
+      req.userId as string,
+    );
+    return res.status(201).json(task);
   } catch (err) {
     return res.sendStatus(500);
   }
 }
 
-export async function updateTaskImportance(req: Request, res: Response) {
+export async function updateTaskImportance(req: AuthRequest, res: Response) {
   try {
     const { _id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(_id) || !Object.values(Importance).includes(req.body.importance)) {
-      return res.sendStatus(400);
+    console.log(_id);
+    const validationRes = validate({ ...{ _id: _id }, ...req.body }, updateImportanceConstraints);
+    if (validationRes) {
+      return res.status(400).json({ error: validationRes });
     }
     await services.updateTaskImportance(_id, req.body.importance);
     return res.sendStatus(200);
@@ -44,11 +52,12 @@ export async function updateTaskImportance(req: Request, res: Response) {
   }
 }
 
-export async function updateTaskState(req: Request, res: Response) {
+export async function updateTaskState(req: AuthRequest, res: Response) {
   try {
     const { _id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(_id) || typeof req.body.completed !== 'boolean') {
-      return res.sendStatus(400);
+    const validationRes = validate({ ...{ _id: _id }, ...req.body }, updateStateConstraints);
+    if (validationRes) {
+      return res.status(400).json({ error: validationRes });
     }
     await services.updateTaskState(_id, req.body.completed);
     return res.sendStatus(200);
@@ -57,11 +66,12 @@ export async function updateTaskState(req: Request, res: Response) {
   }
 }
 
-export async function updateTaskText(req: Request, res: Response) {
+export async function updateTaskText(req: AuthRequest, res: Response) {
   try {
     const { _id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(_id)) {
-      return res.sendStatus(400);
+    const validationRes = validate({ ...{ _id: _id }, ...req.body }, idConstraints);
+    if (validationRes) {
+      return res.status(400).json({ error: validationRes });
     }
     await services.updateTaskText(_id, req.body.title, req.body.description);
     return res.sendStatus(200);
@@ -70,11 +80,12 @@ export async function updateTaskText(req: Request, res: Response) {
   }
 }
 
-export async function deleteTask(req: Request, res: Response) {
+export async function deleteTask(req: AuthRequest, res: Response) {
   try {
     const { _id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(_id)) {
-      return res.sendStatus(400);
+    const validationRes = validate({ ...{ _id: _id }, ...req.body }, idConstraints);
+    if (validationRes) {
+      return res.status(400).json({ error: validationRes });
     }
     await services.deleteTask(_id);
     return res.sendStatus(200);

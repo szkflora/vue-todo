@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import BaseInput from '@/components/BaseInput.vue';
-import { reactive } from 'vue';
+import { ref } from 'vue';
 import BaseButton from '../components/BaseButton.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const authStore = useAuthStore();
 
-const userData = reactive({
+const userData = ref({
   email: '',
   password: '',
 });
 
 async function signIn() {
-  const res = await authStore.signIn(userData.email, userData.password)
+  const res = await authStore.signIn(userData.value.email, userData.value.password)
   if (res === 200){
     window.location.href = '/tasks';
   }

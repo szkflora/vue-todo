@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed, defineEmits, defineProps, watch, nextTick } from 'vue';
+import { ref, computed, defineEmits, defineProps, watch, nextTick } from 'vue';
 import { Task, Importance } from '@/types/Task';
 import BaseButton from '@/components/BaseButton.vue';
 import { CalendarDaysIcon } from '@heroicons/vue/24/outline';
@@ -17,7 +17,7 @@ const emit = defineEmits<{
 const descriptionRef = ref<HTMLTextAreaElement>(null);
 const selectedImportance = ref<Importance>(null);
 
-const formData = reactive({
+const formData = ref({
   id: null,
   title: '',
   description: '',
@@ -30,11 +30,11 @@ const formData = reactive({
 const editMode = computed(() => props.modelValue !== null);
 
 function populateFormFromModel(task: Task): void {
-  formData.id = task._id;
-  formData.title = task.title;
-  formData.description = task.description;
-  formData.importance = task.importance;
-  formData.completed = task.completed;
+  formData.value.id = task._id;
+  formData.value.title = task.title;
+  formData.value.description = task.description;
+  formData.value.importance = task.importance;
+  formData.value.completed = task.completed;
 }
 
 watch(
@@ -55,7 +55,7 @@ function resizeTextArea(): void {
     const isMd = window.innerWidth >= 768;
     desc.style.height = isMd ? '60px' : '40px';
 
-    if (formData.description.trim() !== '') {
+    if (formData.value.description.trim() !== '') {
       desc.style.height = `${desc.scrollHeight}px`;
     }
   }
@@ -63,13 +63,13 @@ function resizeTextArea(): void {
 
 function handleSubmit(): void {
   const submittedTask: Task = {
-    _id: editMode.value ? formData.id : null,
-    title: formData.title,
-    description: formData.description,
-    importance: formData.importance,
-    dueDate: formData.dueDate,
-    creationDate: formData.creationDate,
-    completed: formData.completed,
+    _id: editMode.value ? formData.value.id : null,
+    title: formData.value.title,
+    description: formData.value.description,
+    importance: formData.value.importance,
+    dueDate: formData.value.dueDate,
+    creationDate: formData.value.creationDate,
+    completed: formData.value.completed,
   };
 
   emit('taskSubmitted', submittedTask);
@@ -80,7 +80,7 @@ function deleteTask(): void {
 }
 
 function setImportance(importance: Importance): void {
-  formData.importance = importance;
+  formData.value.importance = importance;
   selectedImportance.value = importance;
 }
 </script>
