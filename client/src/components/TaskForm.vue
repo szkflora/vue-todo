@@ -7,6 +7,7 @@ import DatePicker from 'primevue/datepicker';
 
 const props = defineProps<{
   modelValue: Task | null;
+  error?: string;
 }>();
 
 const emit = defineEmits<{
@@ -71,7 +72,6 @@ function handleSubmit(): void {
     creationDate: formData.value.creationDate,
     completed: formData.value.completed,
   };
-
   emit('taskSubmitted', submittedTask);
 }
 
@@ -134,15 +134,8 @@ function setImportance(importance: Importance): void {
         ></textarea>
         <div class="flex justify-between gap-3">
           <div class="flex md:gap-3">
-            <BaseButton html-type="submit" class="text-white">
-              Save
-            </BaseButton>
-            <BaseButton
-              class="bg-[#e6e6e6] text-black hover:bg-[#b1b1b1]"
-              @click="deleteTask"
-            >
-              Delete
-            </BaseButton>
+            <BaseButton html-type="submit" class="text-white"> Save </BaseButton>
+            <BaseButton class="bg-[#e6e6e6] text-black hover:bg-[#b1b1b1]" @click="deleteTask"> Delete </BaseButton>
           </div>
           <div class="flex">
             <CalendarDaysIcon class="hidden md:flex w-4" />
@@ -151,5 +144,6 @@ function setImportance(importance: Importance): void {
         </div>
       </div>
     </div>
+    <p v-if="error" class="text-[red] text-xl font-medium">{{ error }}</p>
   </form>
 </template>

@@ -14,7 +14,7 @@ export async function getTasks(req: AuthRequest, res: Response) {
     const tasks = await services.getTasks(req.userId as string);
     res.status(200).json(tasks);
   } catch (err) {
-    res.sendStatus(500);
+    return res.status(500).json({ error: { server: 'Server error' } });
   }
 }
 
@@ -33,22 +33,21 @@ export async function createTask(req: AuthRequest, res: Response) {
     );
     return res.status(201).json(task);
   } catch (err) {
-    return res.sendStatus(500);
+    return res.status(500).json({ error: { server: 'Server error' } });
   }
 }
 
 export async function updateTaskImportance(req: AuthRequest, res: Response) {
   try {
     const { _id } = req.params;
-    console.log(_id);
     const validationRes = validate({ ...{ _id: _id }, ...req.body }, updateImportanceConstraints);
     if (validationRes) {
       return res.status(400).json({ error: validationRes });
     }
     await services.updateTaskImportance(_id, req.body.importance);
-    return res.sendStatus(200);
+    return res.status(200).json({ message: 'Task importance updated successfully' });
   } catch (err) {
-    return res.sendStatus(500);
+    return res.status(500).json({ error: { server: 'Server error' } });
   }
 }
 
@@ -60,9 +59,9 @@ export async function updateTaskState(req: AuthRequest, res: Response) {
       return res.status(400).json({ error: validationRes });
     }
     await services.updateTaskState(_id, req.body.completed);
-    return res.sendStatus(200);
+    return res.status(200).json({ message: 'Task state updated successfully' });
   } catch (err) {
-    return res.sendStatus(500);
+    return res.status(500).json({ error: { server: 'Server error' } });
   }
 }
 
@@ -74,9 +73,9 @@ export async function updateTaskText(req: AuthRequest, res: Response) {
       return res.status(400).json({ error: validationRes });
     }
     await services.updateTaskText(_id, req.body.title, req.body.description);
-    return res.sendStatus(200);
+    return res.status(200).json({ message: 'Task text updated successfully' });
   } catch (err) {
-    return res.sendStatus(500);
+    return res.status(500).json({ error: { server: 'Server error' } });
   }
 }
 
@@ -88,8 +87,8 @@ export async function deleteTask(req: AuthRequest, res: Response) {
       return res.status(400).json({ error: validationRes });
     }
     await services.deleteTask(_id);
-    return res.sendStatus(200);
+    return res.status(200).json({ message: 'Task deleted successfully' });
   } catch (err) {
-    return res.sendStatus(500);
+    return res.status(500).json({ error: { server: 'Server error' } });
   }
 }
