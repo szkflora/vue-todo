@@ -3,6 +3,7 @@ import BaseInput from '@/components/BaseInput.vue';
 import { reactive } from 'vue';
 import { User } from '@/types/User'
 import BaseButton from '@/components/BaseButton.vue';
+import { URL } from '@/config';
 
 const newUser = reactive({
   firstName: '',
@@ -18,7 +19,7 @@ async function signUp() {
     email: newUser.email,
     password: newUser.password,
   };
-  const res = await fetch('http://localhost:3000/signup', {
+  const res = await fetch(`${URL}/signup`, {
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
@@ -28,7 +29,7 @@ async function signUp() {
   });
 
   if (res.status === 201){
-    await fetch('http://localhost:3000/tasks');
+    await fetch(`${URL}/tasks`);
     window.location.href = '/tasks';
   }
 }
