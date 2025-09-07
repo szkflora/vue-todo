@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { URL } from '@/config';
 import { User } from '@/types/User';
-import { error } from 'console';
 
 export const useAuthStore = defineStore('authstore', () => {
   async function signIn(email: string, password: string) {

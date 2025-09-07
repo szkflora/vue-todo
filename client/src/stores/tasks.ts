@@ -17,14 +17,17 @@ export const useTaskStore = defineStore('taskstore', () => {
     });
 
     const status = res.status;
+    const data = await res.json();
     if (status === 200) {
-      tasks.value = await res.json();
+      tasks.value = data;
+    } else if (data.error) {
+      return { status, error: data.error };
     }
-    return status;
+    return { status, error: {} };
   }
 
   async function handleTaskImportanceUpdate(index: number, task: Task) {
-    await fetch(`${URL}/tasks/${task._id}/importance`, {
+    const res = await fetch(`${URL}/tasks/${task._id}/importance`, {
       method: 'PUT',
       headers: {
         'Content-type': 'application/json',
@@ -32,11 +35,19 @@ export const useTaskStore = defineStore('taskstore', () => {
       },
       body: JSON.stringify({ _id: task._id, importance: task.importance }),
     });
-    tasks.value[index].importance = task.importance;
+
+    const data = await res.json();
+    const status = res.status;
+    if (status === 200) {
+      tasks.value[index].importance = task.importance;
+    } else if (data.error) {
+      return { status, error: data.error };
+    }
+    return { status, error: {} };
   }
 
   async function handleTaskStateUpdate(index: number, task: Task, newState: boolean) {
-    await fetch(`${URL}/tasks/${task._id}/completed`, {
+    const res = await fetch(`${URL}/tasks/${task._id}/completed`, {
       method: 'PUT',
       headers: {
         'Content-type': 'application/json',
@@ -44,11 +55,19 @@ export const useTaskStore = defineStore('taskstore', () => {
       },
       body: JSON.stringify({ completed: newState }),
     });
-    tasks.value[index].completed = newState;
+
+    const data = await res.json();
+    const status = res.status;
+    if (status === 200) {
+      tasks.value[index].completed = newState;
+    } else if (data.error) {
+      return { status, error: data.error };
+    }
+    return { status, error: {} };
   }
 
   async function handleTaskTextUpdate(index: number, task: Task) {
-    await fetch(`${URL}/tasks/${task._id}/text`, {
+    const res = await fetch(`${URL}/tasks/${task._id}/text`, {
       method: 'PUT',
       headers: {
         'Content-type': 'application/json',
@@ -56,8 +75,16 @@ export const useTaskStore = defineStore('taskstore', () => {
       },
       body: JSON.stringify({ title: task.title, description: task.description }),
     });
-    tasks.value[index].title = task.title;
-    tasks.value[index].description = task.description;
+
+    const data = await res.json();
+    const status = res.status;
+    if (status === 200) {
+      tasks.value[index].title = task.title;
+      tasks.value[index].description = task.description;
+    } else if (data.error) {
+      return { status, error: data.error };
+    }
+    return { status, error: {} };
   }
 
   async function handleTaskSubmission(newTask: Task) {
@@ -72,19 +99,28 @@ export const useTaskStore = defineStore('taskstore', () => {
       body: JSON.stringify(newTask),
     });
 
-    const result = await res.json();
-    if (!res.ok) {
-      console.log(result);
-    } else {
-      tasks.value.unshift(result);
+    const data = await res.json();
+    const status = res.status;
+    if (status === 201) {
+      tasks.value.unshift(data);
+    } else if (data.error) {
+      return { status, error: data.error };
     }
+    return { status, error: {} };
   }
 
   async function handleTaskDeletion(taskToDelete: Task) {
     tasks.value = tasks.value.filter((task) => task._id !== taskToDelete._id);
-    await fetch(`${URL}/tasks/${taskToDelete._id}`, {
+    const res = await fetch(`${URL}/tasks/${taskToDelete._id}`, {
       method: 'DELETE',
     });
+
+    const data = await res.json();
+    const status = res.status;
+    if (data.error) {
+      return { status, error: data.error };
+    }
+    return { status, error: {} };
   }
 
   function getTaskIndexById(id: Types.ObjectId) {

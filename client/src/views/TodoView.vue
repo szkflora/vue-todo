@@ -27,9 +27,8 @@ const importanceOrder: Record<Importance, number> = {
 };
 
 onMounted(async () => {
-  const res = await taskStore.getTasks();
-  console.log(res);
-  if (res === 200) {
+  const { status: serverStatus, error: serverErrors } = await taskStore.getTasks();
+  if (serverStatus === 200) {
     const token = localStorage.getItem('authToken');
     const decoded = jwtDecode(token) as TokenPayload;
     firstName.value = decoded.firstName;
@@ -40,6 +39,7 @@ onMounted(async () => {
   }
 });
 
+const taskError = ref<string>('');
 const filteredTasks = ref<Task[]>([]);
 const isFormVisible = ref<boolean>(false);
 const taskToEdit = ref<Task | null>(null);
@@ -77,21 +77,31 @@ function showEmptyTaskForm(): void {
 async function handleTaskUpdate(newTask: Task) {
   const index = taskStore.getTaskIndexById(newTask._id);
   const originalTask = taskStore.tasks[index];
+  let res;
   if (originalTask.importance !== newTask.importance) {
-    taskStore.handleTaskImportanceUpdate(index, newTask);
+    res = await taskStore.handleTaskImportanceUpdate(index, newTask);
   }
 
   if (originalTask.title !== newTask.title || originalTask.description !== newTask.description) {
-    taskStore.handleTaskTextUpdate(index, newTask);
+    res = await taskStore.handleTaskTextUpdate(index, newTask);
   }
+
+  return res;
 }
 
 async function handleTaskSubmission(newTask: Task) {
+  let res;
   if (newTask._id === null) {
-    taskStore.handleTaskSubmission(newTask);
+    res = await taskStore.handleTaskSubmission(newTask);
   } else {
-    handleTaskUpdate(newTask);
+    res = await handleTaskUpdate(newTask);
   }
+
+  if (res?.status !== 200 && res?.status !== 201) {
+    taskError.value = res?.error?.server;
+    return;
+  }
+
   taskToEdit.value = null;
   isFormVisible.value = false;
 
@@ -189,14 +199,6 @@ function logout(): void {
   localStorage.removeItem('authToken');
   window.location.href = '/tasks';
 }
-
-function signin(): void {
-  window.location.href = '/signin';
-}
-
-function signup(): void {
-  window.location.href = '/signup';
-}
 </script>
 
 <template>
@@ -215,6 +217,7 @@ function signup(): void {
     <div v-if="isFormVisible" class="flex items-center justify-center">
       <TaskForm
         :model-value="taskToEdit"
+        :error="taskError"
         @task-submitted="handleTaskSubmission"
         @confirm-deletion="handleConfirmation"
       />
