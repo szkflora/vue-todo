@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, nextTick, onMounted } from 'vue';
+import { ref, computed, nextTick, onMounted, watch } from 'vue';
 import TaskForm from '@/components/TaskForm.vue';
 import TaskCard from '@/components/TaskCard.vue';
 import ConfirmationPopup from '@/components/ConfirmationPopup.vue';
@@ -11,6 +11,7 @@ import BaseButton from '@/components/BaseButton.vue';
 import Header from '@/components/Header.vue';
 import { useTaskStore } from '@/stores/tasks';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
+import { useRoute, useRouter } from 'vue-router';
 
 const taskStore = useTaskStore();
 
@@ -25,19 +26,6 @@ const importanceOrder: Record<Importance, number> = {
   [Importance.MEDIUM]: 2,
   [Importance.HIGH]: 3,
 };
-
-onMounted(async () => {
-  const { status: serverStatus, error: serverErrors } = await taskStore.getTasks();
-  if (serverStatus === 200) {
-    const token = localStorage.getItem('authToken');
-    const decoded = jwtDecode(token) as TokenPayload;
-    firstName.value = decoded.firstName;
-    lastName.value = decoded.lastName;
-  } else {
-    localStorage.removeItem('authToken');
-    window.location.href = '/signin';
-  }
-});
 
 const taskError = ref<string>('');
 const filteredTasks = ref<Task[]>([]);
@@ -56,9 +44,24 @@ const data = ref<{
   importance: SortOrder.UNO,
   dueDate: SortOrder.UNO,
 });
-const searchWord = ref<string>('');
+
+const route = useRoute();
+const router = useRouter();
+
+const searchWord = ref<string>((route.query.keyword as string) || '');
+
+watch(searchWord, (newVal) => {
+  router.replace({
+    path: route.path,
+    query: {
+      keyword: newVal || undefined
+    }
+  })
+});
+
 const openPopup = ref<boolean>(false);
 const tasksToShow = computed(() => (searchWord.value.trim() ? filteredTasks.value : taskStore.tasks));
+
 const orderedTasks = computed(() => {
   return [...tasksToShow.value].sort((a, b) => {
     if (a.completed === b.completed) return 0;
@@ -68,6 +71,20 @@ const orderedTasks = computed(() => {
 
 const firstName = ref<string>('');
 const lastName = ref<string>('');
+
+onMounted(async () => {
+  const { status: serverStatus, error: serverErrors } = await taskStore.getTasks(searchWord.value.toLowerCase());
+  if (serverStatus === 200) {
+    const token = localStorage.getItem('authToken');
+    const decoded = jwtDecode(token) as TokenPayload;
+    firstName.value = decoded.firstName;
+    lastName.value = decoded.lastName;
+    searchAmongTasks(searchWord.value);
+  } else {
+    localStorage.removeItem('authToken');
+    window.location.href = '/signin';
+  }
+});
 
 function showEmptyTaskForm(): void {
   isFormVisible.value = true;
@@ -146,13 +163,14 @@ function handleCheckAction(taskToCheck: Task): void {
   });
 }
 
-function searchAmongTasks(keyword: string): void {
+async function searchAmongTasks(keyword: string) {
   searchWord.value = keyword.trim();
   filteredTasks.value = taskStore.tasks.filter(
     (task) =>
       task.title.toLowerCase().includes(searchWord.value.toLowerCase()) ||
       task.description.toLowerCase().includes(searchWord.value.toLowerCase()),
   );
+  await taskStore.getTasks(searchWord.value.toLowerCase());
 }
 
 function handleSort(order: SortOrder, property: string): void {
@@ -211,7 +229,7 @@ function logout(): void {
       <BaseButton @click="logout" class="bg-[#E5E5E5] hover:bg-[#d7d7d7]">Log out</BaseButton>
     </div>
     <Header @show-form="showEmptyTaskForm" />
-    <SearchBar v-show="taskStore.tasks.length" @search="searchAmongTasks" />
+    <SearchBar v-show="taskStore.tasks.length" :keyword="searchWord" @search="searchAmongTasks" />
     <SortBar :data @sort="handleSort" v-show="taskStore.tasks.length" />
 
     <div v-if="isFormVisible" class="flex items-center justify-center">

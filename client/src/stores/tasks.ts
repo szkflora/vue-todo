@@ -7,9 +7,9 @@ import { Types } from 'mongoose';
 export const useTaskStore = defineStore('taskstore', () => {
   const tasks = ref<Task[]>([]);
 
-  async function getTasks() {
+  async function getTasks(keyword: string) {
     const token = localStorage.getItem('authToken');
-    const res = await fetch(`${URL}/tasks`, {
+    const res = await fetch(`${URL}/tasks/?keyword=${keyword}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,

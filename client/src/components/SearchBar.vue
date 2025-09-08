@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import BaseButton from '@/components/BaseButton.vue';
-import { ref, watch, defineEmits } from 'vue';
+import { watch, defineEmits, defineProps, computed } from 'vue';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline';
 
-const keyword = ref<string>('');
+const props = defineProps<{
+  keyword?: string;
+}>();
+
+const keyword = computed({
+  get: () => props.keyword ?? '',
+  set: (val: string) => emit('search', val)
+});
 
 let debounceId: number | null = null;
 
@@ -13,7 +20,6 @@ const emit = defineEmits<{
 
 function handleSearch(): void {
   emit('search', keyword.value);
-  keyword.value = '';
 }
 
 watch(keyword, () => {

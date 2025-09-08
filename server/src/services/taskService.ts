@@ -1,10 +1,27 @@
 import { Task, Importance } from '../models/Task';
 
-export async function getTasks(userId: string) {
-  return await Task.find({userId: userId}).sort({ creationDate: -1});
+export async function getTasks(userId: string, keyword: string) {
+  let res;
+  if (keyword !== '') {
+    res = await Task.find({
+      userId: userId,
+      $or: [{ title: { $regex: keyword, $options: 'i' } }, { description: { $regex: keyword, $options: 'i' } }],
+    }).sort({
+      creationDate: -1,
+    });
+  } else {
+    res = await Task.find({ userId: userId }).sort({ creationDate: -1 });
+  }
+  return res;
 }
 
-export async function createTask(title: string, description: string, importance: Importance, date: Date, userId: string) {
+export async function createTask(
+  title: string,
+  description: string,
+  importance: Importance,
+  date: Date,
+  userId: string,
+) {
   const newTask = new Task({
     title: title,
     description: description,
