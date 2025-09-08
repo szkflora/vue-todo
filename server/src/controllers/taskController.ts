@@ -11,7 +11,9 @@ import {
 
 export async function getTasks(req: AuthRequest, res: Response) {
   try {
-    const tasks = await services.getTasks(req.userId as string);
+    const query = req.query;
+    const keyword = query.keyword;
+    const tasks = await services.getTasks(req.userId as string, keyword as string);
     res.status(200).json(tasks);
   } catch (err) {
     return res.status(500).json({ error: { server: 'Server error' } });
