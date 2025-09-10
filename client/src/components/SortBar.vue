@@ -70,10 +70,10 @@ function changeProperty(newProperty: string): void {
       </div>
       <div class="flex justify-end gap-3.5">
         <BaseButton type="bar" class="default ascending">
-          <ArrowUpIcon class="w-4"></ArrowUpIcon>
+          <ArrowUpIcon class="w-4"/>
         </BaseButton>
         <BaseButton type="bar" class="default descending">
-          <ArrowDownIcon class="w-4"></ArrowDownIcon>
+          <ArrowDownIcon class="w-4"/>
         </BaseButton>
       </div>
     </div>

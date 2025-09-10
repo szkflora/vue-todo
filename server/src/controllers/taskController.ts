@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import * as services from '../services/taskService';
-import { Importance } from '../models/Task';
+import * as services from '@/services/taskService';
+import { Importance } from '@/models/Task';
 import mongoose from 'mongoose';
 
 export async function getTasks(req: Request, res: Response) {

@@ -1,5 +1,4 @@
-import { Date } from 'mongoose';
-import { Task, Importance } from '../models/Task';
+import { Task, Importance } from '@/models/Task';
 
 export async function getTasks() {
   return await Task.find().sort({ creationDate: -1});
