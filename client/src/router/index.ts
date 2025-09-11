@@ -16,19 +16,17 @@ const router = createRouter({
 });
 
 router.beforeEach((to) => {
-  const token = localStorage.getItem('authToken');
+  let token = localStorage.getItem('authToken');
   try {
     const decoded = jwtDecode(token);
     const now = Date.now() / 1000;
     if (decoded.exp < now) {
       localStorage.removeItem('authToken');
+      token = null;
     }
   } catch (err) {
     localStorage.removeItem('authToken');
-  }
-
-  if (to.path === '/') {
-    return { path: '/tasks' };
+    token = null;
   }
 
   if (to.path === '/tasks' && !token) {
@@ -36,6 +34,10 @@ router.beforeEach((to) => {
   }
 
   if ((to.path === '/signup' || to.path === '/signin') && token) {
+    return { path: '/tasks' };
+  }
+
+  if (to.path === '/') {
     return { path: '/tasks' };
   }
 });

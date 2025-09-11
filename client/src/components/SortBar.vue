@@ -1,21 +1,16 @@
 <script setup lang="ts">
 import BaseButton from '@/components/BaseButton.vue';
-import { ref, defineEmits } from 'vue';
+import { ref, defineEmits, watch } from 'vue';
 import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/vue/24/outline';
-import { SortOrder, SortCriteria } from '@/types/Task';
+import { SortOrder, SortCriteria, SortData } from '@/types/Task';
+import { useRoute, useRouter } from 'vue-router';
 
 const emit = defineEmits<{
   (e: 'sort', order: SortOrder, property: string): void;
 }>();
 
-interface SortData {
-  title: SortOrder;
-  description: SortOrder;
-  importance: SortOrder;
-  dueDate: SortOrder;
-}
-
-const props = defineProps<{ data: SortData }>();
+const props = defineProps<{ sortData: SortData }>();
+const localSortData = ref(props.sortData ?? null);
 
 const orders: Record<SortCriteria, SortOrder> = {
   [SortCriteria.TITLE]: SortOrder.UNO,
@@ -25,6 +20,22 @@ const orders: Record<SortCriteria, SortOrder> = {
 }
 
 const property = ref<string>('');
+
+const router = useRouter();
+const route = useRoute();
+
+watch(localSortData, (newVal) => {
+  router.replace({
+    path: route.path,
+    query: {
+      ...route.query,
+      title: newVal.title || undefined,
+      description: newVal.description || undefined,
+      importance: newVal.importance || undefined,
+      dueDate: newVal.dueDate || undefined
+    }
+  })
+}, { deep: true });
 
 function changeProperty(newProperty: string): void {
   property.value = newProperty;
@@ -49,22 +60,22 @@ function changeProperty(newProperty: string): void {
   <div class="flex justify-center">
     <div class="w-full flex justify-between items-center flex-wrap my-3 md:my-5 gap-2">
       <div class="flex justify-start gap-2 md:gap-3.5">
-        <BaseButton type="bar" :class="['default', data.title]" @click="changeProperty('title')"
+        <BaseButton type="bar" :class="['default', localSortData.title]" @click="changeProperty('title')"
           >Title
         </BaseButton>
         <BaseButton
           type="bar"
-          :class="['default', data.description]"
+          :class="['default', localSortData.description]"
           @click="changeProperty('description')"
           >Description
         </BaseButton>
         <BaseButton
           type="bar"
-          :class="['default', data.importance]"
+          :class="['default', localSortData.importance]"
           @click="changeProperty('importance')"
           >Priority</BaseButton
         >
-        <BaseButton type="bar" :class="['default', data.dueDate]" @click="changeProperty('dueDate')"
+        <BaseButton type="bar" :class="['default', localSortData.dueDate]" @click="changeProperty('dueDate')"
           >Date</BaseButton
         >
       </div>

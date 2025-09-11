@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { ref, computed, nextTick, onMounted, watch } from 'vue';
+import { ref, nextTick, onMounted, computed } from 'vue';
 import TaskForm from '@/components/TaskForm.vue';
 import TaskCard from '@/components/TaskCard.vue';
 import ConfirmationPopup from '@/components/ConfirmationPopup.vue';
 import SearchBar from '@/components/SearchBar.vue';
-import { Task, Importance } from '@/types/Task';
+import { Task, SortOrder } from '@/types/Task';
 import SortBar from '@/components/SortBar.vue';
-import { SortOrder } from '@/types/Task';
 import BaseButton from '@/components/BaseButton.vue';
 import Header from '@/components/Header.vue';
 import { useTaskStore } from '@/stores/tasks';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
+import { HttpResponse } from '@/types/api';
 
 const taskStore = useTaskStore();
 
@@ -20,60 +20,43 @@ interface TokenPayload extends JwtPayload {
   lastName: string;
 }
 
-const sortPriority = ['title', 'description', 'importance', 'dueDate'];
-const importanceOrder: Record<Importance, number> = {
-  [Importance.LOW]: 1,
-  [Importance.MEDIUM]: 2,
-  [Importance.HIGH]: 3,
-};
-
-const taskError = ref<string>('');
-const filteredTasks = ref<Task[]>([]);
+const taskError = ref<string[]>();
 const isFormVisible = ref<boolean>(false);
 const taskToEdit = ref<Task | null>(null);
 const taskToDelete = ref<Task>();
 const enableAnimation = ref<boolean>(false);
-const data = ref<{
+const route = useRoute();
+
+const sortData = ref<{
   title: SortOrder;
   description: SortOrder;
   importance: SortOrder;
   dueDate: SortOrder;
 }>({
-  title: SortOrder.UNO,
-  description: SortOrder.UNO,
-  importance: SortOrder.UNO,
-  dueDate: SortOrder.UNO,
+  title: (route.query.title as SortOrder) || SortOrder.UNO,
+  description: (route.query.description as SortOrder) || SortOrder.UNO,
+  importance: (route.query.importance as SortOrder) || SortOrder.UNO,
+  dueDate: (route.query.dueDate as SortOrder) || SortOrder.UNO,
 });
-
-const route = useRoute();
-const router = useRouter();
 
 const searchWord = ref<string>((route.query.keyword as string) || '');
-
-watch(searchWord, (newVal) => {
-  router.replace({
-    path: route.path,
-    query: {
-      keyword: newVal || undefined
-    }
-  })
-});
-
 const openPopup = ref<boolean>(false);
-const tasksToShow = computed(() => (searchWord.value.trim() ? filteredTasks.value : taskStore.tasks));
+const firstName = ref<string>('');
+const lastName = ref<string>('');
 
-const orderedTasks = computed(() => {
-  return [...tasksToShow.value].sort((a, b) => {
+const sortedTasks = computed(() => {
+  return [...taskStore.tasks].sort((a, b) => {
     if (a.completed === b.completed) return 0;
     return a.completed ? 1 : -1;
   });
 });
 
-const firstName = ref<string>('');
-const lastName = ref<string>('');
-
 onMounted(async () => {
-  const { status: serverStatus, error: serverErrors } = await taskStore.getTasks(searchWord.value.toLowerCase());
+  await taskStore.getTaskCount();
+  const { status: serverStatus, error: serverErrors } = await taskStore.getTasks(
+    searchWord.value.toLowerCase(),
+    sortData.value,
+  );
   if (serverStatus === 200) {
     const token = localStorage.getItem('authToken');
     const decoded = jwtDecode(token) as TokenPayload;
@@ -91,10 +74,13 @@ function showEmptyTaskForm(): void {
   taskToEdit.value = null;
 }
 
-async function handleTaskUpdate(newTask: Task) {
+async function handleTaskUpdate(newTask: Task): Promise<HttpResponse> {
   const index = taskStore.getTaskIndexById(newTask._id);
   const originalTask = taskStore.tasks[index];
-  let res;
+  let res: HttpResponse = {
+    status: 200,
+    error: { general: ['Not Modified'] },
+  };
   if (originalTask.importance !== newTask.importance) {
     res = await taskStore.handleTaskImportanceUpdate(index, newTask);
   }
@@ -121,9 +107,10 @@ async function handleTaskSubmission(newTask: Task) {
 
   taskToEdit.value = null;
   isFormVisible.value = false;
+  await taskStore.getTaskCount();
 
-  for (const property in data.value) {
-    data.value[property as keyof typeof data.value] = SortOrder.UNO;
+  for (const property in sortData.value) {
+    sortData.value[property as keyof typeof sortData.value] = SortOrder.UNO;
   }
 }
 
@@ -140,6 +127,7 @@ async function handleTaskDeletion() {
   taskStore.handleTaskDeletion(taskToDelete.value);
   isFormVisible.value = false;
   openPopup.value = false;
+  await taskStore.getTaskCount();
 }
 
 function intoEditMode(task: Task): void {
@@ -165,52 +153,13 @@ function handleCheckAction(taskToCheck: Task): void {
 
 async function searchAmongTasks(keyword: string) {
   searchWord.value = keyword.trim();
-  filteredTasks.value = taskStore.tasks.filter(
-    (task) =>
-      task.title.toLowerCase().includes(searchWord.value.toLowerCase()) ||
-      task.description.toLowerCase().includes(searchWord.value.toLowerCase()),
-  );
-  await taskStore.getTasks(searchWord.value.toLowerCase());
+  await taskStore.getTasks(searchWord.value.toLowerCase(), sortData.value);
 }
 
-function handleSort(order: SortOrder, property: string): void {
-  const key = property as keyof typeof data.value;
-
-  data.value[key] = order;
-
-  const tasksClone = [...(searchWord.value.trim() ? filteredTasks.value : taskStore.tasks)];
-  const activeSorters = sortPriority.filter((prop) => data.value[prop] !== SortOrder.UNO);
-
-  tasksClone.sort((a, b) => {
-    for (const prop of activeSorters) {
-      if (a[prop] !== b[prop]) {
-        const direction = data.value[prop] === SortOrder.ASC ? 1 : -1;
-
-        const aVal = a[prop];
-        const bVal = b[prop];
-
-        if (prop === 'importance') {
-          const aImp = importanceOrder[aVal as Importance];
-          const bImp = importanceOrder[bVal as Importance];
-          if (aImp !== bImp) return (aImp - bImp) * direction;
-        } else if (aVal instanceof Date) {
-          if (aVal.getTime() !== bVal.getTime()) {
-            return (aVal.getTime() - bVal.getTime()) * direction;
-          }
-        } else {
-          const comp = aVal.localeCompare(bVal);
-          if (comp !== 0) return comp * direction;
-        }
-      }
-    }
-    return 0;
-  });
-
-  if (searchWord.value.trim()) {
-    filteredTasks.value = tasksClone;
-  } else {
-    taskStore.tasks = tasksClone;
-  }
+async function handleSort(order: SortOrder, property: string) {
+  const key = property as keyof typeof sortData.value;
+  sortData.value[key] = order;
+  await taskStore.getTasks(searchWord.value.toLowerCase(), sortData.value);
 }
 
 function logout(): void {
@@ -229,8 +178,8 @@ function logout(): void {
       <BaseButton @click="logout" class="bg-[#E5E5E5] hover:bg-[#d7d7d7]">Log out</BaseButton>
     </div>
     <Header @show-form="showEmptyTaskForm" />
-    <SearchBar v-show="taskStore.tasks.length" :keyword="searchWord" @search="searchAmongTasks" />
-    <SortBar :data @sort="handleSort" v-show="taskStore.tasks.length" />
+    <SearchBar v-show="taskStore.taskCount" :keyword="searchWord" @search="searchAmongTasks" />
+    <SortBar :sortData @sort="handleSort" v-show="taskStore.taskCount" />
 
     <div v-if="isFormVisible" class="flex items-center justify-center">
       <TaskForm
@@ -245,12 +194,12 @@ function logout(): void {
 
     <div v-if="taskStore.tasks.length" class="flex flex-col items-center justify-center">
       <TransitionGroup tag="div" :move-class="enableAnimation ? 'transition-transform duration-500 ease-in-out' : ''">
-        <div v-for="task in orderedTasks" :key="task._id ? task._id.toString() : 'newTask'">
+        <div v-for="task in sortedTasks" :key="task._id ? task._id.toString() : 'newTask'">
           <TaskCard v-if="task._id !== taskToEdit?._id" :task @clickEvent="intoEditMode" @checked="handleCheckAction" />
         </div>
       </TransitionGroup>
     </div>
-    <div v-else-if="!isFormVisible" class="flex items-center justify-center">
+    <div v-else-if="!isFormVisible && !taskStore.taskCount" class="flex items-center justify-center">
       <img class="m-10 w-[300px] md:w-[410px]" src="/public/no_todos.svg" />
     </div>
   </div>
