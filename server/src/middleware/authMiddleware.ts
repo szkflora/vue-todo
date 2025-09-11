@@ -16,7 +16,7 @@ interface TokenPayload extends JwtPayload {
 export function verifyToken(req: AuthRequest, res: Response, next: NextFunction) {
   const authHeader = req.header('Authorization');
   const token = authHeader?.split(' ')[1];
-  if (!token) return res.sendStatus(401);
+  if (!token) return res.status(401).json('Unauthorized');
   try {
     const decoded = jwt.verify(token, 'secret') as TokenPayload;
     req.userId = decoded.userId;
@@ -24,6 +24,6 @@ export function verifyToken(req: AuthRequest, res: Response, next: NextFunction)
     req.lastName = decoded.lastName;
     next();
   } catch (error) {
-    res.sendStatus(401);
+    return res.status(401).json('Unauthorized');
   }
 }

@@ -1,16 +1,55 @@
 import { Task, Importance } from '@/models/Task';
 
-export async function getTasks(userId: string, keyword: string) {
+function getOrder(order: string): 1 | -1 | undefined {
+  switch (order) {
+    case 'ascending':
+      return 1;
+    case 'descending':
+      return -1;
+    default:
+      return undefined;
+  }
+}
+
+export async function getTaskCount(userId: string) {
+  const count = await Task.countDocuments({ userId: userId });
+  return count;
+}
+
+export async function getTasks(
+  userId: string,
+  keyword: string,
+  title: string,
+  description: string,
+  importance: string,
+  dueDate: string,
+) {
   let res;
+  const sort: any = { completed: 1 };
+
+  const titleOrder = getOrder(title);
+  if (titleOrder !== undefined) sort.title = titleOrder;
+
+  const descriptionOrder = getOrder(description);
+  if (descriptionOrder !== undefined) sort.description = descriptionOrder;
+
+  const importanceOrder = getOrder(importance);
+  if (importanceOrder !== undefined) sort.importance = importanceOrder;
+
+  const dueDateOrder = getOrder(dueDate);
+  if (dueDateOrder !== undefined) sort.dueDate = dueDateOrder;
+
+  if (!sort.title && !sort.description && !sort.importance && !sort.dueDate) {
+    sort.creationDate = -1;
+  }
+
   if (keyword !== '') {
     res = await Task.find({
       userId: userId,
       $or: [{ title: { $regex: keyword, $options: 'i' } }, { description: { $regex: keyword, $options: 'i' } }],
-    }).sort({
-      creationDate: -1,
-    });
+    }).sort(sort);
   } else {
-    res = await Task.find({ userId: userId }).sort({ creationDate: -1 });
+    res = await Task.find({ userId: userId }).sort(sort);
   }
   return res;
 }
@@ -30,7 +69,11 @@ export async function createTask(
     completed: false,
     userId: userId,
   });
-  await newTask.save();
+  try {
+    await newTask.save();
+  } catch (err: any) {
+    console.error(err);
+  }
   return newTask;
 }
 

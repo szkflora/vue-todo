@@ -1,9 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export enum Importance {
-  LOW = 'Low',
-  MEDIUM = 'Medium',
-  HIGH = 'High',
+  LOW = 1,
+  MEDIUM = 2,
+  HIGH = 3,
 }
 
 export interface ITask extends Document {
@@ -20,9 +20,8 @@ const TaskSchema: Schema<ITask> = new Schema({
     title: {type: String, required: true},
     description: {type: String},
     importance: {
-        type: String,
-        enum: Object.values(Importance),
-        required: true
+        type: Number,
+        enum: Object.values(Importance).filter(value => typeof value === 'number')
     },
     dueDate: {type: Date, required: true},
     creationDate: {type: Date, default: Date.now},

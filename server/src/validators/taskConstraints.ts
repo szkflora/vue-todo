@@ -3,13 +3,13 @@ import mongoose from 'mongoose';
 
 validate.validators.boolean = function (value: any) {
   if (typeof value !== 'boolean') {
-    return 'must be true or false';
+    return 'Must be true or false';
   }
 };
 
 validate.validators.objectId = function (value: any) {
   if (!mongoose.Types.ObjectId.isValid(value)) {
-    return 'is not a valid ObjectId';
+    return 'Is not a valid ObjectId';
   }
 };
 

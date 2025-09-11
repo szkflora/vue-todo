@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia';
 import { URL } from '@/config';
 import { User } from '@/types/User';
+import { HttpResponse } from '@/types/api'
 
 export const useAuthStore = defineStore('authstore', () => {
-  async function signIn(email: string, password: string) {
+  async function signIn(email: string, password: string): Promise<HttpResponse> {
     const res = await fetch(`${URL}/signin`, {
       method: 'POST',
       headers: {
@@ -24,7 +25,7 @@ export const useAuthStore = defineStore('authstore', () => {
     return { status, error: {} };
   }
 
-  async function signUp(user: User) {
+  async function signUp(user: User): Promise<HttpResponse> {
     const res = await fetch(`${URL}/signup`, {
       method: 'POST',
       headers: {

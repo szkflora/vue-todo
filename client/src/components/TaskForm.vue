@@ -7,7 +7,7 @@ import DatePicker from 'primevue/datepicker';
 
 const props = defineProps<{
   modelValue: Task | null;
-  error?: string;
+  error?: string[];
 }>();
 
 const emit = defineEmits<{
@@ -144,6 +144,6 @@ function setImportance(importance: Importance): void {
         </div>
       </div>
     </div>
-    <p v-if="error" class="text-[red] text-xl font-medium">{{ error }}</p>
+    <p v-if="error" class="text-[red] text-xl font-medium">{{ error[0] }}</p>
   </form>
 </template>
