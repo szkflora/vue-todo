@@ -28,7 +28,7 @@ const typeClasses = computed(() => {
     case 'danger':
       return 'rounded-md md:rounded-2xl w-[70px] md:w-[90px] h-[30px] md:h-[40px] font-semibold px-4 py-2 border-[none]  bg-red-600 text-white hover:bg-red-700';
     case 'auth':
-      return 'block w-full rounded-md px-3 py-1.5 text-base text-black bg-[#38cb89] hover:bg-[#23a068] mt-4 mb-2'
+      return 'block w-full rounded-md px-3 py-1.5 text-base text-black bg-[#38cb89] hover:bg-[#23a068] mt-2 mb-2'
     default:
       return 'border-[none] rounded-[50%] bg-[#38cb89] text-white';
   }
