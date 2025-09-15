@@ -1,35 +1,35 @@
 <script setup lang="ts">
 import BaseInput from '@/components/BaseInput.vue';
-import { reactive } from 'vue';
+import { ref } from 'vue';
 import { User } from '@/types/User'
 import BaseButton from '@/components/BaseButton.vue';
-import { URL } from '@/config';
+import { useAuthStore } from '@/stores/auth';
+import { HttpResponse } from '@/types/api';
 
-const newUser = reactive({
+const authStore = useAuthStore();
+const error = ref<Record<string, string[]>>({});
+const status = ref<number>();
+
+const newUser = ref({
   firstName: '',
   lastName: '',
   email: '',
   password: '',
 });
 
-async function signUp() {
+async function signUp(): Promise<void> {
   const submittedUser: User = {
-    firstName: newUser.firstName,
-    lastName: newUser.lastName,
-    email: newUser.email,
-    password: newUser.password,
+    firstName: newUser.value.firstName,
+    lastName: newUser.value.lastName,
+    email: newUser.value.email,
+    password: newUser.value.password,
   };
-  const res = await fetch(`${URL}/signup`, {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify(submittedUser),
-  });
+  const { status: serverStatus, error: serverErrors }: HttpResponse = await authStore.signUp(submittedUser);
 
-  if (res.status === 201){
-    await fetch(`${URL}/tasks`);
+  status.value = serverStatus;
+  error.value = serverErrors;
+
+  if (serverStatus === 201) {
     window.location.href = '/tasks';
   }
 }
@@ -37,14 +37,21 @@ async function signUp() {
 
 <template>
   <form @submit.prevent="signUp">
-    <div class="bg-[#efefef] px-6 py-4 font-sans border-0 rounded-2xl text-lg">
-      <BaseInput v-model="newUser.firstName" text="First name: "/>
-      <BaseInput v-model="newUser.lastName" text="Last name: "/>
-      <BaseInput v-model="newUser.email" text="Email address: "/>
-      <BaseInput v-model="newUser.password" type="password" text="Password:"/>
+    <div class="w-[328px] md:w-[400px] font-sans border-0 text-lg">
+      <p class="font-medium text-3xl text-[black] text-center pb-10">Create an account</p>
+      <BaseInput v-model="newUser.firstName" text="First name" :error="error.firstName ? error.firstName[0] : ''" />
+      <BaseInput v-model="newUser.lastName" text="Last name" :error="error.lastName ? error.lastName[0] : ''" />
+      <BaseInput v-model="newUser.email" text="Email address" :error="error.email ? error.email[0] : ''" />
+      <BaseInput
+        v-model="newUser.password"
+        type="password"
+        :error="error.password ? error.password[0] : ''"
+        text="Password"
+      />
       <div class="flex justify-end mt-5">
-        <BaseButton html-type="submit">Sign up</BaseButton>
+        <BaseButton html-type="submit" type="auth">Sign up</BaseButton>
       </div>
+      <p v-if="error.server" class="text-[red] text-md font-medium">{{ error.server[0] }}</p>
     </div>
   </form>
 </template>

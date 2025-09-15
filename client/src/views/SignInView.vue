@@ -1,20 +1,57 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import BaseButton from '@/components/BaseButton.vue';
 import BaseInput from '@/components/BaseInput.vue';
+import { ref } from 'vue';
+import BaseButton from '../components/BaseButton.vue';
+import { useAuthStore } from '@/stores/auth';
+import { HttpResponse } from '@/types/api';
 
-const email = ref<string>('');
-const password = ref<string>('');
+const authStore = useAuthStore();
+const error = ref<Record<string, string[]>>({});
+const status = ref<number>();
+
+const userData = ref({
+  email: '',
+  password: '',
+});
+
+async function signIn(): Promise<void> {
+  const { status: serverStatus, error: serverErrors }: HttpResponse = await authStore.signIn(
+    userData.value.email,
+    userData.value.password,
+  );
+
+  status.value = serverStatus;
+  error.value = serverErrors;
+
+  if (serverStatus === 200) {
+    window.location.href = '/tasks';
+  }
+}
+
+async function signUp(): Promise<void> {
+  window.location.href = '/signup';
+}
 </script>
 
 <template>
-  <form>
-    <div class="bg-[#efefef] px-6 py-4 font-sans border-0 rounded-2xl text-lg">
-      <BaseInput v-model="email" text="Email address:"/>
-      <BaseInput v-model="password" type="password" text="Password:"/>
-      <div class="flex justify-end mt-5">
-        <BaseButton html-type="submit">Sign in</BaseButton>
+  <form @submit.prevent="signIn">
+    <div class="w-[328px] md:w-[400px] font-sans border-0 text-lg">
+      <p class="font-medium text-3xl text-[black] text-center pb-10">Sign in to your account</p>
+      <BaseInput v-model="userData.email" text="Email address" :error="error.email ? error.email[0] : ''" />
+      <BaseInput
+        v-model="userData.password"
+        type="password"
+        :error="error.password ? error.password[0] : ''"
+        text="Password"
+      />
+      <div class="flex justify-end">
+        <BaseButton html-type="submit" type="auth">Sign in</BaseButton>
       </div>
+      <p class="font-medium text-base text-[gray]">
+        Don't have an account?
+        <b class="font-medium text-base text-[#38cb89] hover:text-[#23a068] cursor-pointer" @click="signUp">Sign up</b>
+      </p>
+      <p v-if="error.server" class="text-[red] text-md font-medium">{{ error.server[0] }}</p>
     </div>
   </form>
 </template>

@@ -22,6 +22,13 @@ export enum SortOrder {
   UNO = 'unorganized',
 }
 
+export interface SortData {
+  title: SortOrder;
+  description: SortOrder;
+  importance: SortOrder;
+  dueDate: SortOrder;
+}
+
 export enum SortCriteria {
   TITLE = 'title',
   DESCRIPTION = 'description',

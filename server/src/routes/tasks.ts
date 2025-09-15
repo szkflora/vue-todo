@@ -1,17 +1,20 @@
 import { Router } from 'express'
-import { getTasks, createTask, updateTaskImportance, updateTaskState, updateTaskText, deleteTask } from '@/controllers/taskController'
+import { getTasks, createTask, updateTaskImportance, updateTaskState, updateTaskText, deleteTask, getTaskCount } from '@/controllers/taskController'
+import { verifyToken } from '@/middleware/authMiddleware';
 const router = Router();
 
-router.get("/", getTasks);
+router.get("/", verifyToken, getTasks);
 
-router.post("/", createTask);
+router.post("/", verifyToken, createTask);
 
-router.put("/:_id/importance", updateTaskImportance);
+router.get("/count", verifyToken, getTaskCount);
 
-router.put("/:_id/completed", updateTaskState);
+router.put("/:_id/importance", verifyToken, updateTaskImportance);
 
-router.put("/:_id/text", updateTaskText);
+router.put("/:_id/completed", verifyToken, updateTaskState);
 
-router.delete("/:_id", deleteTask);
+router.put("/:_id/text", verifyToken, updateTaskText);
+
+router.delete("/:_id", verifyToken, deleteTask);
 
 export default router;
